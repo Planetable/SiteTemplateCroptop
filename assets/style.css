@@ -362,6 +362,10 @@ details > summary:before {
   max-width: var(--max-content-width);
 }
 
+.full-width {
+  width: var(--max-width);
+}
+
 .content-top-offset {
   padding-top: var(--spacing-4);
 }
@@ -940,6 +944,7 @@ details > summary:before {
   background-color: var(--background-color);
 }
 .form-select-value select {
+  width: 250px;
   padding-right: 30px;
   appearance: none;
   -webkit-appearance: none;
