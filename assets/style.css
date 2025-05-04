@@ -377,6 +377,7 @@ details > summary:before {
 .button-loading-animation {
   margin-left: var(--spacing-3);
   display: inline-block;
+  margin-right: 8px;
 }
 
 .ether {
@@ -679,9 +680,6 @@ details > summary:before {
 }
 #fork-form details .form-item {
   margin-top: var(--spacing-3);
-}
-#fork-form-new-jb-state-chain-env  {
-  width: calc(var(--reduced-width1) / 2);
 }
 
 .fork-info {
@@ -1256,6 +1254,38 @@ details > summary:before {
   display: inline-block;
   margin-right: var(--spacing-1);
   font: "Capsules", "Inconsolata", monospace;
+}
+
+/* Custom Croptop checkbox styling */
+.checkbox-option input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: 2px solid var(--foreground-color);
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  margin-right: 12px;
+  position: relative;
+  cursor: pointer;
+  vertical-align: middle;
+  outline: none;
+  transition: border-color 0.2s;
+  display: inline-block;
+}
+
+.checkbox-option input[type="checkbox"]:checked::before {
+  content: '\2713'; /* Unicode checkmark */
+  color: var(--foreground-color);
+  font-size: 1.25em;
+  font-weight: bold;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -55%);
+  font-family: inherit;
+  pointer-events: none;
+  text-shadow: 0 0 1px var(--foreground-color), 0 0 1px var(--foreground-color);
 }
 
 /**************/
