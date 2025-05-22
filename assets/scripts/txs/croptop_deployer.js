@@ -1,21 +1,21 @@
 const croptopDeployerContract = (chainId) => {
   switch (chainId) {
     case 1: // Ethereum Mainnet
-      return "0x38050f79dd6dde6d366f6daad6e7adf4e1014e08";
+      return "0x4d86ebca4e266bed64158f2fa92517322a97aa15";
     case 8453: // Base
-      return "0x38050f79dd6dde6d366f6daad6e7adf4e1014e08";
+      return "0x4d86ebca4e266bed64158f2fa92517322a97aa15";
     case 10: // Optimism
-      return "0x38050f79dd6dde6d366f6daad6e7adf4e1014e08";
+      return "0x4d86ebca4e266bed64158f2fa92517322a97aa15";
     case 42161: // Arbitrum
-      return "0x38050f79dd6dde6d366f6daad6e7adf4e1014e08";
+      return "0x4d86ebca4e266bed64158f2fa92517322a97aa15";
     case 11155111:
-      return "0x38050f79dd6dde6d366f6daad6e7adf4e1014e08";
+      return "0x4d86ebca4e266bed64158f2fa92517322a97aa15";
     case 11155420:
-      return "0x38050f79dd6dde6d366f6daad6e7adf4e1014e08";
+      return "0x4d86ebca4e266bed64158f2fa92517322a97aa15";
     case 84532:
-      return "0x38050f79dd6dde6d366f6daad6e7adf4e1014e08";
+      return "0x4d86ebca4e266bed64158f2fa92517322a97aa15";
     case 421614:
-      return "0x38050f79dd6dde6d366f6daad6e7adf4e1014e08";
+      return "0x4d86ebca4e266bed64158f2fa92517322a97aa15";
   }
 }
 
@@ -122,6 +122,11 @@ const croptopDeployerContractABI = [
 				"type": "address"
 			},
 			{
+				"internalType": "contract IJBSuckerRegistry",
+				"name": "suckerRegistry",
+				"type": "address"
+			},
+			{
 				"internalType": "address",
 				"name": "trusted_forwarder",
 				"type": "address"
@@ -158,6 +163,32 @@ const croptopDeployerContractABI = [
 	},
 	{
 		"inputs": [],
+		"name": "PERMISSIONS",
+		"outputs": [
+			{
+				"internalType": "contract IJBPermissions",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "PROJECTS",
+		"outputs": [
+			{
+				"internalType": "contract IJBProjects",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "PUBLISHER",
 		"outputs": [
 			{
@@ -170,17 +201,155 @@ const croptopDeployerContractABI = [
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "SUCKER_REGISTRY",
+		"outputs": [
+			{
+				"internalType": "contract IJBSuckerRegistry",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
+				"components": [
+					{
+						"internalType": "address",
+						"name": "terminal",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "holder",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "projectId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rulesetId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "cashOutCount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSupply",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "token",
+								"type": "address"
+							},
+							{
+								"internalType": "uint8",
+								"name": "decimals",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint32",
+								"name": "currency",
+								"type": "uint32"
+							},
+							{
+								"internalType": "uint256",
+								"name": "value",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct JBTokenAmount",
+						"name": "surplus",
+						"type": "tuple"
+					},
+					{
+						"internalType": "bool",
+						"name": "useTotalSurplus",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "cashOutTaxRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "metadata",
+						"type": "bytes"
+					}
+				],
+				"internalType": "struct JBBeforeCashOutRecordedContext",
+				"name": "context",
+				"type": "tuple"
+			}
+		],
+		"name": "beforeCashOutRecordedWith",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "cashOutTaxRate",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "cashOutCount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalSupply",
+				"type": "uint256"
 			},
 			{
 				"components": [
 					{
-						"internalType": "contract IJBTerminal",
+						"internalType": "contract IJBCashOutHook",
+						"name": "hook",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "metadata",
+						"type": "bytes"
+					}
+				],
+				"internalType": "struct JBCashOutHookSpecification[]",
+				"name": "hookSpecifications",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
 						"name": "terminal",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "payer",
 						"type": "address"
 					},
 					{
@@ -199,73 +368,260 @@ const croptopDeployerContractABI = [
 								"internalType": "uint32",
 								"name": "currency",
 								"type": "uint32"
+							},
+							{
+								"internalType": "uint256",
+								"name": "value",
+								"type": "uint256"
 							}
 						],
-						"internalType": "struct JBAccountingContext[]",
-						"name": "accountingContextsToAccept",
-						"type": "tuple[]"
+						"internalType": "struct JBTokenAmount",
+						"name": "amount",
+						"type": "tuple"
+					},
+					{
+						"internalType": "uint256",
+						"name": "projectId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rulesetId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "beneficiary",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "weight",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "reservedPercent",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes",
+						"name": "metadata",
+						"type": "bytes"
 					}
 				],
-				"internalType": "struct JBTerminalConfig[]",
-				"name": "terminalConfigurations",
-				"type": "tuple[]"
-			},
+				"internalType": "struct JBBeforePayRecordedContext",
+				"name": "context",
+				"type": "tuple"
+			}
+		],
+		"name": "beforePayRecordedWith",
+		"outputs": [
 			{
-				"internalType": "string",
-				"name": "projectUri",
-				"type": "string"
+				"internalType": "uint256",
+				"name": "weight",
+				"type": "uint256"
 			},
 			{
 				"components": [
 					{
-						"internalType": "uint24",
-						"name": "category",
-						"type": "uint24"
+						"internalType": "contract IJBPayHook",
+						"name": "hook",
+						"type": "address"
 					},
 					{
-						"internalType": "uint104",
-						"name": "minimumPrice",
-						"type": "uint104"
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					},
 					{
-						"internalType": "uint32",
-						"name": "minimumTotalSupply",
-						"type": "uint32"
-					},
-					{
-						"internalType": "uint32",
-						"name": "maximumTotalSupply",
-						"type": "uint32"
-					},
-					{
-						"internalType": "address[]",
-						"name": "allowedAddresses",
-						"type": "address[]"
+						"internalType": "bytes",
+						"name": "metadata",
+						"type": "bytes"
 					}
 				],
-				"internalType": "struct CTDeployerAllowedPost[]",
-				"name": "allowedPosts",
+				"internalType": "struct JBPayHookSpecification[]",
+				"name": "hookSpecifications",
 				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "projectId",
+				"type": "uint256"
+			}
+		],
+		"name": "dataHookOf",
+		"outputs": [
+			{
+				"internalType": "contract IJBRulesetDataHook",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
 			},
 			{
-				"internalType": "string",
-				"name": "contractUri",
-				"type": "string"
+				"components": [
+					{
+						"components": [
+							{
+								"internalType": "contract IJBTerminal",
+								"name": "terminal",
+								"type": "address"
+							},
+							{
+								"components": [
+									{
+										"internalType": "address",
+										"name": "token",
+										"type": "address"
+									},
+									{
+										"internalType": "uint8",
+										"name": "decimals",
+										"type": "uint8"
+									},
+									{
+										"internalType": "uint32",
+										"name": "currency",
+										"type": "uint32"
+									}
+								],
+								"internalType": "struct JBAccountingContext[]",
+								"name": "accountingContextsToAccept",
+								"type": "tuple[]"
+							}
+						],
+						"internalType": "struct JBTerminalConfig[]",
+						"name": "terminalConfigurations",
+						"type": "tuple[]"
+					},
+					{
+						"internalType": "string",
+						"name": "projectUri",
+						"type": "string"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint24",
+								"name": "category",
+								"type": "uint24"
+							},
+							{
+								"internalType": "uint104",
+								"name": "minimumPrice",
+								"type": "uint104"
+							},
+							{
+								"internalType": "uint32",
+								"name": "minimumTotalSupply",
+								"type": "uint32"
+							},
+							{
+								"internalType": "uint32",
+								"name": "maximumTotalSupply",
+								"type": "uint32"
+							},
+							{
+								"internalType": "address[]",
+								"name": "allowedAddresses",
+								"type": "address[]"
+							}
+						],
+						"internalType": "struct CTDeployerAllowedPost[]",
+						"name": "allowedPosts",
+						"type": "tuple[]"
+					},
+					{
+						"internalType": "string",
+						"name": "contractUri",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "salt",
+						"type": "bytes32"
+					}
+				],
+				"internalType": "struct CTProjectConfig",
+				"name": "projectConfig",
+				"type": "tuple"
 			},
 			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "symbol",
-				"type": "string"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "salt",
-				"type": "bytes32"
+				"components": [
+					{
+						"components": [
+							{
+								"internalType": "contract IJBSuckerDeployer",
+								"name": "deployer",
+								"type": "address"
+							},
+							{
+								"components": [
+									{
+										"internalType": "address",
+										"name": "localToken",
+										"type": "address"
+									},
+									{
+										"internalType": "uint32",
+										"name": "minGas",
+										"type": "uint32"
+									},
+									{
+										"internalType": "address",
+										"name": "remoteToken",
+										"type": "address"
+									},
+									{
+										"internalType": "uint256",
+										"name": "minBridgeAmount",
+										"type": "uint256"
+									}
+								],
+								"internalType": "struct JBTokenMapping[]",
+								"name": "mappings",
+								"type": "tuple[]"
+							}
+						],
+						"internalType": "struct JBSuckerDeployerConfig[]",
+						"name": "deployerConfigurations",
+						"type": "tuple[]"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "salt",
+						"type": "bytes32"
+					}
+				],
+				"internalType": "struct CTSuckerDeploymentConfig",
+				"name": "suckerDeploymentConfiguration",
+				"type": "tuple"
 			}
 		],
 		"name": "deployProjectFor",
@@ -282,6 +638,100 @@ const croptopDeployerContractABI = [
 			}
 		],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "projectId",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"components": [
+							{
+								"internalType": "contract IJBSuckerDeployer",
+								"name": "deployer",
+								"type": "address"
+							},
+							{
+								"components": [
+									{
+										"internalType": "address",
+										"name": "localToken",
+										"type": "address"
+									},
+									{
+										"internalType": "uint32",
+										"name": "minGas",
+										"type": "uint32"
+									},
+									{
+										"internalType": "address",
+										"name": "remoteToken",
+										"type": "address"
+									},
+									{
+										"internalType": "uint256",
+										"name": "minBridgeAmount",
+										"type": "uint256"
+									}
+								],
+								"internalType": "struct JBTokenMapping[]",
+								"name": "mappings",
+								"type": "tuple[]"
+							}
+						],
+						"internalType": "struct JBSuckerDeployerConfig[]",
+						"name": "deployerConfigurations",
+						"type": "tuple[]"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "salt",
+						"type": "bytes32"
+					}
+				],
+				"internalType": "struct CTSuckerDeploymentConfig",
+				"name": "suckerDeploymentConfiguration",
+				"type": "tuple"
+			}
+		],
+		"name": "deploySuckersFor",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "suckers",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "projectId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "hasMintPermissionFor",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "flag",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -338,6 +788,25 @@ const croptopDeployerContractABI = [
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "bytes4",
+				"name": "interfaceId",
+				"type": "bytes4"
+			}
+		],
+		"name": "supportsInterface",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "trustedForwarder",
 		"outputs": [
@@ -349,6 +818,32 @@ const croptopDeployerContractABI = [
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "projectId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "permissionId",
+				"type": "uint256"
+			}
+		],
+		"name": "JBPermissioned_Unauthorized",
+		"type": "error"
 	}
 ];
   
@@ -358,11 +853,68 @@ const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotal
   const contractUri = "";
   const allowedPost = { hook: "0x0000000000000000000000000000000000000000", category: 0, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses};
   
+  // Map of chain pairs to deployer addresses
+  const SUCKER_DEPLOYERS = {
+    // Mainnets
+    '1-10': '0x34b40205b249e5733cf93d86b7c9783b015dd3e7',
+    '10-1': '0x34b40205b249e5733cf93d86b7c9783b015dd3e7',
+    '1-42161': '0x9d4858cc9d3552507eeabce722787afef64c615e',
+    '42161-1': '0x9d4858cc9d3552507eeabce722787afef64c615e',
+    '1-8453': '0xde901ebafc70d545f9d43034308c136ce8c94a5c',
+    '8453-1': '0xde901ebafc70d545f9d43034308c136ce8c94a5c',
+    '10-42161': '0x39132ea75b9eae5cbff7ba1997c804302a7ff413',
+    '42161-10': '0x39132ea75b9eae5cbff7ba1997c804302a7ff413',
+    '10-8453': '0xb825f2f6995966eb6dd772a8707d4a547028ac26',
+    '8453-10': '0xb825f2f6995966eb6dd772a8707d4a547028ac26',
+    '42161-8453': '0x3d7fb0aa325ad5d2349274f9ef33d4424135d963',
+    '8453-42161': '0x3d7fb0aa325ad5d2349274f9ef33d4424135d963',
+    // Testnets (Sepolia: 11155111, Optimism Sepolia: 11155420, Base Sepolia: 84532, Arbitrum Sepolia: 421614)
+    '11155111-11155420': '0x34b40205b249e5733cf93d86b7c9783b015dd3e7',
+    '11155420-11155111': '0x34b40205b249e5733cf93d86b7c9783b015dd3e7',
+    '11155111-421614': '0x9d4858cc9d3552507eeabce722787afef64c615e',
+    '421614-11155111': '0x9d4858cc9d3552507eeabce722787afef64c615e',
+    '11155111-84532': '0xde901ebafc70d545f9d43034308c136ce8c94a5c',
+    '84532-11155111': '0xde901ebafc70d545f9d43034308c136ce8c94a5c',
+    '11155420-421614': '0x39132ea75b9eae5cbff7ba1997c804302a7ff413',
+    '421614-11155420': '0x39132ea75b9eae5cbff7ba1997c804302a7ff413',
+    '11155420-84532': '0xb825f2f6995966eb6dd772a8707d4a547028ac26',
+    '84532-11155420': '0xb825f2f6995966eb6dd772a8707d4a547028ac26',
+    '421614-84532': '0x3d7fb0aa325ad5d2349274f9ef33d4424135d963',
+    '84532-421614': '0x3d7fb0aa325ad5d2349274f9ef33d4424135d963',
+  };
+
   const buildDeploymentData = async (chainId) => {
     const accountingContextToAccept = { token:"0x000000000000000000000000000000000000EEEe", decimals: 18, currency: 61166 };
     const terminal = terminalContract(chainId);
     const terminalConfiguration = { terminal, accountingContextsToAccept: [accountingContextToAccept] };
-    return [owner, [terminalConfiguration], projectUri, [allowedPost], contractUri, name, symbol, salt];
+
+    // Build JBSuckerDeployerConfig array for this chain
+    const otherChainIds = chainIds.filter(id => id !== chainId);
+    const deployerConfigurations = otherChainIds.map(remoteChainId => {
+      const deployerKey = `${chainId}-${remoteChainId}`;
+      const deployer = SUCKER_DEPLOYERS[deployerKey];
+      return {
+        deployer,
+        mappings: [{
+          localToken: "0x000000000000000000000000000000000000EEEe",
+          minGas: 200000,
+          remoteToken: "0x000000000000000000000000000000000000EEEe",
+          minBridgeAmount: "10000000000000000"
+        }]
+      };
+    });
+
+    return [
+      owner,
+      [[terminalConfiguration],
+      projectUri,
+      [allowedPost],
+      contractUri,
+      name,
+      symbol,
+      salt],
+      [deployerConfigurations, salt ]
+    ];
   };
   
   console.log({ chainIds, buildDeploymentData });

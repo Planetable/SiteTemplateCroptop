@@ -250,7 +250,7 @@
                 </details>
               </div>
               <div id="fork-form-chain" class="form-section">
-                <div class="form-section-description">Oon which chains do you want to deploy your collection?</div>
+                <div class="form-section-description">On which chains do you want to deploy your collection? You'll be prompted for a signatute for each chain selected.</div>
                 <div class="form-item">
                   <div class="form-value form-select-value">
                     <select id="fork-form-new-jb-state-chain-env" name="chain-env">
@@ -416,8 +416,6 @@
     cursor: pointer;
     flex-grow: 1;
     padding: 8px 12px;
-    background-color: #2a2a2a;
-    border-radius: 4px;
     display: flex;
     align-items: center;
   }
@@ -431,6 +429,17 @@
     width: 18px;
     height: 18px;
     margin-right: 12px;
+  }
+
+  .quote-status-box {
+    background: var(--background-secondary-color);
+    border: 1px solid rgba(128,128,128,0.25);
+    color: var(--foreground-color);
+    padding: 16px;
+    margin-bottom: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
   }
     </style>
   <script>
@@ -660,10 +669,11 @@
       const setLoadingState = (state) => {
         const submitButton = document.getElementById('fork-form-new-jb-submit-button');
         const loadingAnimation = document.getElementById('fork-form-new-jb-button-loading-animation');
-        
         if (state) {
           submitButton.disabled = true;
           loadingAnimation.style.display = 'inline-block';
+          // Show extra text only for get deploy quote
+          const btnText = document.getElementById('fork-form-new-jb-submit-button-text').textContent;
         } else {
           submitButton.disabled = false;
           loadingAnimation.style.display = 'none';
@@ -711,14 +721,7 @@
 
         // Quote status
         const statusBox = document.createElement('div');
-        statusBox.style.background = 'rgba(200,200,200,0.08)'; // subtle tint
-        statusBox.style.border = '1px solid #b2e5c2'; // thin outline
-        statusBox.style.padding = '16px';
-        statusBox.style.marginBottom = '12px';
-        statusBox.style.borderRadius = '6px';
-        statusBox.style.fontWeight = 'bold';
-        statusBox.style.display = 'flex';
-        statusBox.style.alignItems = 'center';
+        statusBox.className = 'quote-status-box';
         statusBox.innerHTML = `Quote complete <span style="color: #3bb273; font-size: 1.3em; margin-left: 8px;">&#10003;</span>`;
         paymentOptionsDiv.appendChild(statusBox);
 
@@ -733,13 +736,15 @@
 
         // Payment dropdown label
         const label = document.createElement('div');
-        label.style.fontWeight = 'bold';
-        label.style.marginBottom = '8px';
-        label.style.fontSize = '1.15em';
         label.innerText = 'How would you like to pay?';
+        label.className = 'form-label'
+         ;
         paymentOptionsDiv.appendChild(label);
 
         // Payment dropdown (styled like the rest of the site)
+        const formItem = document.createElement('div');
+        formItem.className = 'form-item';
+
         const selectWrapper = document.createElement('div');
         selectWrapper.className = 'form-value form-select-value';
 
@@ -755,16 +760,13 @@
           select.appendChild(opt);
         });
         selectWrapper.appendChild(select);
-        paymentOptionsDiv.appendChild(selectWrapper);
+        formItem.appendChild(selectWrapper);
+        paymentOptionsDiv.appendChild(formItem);
 
         // Pay button (left aligned, not full width)
         const payBtn = document.createElement('button');
         payBtn.className = 'form-button';
         payBtn.innerText = 'deploy collection';
-        payBtn.style.fontSize = '1.1em';
-        payBtn.style.marginTop = '8px';
-        payBtn.style.marginLeft = '0';
-        payBtn.style.display = 'inline-block';
         payBtn.disabled = false;
         // Add a unique spinner span for this button
         const spinnerId = 'relayr-pay-btn-spinner';

@@ -7,20 +7,20 @@
       <span id="post-link"></span>
   </div>
 </div>
-<div id="post-onchain" class="mobile-padding">
+<div id="post-onchain" class="full-width mobile-padding">
   <details id="post-form-collect-reveal">
     <summary id="post-form-collect-toggle" class="form-toggle">memorialize</summary>
     <div id="post-form-collect-container">
     <div class="form-section">
       <div class="form-item">
-        <div class="form-label">Chain</div>
         <div class="form-value form-select-value">
           <select id="post-form-state-chain-input" name="chain">
             <!-- options will be added by JS -->
           </select>
         </div>
       </div>
-    <div id="collect-post-form" class="form negative-space">
+      </div>
+      <div id="collect-post-form" class="form negative-space">
         <span id="collect-post-form-header" class="form-header"></span>
         <div class="form-body">
             <div class="form-item" style="display: none;">
@@ -49,7 +49,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-section-disclaimer">An added 5% is sent to the <a id="collect-post-form-cpn-anchor" href="https://goerli.juicebox.money/v2/p/669" target="_blank">Croptop Publishing Network</a> in exchange for $CPN to this site's author.</div>
+            <div class="form-section-disclaimer">An added 5% feeds the <a id="collect-post-form-cpn-anchor" href="https://app.revnet.eth.sucks/eth:2" target="_blank">Croptop Publishing Network</a> in exchange for $CPN to this site's author.</div>
             <details id="collect-post-form-disclaimer-reveal">
               <summary id="collect-post-form-disclaimer-toggle" class="form-toggle form-disclaimer-toggle">customize</summary>
               <div class="form-section-description">Change who gets the $CPN</div>
@@ -64,7 +64,6 @@
             </details>
           </details>
         </div>
-      </div>
       <div id="record-post-form" class="form negative-space">
         <span class="form-header">Buy a first copy to memorialize it onchain.</span>
         <div class="form-body">
@@ -99,7 +98,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-section-disclaimer">An added 5% is sent to the <a id="record-post-form-cpn-anchor" href="https://goerli.juicebox.money/v2/p/669" target="_blank">Croptop Publishing Network</a> in exchange for $CPN to this site's author.</div>
+            <div class="form-section-disclaimer">An added 5% feeds the <a id="record-post-form-cpn-anchor" href="https://app.revnet.eth.sucks/eth:2" target="_blank">Croptop Publishing Network</a> in exchange for $CPN to this site's author.</div>
             <details id="record-post-form-disclaimer-reveal">
               <summary id="record-post-form-disclaimer-toggle" class="form-toggle form-disclaimer-toggle">customize</summary>
               <div class="form-section-description">Change who gets the $CPN</div>
@@ -754,8 +753,6 @@
       if (!tier) {
         // Check to see if there's a tier for this content.
         [tier] = await tx_view_tiers(collectionAddress, [encodedIPFSUri], resolveChainId(chain));
-
-        console.log({ tier });
 
         // If no tier, don't show the form.
         if (!tier) {
