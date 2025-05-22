@@ -299,7 +299,7 @@
                 </div>
               </div>           
               <div id="fork-form-new-jb-error-message" class="form-error-message mobile-padding"></div>
-              <button id="fork-form-new-jb-submit-button" class="form-button"><span id="fork-form-new-jb-submit-button-text" class="form-button-text">deploy collection</span><span id="fork-form-new-jb-button-loading-animation" class="loading-animation button-loading-animation"></span></button> 
+              <button id="fork-form-new-jb-submit-button" class="form-button"><span id="fork-form-new-jb-submit-button-text" class="form-button-text">deeploy collection</span><span id="fork-form-new-jb-button-loading-animation" class="loading-animation button-loading-animation"></span></button> 
               <div id="fork-form-new-jb-success-message" class="form-success-message mobile-padding"></div>
               <div id="relayr-quote-section" style="display: none;" class="mt-4">
                 <div id="relayr-quote-details" class="mb-4 p-4 bg-gray-100 rounded"></div>
@@ -645,7 +645,7 @@
       // Update button text based on selected chains
       const updateDeployButtonText = () => {
         const selectedChains = getSelectedChainIds();
-        const buttonText = selectedChains.length > 1 ? "get deploy quote" : "deploy collection";
+        const buttonText = selectedChains.length > 1 ? "get deploy quote" : "deeploy collection";
         document.getElementById('fork-form-new-jb-submit-button-text').textContent = buttonText;
       };
 
@@ -766,7 +766,7 @@
         // Pay button (left aligned, not full width)
         const payBtn = document.createElement('button');
         payBtn.className = 'form-button';
-        payBtn.innerText = 'deploy collection';
+        payBtn.innerText = 'deeploy collection';
         payBtn.disabled = false;
         // Add a unique spinner span for this button
         const spinnerId = 'relayr-pay-btn-spinner';
