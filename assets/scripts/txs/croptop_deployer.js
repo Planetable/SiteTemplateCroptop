@@ -849,7 +849,7 @@ const croptopDeployerContractABI = [
   
 // Remove the duplicated functions and keep only the specific deployment functions
 const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses, chainIds, salt) => {
-  const projectUri = "QmaJzQjaFKxU2LLyqPTpZoGU47owQcmmvVCP1p4YqeuMUy";
+  const projectUri = "ipfs://QmaJzQjaFKxU2LLyqPTpZoGU47owQcmmvVCP1p4YqeuMUy";
   const contractUri = "";
   const allowedPost = { hook: "0x0000000000000000000000000000000000000000", category: 0, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses};
   
@@ -940,7 +940,7 @@ const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotal
 }
 
 const tx_deploy_revnet = async (name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses, stage1AutomintTokenAmount, stage2AutomintTokenAmount, stage3AutomintTokenAmount, stage1InitialIssuanceAmount, stage2InitialIssuanceAmount, stage3InitialIssuanceAmount, stage1SplitPercent, stage2SplitPercent, stage3SplitPercent, stage1PriceIncreasePercent, stage2PriceIncreasePercent, stage3PriceIncreasePercent, stage1PriceIncreaseFrequency, stage2PriceIncreaseFrequency, stage3PriceIncreaseFrequency, stage1CashOutTaxRate, stage2CashOutTaxRate, stage3CashOutTaxRate, stage2StartsAtOrAfter, stage3StartsAtOrAfter, chainIds, salt) => {
-  const projectUri = "QmaJzQjaFKxU2LLyqPTpZoGU47owQcmmvVCP1p4YqeuMUy";
+  const projectUri = "ipfs://QmaJzQjaFKxU2LLyqPTpZoGU47owQcmmvVCP1p4YqeuMUy";
   const contractUri = "";
   const allowedPost = { hook: "0x0000000000000000000000000000000000000000", category: 0, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses};
   
