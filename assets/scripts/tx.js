@@ -1,9 +1,9 @@
 const getProvider = (chainId) => {
   switch (chainId) {
-    case 1: return new ethers.JsonRpcProvider(env.ethereumRPC || "https://eth-mainnet.g.alchemy.com/v2/PvnApS5JjmPVuC0A4WLdFfaF8oD_z9e5"); //https://rpc.ankr.com/eth");
-    case 8453: return new ethers.JsonRpcProvider(env.baseRPC || "https://rpc.ankr.com/base");
-    case 42161: return new ethers.JsonRpcProvider(env.arbitrumRPC || "https://rpc.ankr.com/arbitrum");
-    case 10: return new ethers.JsonRpcProvider(env.optimismRPC || "https://rpc.ankr.com/optimism");
+    case 1: return new ethers.JsonRpcProvider(env.ethereumMainnetRPC || "https://eth-mainnet.g.alchemy.com/v2/PvnApS5JjmPVuC0A4WLdFfaF8oD_z9e5"); //https://rpc.ankr.com/eth");
+    case 8453: return new ethers.JsonRpcProvider(env.baseMainnetRPC || "https://rpc.ankr.com/base");
+    case 42161: return new ethers.JsonRpcProvider(env.arbitrumMainnetRPC || "https://rpc.ankr.com/arbitrum");
+    case 10: return new ethers.JsonRpcProvider(env.optimismMainnetRPC || "https://rpc.ankr.com/optimism");
     case 11155111: return new ethers.JsonRpcProvider(env.ethereumSepoliaRPC || "https://rpc.ankr.com/eth_sepolia");
     case 11155420: return new ethers.JsonRpcProvider(env.optimismSepoliaRPC || "https://rpc.ankr.com/optimism_sepolia");
     case 84532: return new ethers.JsonRpcProvider(env.baseSepoliaRPC || "https://rpc.ankr.com/base_sepolia");
@@ -438,7 +438,6 @@ const view = async (chainId, contractAddress, contractAbi, fn, params) => {
 
 const sign = async (contractAddress, contractAbi, fn, params) => {
     const contract = new ethers.Contract(contractAddress, contractAbi, await getSigner());
-    console.log({ contract, fn , params });
     const tx = await contract[fn](...params);
     if (!tx) return false;
     return await tx.wait();
@@ -558,7 +557,6 @@ function getAddChainParams(chainId) {
 
 // Helper function to handle both single and multi-chain deployments
 const handleDeployment = async (chainIds, buildDeploymentData, contractAddress, contractABI, functionName, value) => {
-  console.log({ chainIds });
   if (!Array.isArray(chainIds)) chainIds = [chainIds];
   if (chainIds.length === 1) {
     // Single chain deployment
@@ -596,9 +594,7 @@ const handleDeployment = async (chainIds, buildDeploymentData, contractAddress, 
       value: "0"
     });
   }
-  console.log({relayrTransactions});
   const quote = await getRelayrTxQuote(relayrTransactions);
-  console.log({ quote });
   if (!quote) {
     throw new Error("Failed to get Relayr quote");
   }
@@ -607,7 +603,6 @@ const handleDeployment = async (chainIds, buildDeploymentData, contractAddress, 
 
 // Get a quote for a bundle of Relayr transactions
 const getRelayrTxQuote = async (relayrTransactions) => {
-  console.log({relayrTransactions});
   const res = await fetch('https://api.relayr.ba5ed.com/v1/bundle/prepaid', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

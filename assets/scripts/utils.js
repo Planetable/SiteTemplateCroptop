@@ -57,6 +57,10 @@ const resolveChainId = (value) => {
 
 const resolveChainSelectIndex = (chain) => {
   switch (chain) {
+    case "ethereum mainnet": return 0; 
+    case "optimism mainnet": return 1; 
+    case "arbitrum mainnet": return 2; 
+    case "base mainnet": return 3; 
     case "ethereum sepolia": return 0; 
     case "optimism sepolia": return 1; 
     case "arbitrum sepolia": return 2; 
@@ -66,6 +70,10 @@ const resolveChainSelectIndex = (chain) => {
 
 const resolveChain = (chainId) => {
   switch (chainId) {
+    case 1: return "ethereum mainnet"; 
+    case 10: return "optimism mainnet"; 
+    case 8453: return "base mainnet"; 
+    case 42161: return "arbitrum mainnet"; 
     case 11155111: return "ethereum sepolia"; 
     case 11155420: return "optimism sepolia"; 
     case 84532: return "base sepolia"; 
@@ -73,8 +81,27 @@ const resolveChain = (chainId) => {
   }
 }
 
+const resolveChainLabel = (chainId) => {
+  switch (chainId) {
+    case 1: return "Ethereum Mainnet"; 
+    case 10: return "Optimism Mainnet"; 
+    case 8453: return "Base Mainnet"; 
+    case 42161: return "Arbitrum Mainnet"; 
+    case 11155111: return "Ethereum Sepolia"; 
+    case 11155420: return "Optimism Sepolia"; 
+    case 84532: return "Base Sepolia"; 
+    case 421614: return "Arbitrum Sepolia"; 
+  }
+}
+
 const cpnCollectionAddress = (chain) => {
   switch (chain) {
+    case "ethereum mainnet":
+      return "0x929B6c04fE40fb265Cd0AbB7928826DC965E540D";
+    case "optimism mainnet":
+      return "0x929B6c04fE40fb265Cd0AbB7928826DC965E540D";
+    case "base mainnet":
+      return "0x929B6c04fE40fb265Cd0AbB7928826DC965E540D";
     case "ethereum sepolia":
       return "0x929B6c04fE40fb265Cd0AbB7928826DC965E540D";
     case "optimism sepolia":
@@ -87,21 +114,36 @@ const cpnCollectionAddress = (chain) => {
 }
 
 const resolveCollectionAddress = (chain) => {
+  console.log({ env, chain });
   // use sepolia as default.
   switch (chain) {
+    case "ethereum mainnet":
+      return env.ethereumMainnetCollectionAddress || cpnCollectionAddress(chain);
+    case "optimism mainnet":
+      return env.optimismMainnetCollectionAddress || cpnCollectionAddress(chain);
+    case "base mainnet":
+      return env.baseMainnetCollectionAddress || cpnCollectionAddress(chain);
+    case "arbitrum mainnet":
+      return env.arbitrumMainnetCollectionAddress || cpnCollectionAddress(chain);
     case "ethereum sepolia":
-      return env.ethereumMainnetCollectionAddress || env.ethereumSepoliaCollectionAddress || cpnCollectionAddress(chain);
+      return env.ethereumSepoliaCollectionAddress || cpnCollectionAddress(chain);
     case "optimism sepolia":
-      return env.optimismSepoliaCollectionAddress || env.ethereumSepoliaCollectionAddress || cpnCollectionAddress(chain);
+      return env.optimismSepoliaCollectionAddress || cpnCollectionAddress(chain);
     case "base sepolia":
-      return env.baseSepoliaCollectionAddress || env.ethereumSepoliaCollectionAddress || cpnCollectionAddress(chain);
+      return env.baseSepoliaCollectionAddress || cpnCollectionAddress(chain);
     case "arbitrum sepolia":
-      return env.arbitrumSepoliaCollectionAddress || env.ethereumSepoliaCollectionAddress || cpnCollectionAddress(chain);
+      return env.arbitrumSepoliaCollectionAddress || cpnCollectionAddress(chain);
   }
 }
 
 const resolveCollectionCategory = (chain) => {
   switch (chain) {
+    case "ethereum mainnet":
+      return env.collectionCategory || env.ethereumMainnetCollectionCategory || 0;
+    case "optimism mainnet":
+      return env.optimismMainnetCollectionCategory || env.ethereumMainnetCollectionCategory || 0;
+    case "base mainnet":
+      return env.baseMainnetCollectionCategory || env.ethereumMainnetCollectionCategory || 0;
     case "ethereum sepolia":
       return env.collectionCategory || env.ethereumSepoliaCollectionCategory || 0;
     case "optimism sepolia":
@@ -115,6 +157,12 @@ const resolveCollectionCategory = (chain) => {
 
 const resolveCPNBeneficiaryAddress = (chain) => {
   switch (chain) {
+    case "ethereum mainnet":
+      return env.ethereumMainnetBeneficiaryAddress;
+    case "optimism mainnet":
+      return env.optimismMainnetBeneficiaryAddress || env.ethereumMainnetBeneficiaryAddress;
+    case "base mainnet":
+      return env.baseMainnetBeneficiaryAddress || env.ethereumMainnetBeneficiaryAddress;
     case "ethereum sepolia":
       return env.ethereumSepoliaBeneficiaryAddress;
     case "optimism sepolia":
@@ -128,10 +176,22 @@ const resolveCPNBeneficiaryAddress = (chain) => {
 
 const projectLinkBase = (chain) => {
   switch (chain) {
+    case "ethereum mainnet":
+      return "https://juicebox.money/v4/eth:";
+    case "optimism mainnet":
+      return "https://juicebox.money/v4/op:";
+    case "arbitrum mainnet":
+      return "https://juicebox.money/v4/arb:";
+    case "base mainnet":
+      return "https://juicebox.money/v4/base:";
     case "ethereum sepolia":
-      return "https://juicebox.money/v4/p/";
+      return "https://sepolia.juicebox.money/v4/eth:";
     case "optimism sepolia":
-      return "https://sepolia.juicebox.money/v4/p/";
+      return "https://sepolia.juicebox.money/v4/op:";
+    case "base sepolia":
+      return "https://sepolia.juicebox.money/v4/base:";
+    case "arbitrum sepolia":
+      return "https://sepolia.juicebox.money/v4/arb:";
   }
 }
 

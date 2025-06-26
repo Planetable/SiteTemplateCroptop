@@ -249,7 +249,7 @@
                   </div>
                 </details>
               </div>
-              <div id="fork-form-chain" class="form-section">
+              <div id="fork-form-new-jb-chain" class="form-section">
                 <div class="form-section-description">On which chains do you want to deploy your collection? You'll be prompted for a signatute for each chain selected.</div>
                 <div class="form-item">
                   <div class="form-value form-select-value">
@@ -259,40 +259,40 @@
                     </select>
                   </div>
                   <div class="form-value form-chain-checkbox-value">
-                    <div id="fork-form-new-jb-chain-production-options" class="chain-options">
-                      <div class="checkbox-option">
-                        <input type="checkbox" id="ethereum-mainnet" name="chain" value="ethereum mainnet">
-                        <label for="ethereum-mainnet">Ethereum Mainnet</label>
+                    <div id="fork-form-new-jb-chain-production-options" class="form-chain-options">
+                      <div class="form-checkbox-option">
+                        <input type="checkbox" id="fork-form-new-jb-ethereum-mainnet" name="chain" value="ethereum mainnet">
+                        <label for="fork-form-new-jb-ethereum-mainnet">Ethereum Mainnet</label>
                       </div>
-                      <div class="checkbox-option">
-                        <input type="checkbox" id="optimism-mainnet" name="chain" value="optimism mainnet">
-                        <label for="optimism-mainnet">Optimism Mainnet</label>
+                      <div class="form-checkbox-option">
+                        <input type="checkbox" id="fork-form-new-jb-optimism-mainnet" name="chain" value="optimism mainnet">
+                        <label for="fork-form-new-jb-optimism-mainnet">Optimism Mainnet</label>
                       </div>
-                      <div class="checkbox-option">
-                        <input type="checkbox" id="arbitrum-mainnet" name="chain" value="arbitrum mainnet">
-                        <label for="arbitrum-mainnet">Arbitrum Mainnet</label>
+                      <div class="form-checkbox-option">
+                        <input type="checkbox" id="fork-form-new-jb-arbitrum-mainnet" name="chain" value="arbitrum mainnet">
+                        <label for="fork-form-new-jb-arbitrum-mainnet">Arbitrum Mainnet</label>
                       </div>
-                      <div class="checkbox-option">
-                        <input type="checkbox" id="base-mainnet" name="chain" value="base mainnet">
-                        <label for="base-mainnet">Base Mainnet</label>
+                      <div class="form-checkbox-option">
+                        <input type="checkbox" id="fork-form-new-jb-base-mainnet" name="chain" value="base mainnet">
+                        <label for="fork-form-new-jb-base-mainnet">Base Mainnet</label>
                       </div>
                     </div>
-                    <div id="fork-form-new-jb-chain-testnet-options" class="chain-options" style="display: none;">
-                      <div class="checkbox-option">
-                        <input type="checkbox" id="ethereum-sepolia" name="chain" value="ethereum sepolia">
-                        <label for="ethereum-sepolia">Ethereum Sepolia</label>
+                    <div id="fork-form-new-jb-chain-testnet-options" class="form-chain-options" style="display: none;">
+                      <div class="form-checkbox-option">
+                        <input type="checkbox" id="fork-form-new-jb-ethereum-sepolia" name="chain" value="ethereum sepolia">
+                        <label for="fork-form-new-jb-ethereum-sepolia">Ethereum Sepolia</label>
                       </div>
-                      <div class="checkbox-option">
-                        <input type="checkbox" id="optimism-sepolia" name="chain" value="optimism sepolia">
-                        <label for="optimism-sepolia">Optimism Sepolia</label>
+                      <div class="form-checkbox-option">
+                        <input type="checkbox" id="fork-form-new-jb-optimism-sepolia" name="chain" value="optimism sepolia">
+                        <label for="fork-form-new-jb-optimism-sepolia">Optimism Sepolia</label>
                       </div>
-                      <div class="checkbox-option">
-                        <input type="checkbox" id="arbitrum-sepolia" name="chain" value="arbitrum sepolia">
-                        <label for="arbitrum-sepolia">Arbitrum Sepolia</label>
+                      <div class="form-checkbox-option">
+                        <input type="checkbox" id="fork-form-new-jb-arbitrum-sepolia" name="chain" value="arbitrum sepolia">
+                        <label for="fork-form-new-jb-arbitrum-sepolia">Arbitrum Sepolia</label>
                       </div>
-                      <div class="checkbox-option">
-                        <input type="checkbox" id="base-sepolia" name="chain" value="base sepolia">
-                        <label for="base-sepolia">Base Sepolia</label>
+                      <div class="form-checkbox-option">
+                        <input type="checkbox" id="fork-form-new-jb-base-sepolia" name="chain" value="base sepolia">
+                        <label for="fork-form-new-jb-base-sepolia">Base Sepolia</label>
                       </div>
                     </div>
                   </div>
@@ -301,14 +301,14 @@
               <div id="fork-form-new-jb-error-message" class="form-error-message mobile-padding"></div>
               <button id="fork-form-new-jb-submit-button" class="form-button"><span id="fork-form-new-jb-submit-button-text" class="form-button-text">deploy collection</span><span id="fork-form-new-jb-button-loading-animation" class="loading-animation button-loading-animation"></span></button> 
               <div id="fork-form-new-jb-success-message" class="form-success-message mobile-padding"></div>
-              <div id="relayr-quote-section" style="display: none;" class="mt-4">
-                <div id="relayr-quote-details" class="mb-4 p-4 bg-gray-100 rounded"></div>
-                <div id="relayr-payment-options" class="flex flex-col gap-4">
+              <div id="fork-form-new-jb-relayr-quote-section" style="display: none;" class="mt-4">
+                <div id="fork-form-new-jb-relayr-quote-details" class="mb-4 p-4 bg-gray-100 rounded"></div>
+                <div id="fork-form-new-jb-relayr-payment-options" class="flex flex-col gap-4">
                   <!-- Payment options will be dynamically inserted here -->
                 </div>
-                <div id="relayr-deploy-status" style="margin-top: 24px; display: none;"></div>
+                <div id="fork-form-new-jb-relayr-deploy-status" style="margin-top: 24px; display: none;"></div>
               </div>
-              <div id="relayr-controls"></div>
+              <div id="fork-form-new-jb-relayr-controls"></div>
             </details>
             <details>
               <summary class="form-toggle form-main-toggle">Extras (wip)</summary>
@@ -383,65 +383,6 @@
       </div>
     </div>
   </div>
-  <style>
-  .form-chain-checkbox-value {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 520px;
-    height: 144px;
-    align-items: flex-start;
-  }
-  
-  .chain-options {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-  }
-  
-  .checkbox-option {
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .checkbox-option input[type="checkbox"] {
-    margin: 0;
-    flex-shrink: 0;
-  }
-  
-  .checkbox-option label {
-    margin: 0;
-    cursor: pointer;
-    flex-grow: 1;
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
-  }
-  
-  .checkbox-option:hover label {
-    background-color: #3a3a3a;
-  }
-  
-  /* Adjust the checkbox size and alignment */
-  .checkbox-option input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    margin-right: 12px;
-  }
-
-  .quote-status-box {
-    background: var(--background-secondary-color);
-    border: 1px solid rgba(128,128,128,0.25);
-    color: var(--foreground-color);
-    padding: 16px;
-    margin-bottom: 12px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-  }
-    </style>
   <script>
   
     let relayrQuote = null;
@@ -698,7 +639,7 @@
       const resetFormAndUI = () => {
         const successMessage = document.getElementById('fork-form-new-jb-success-message');
         const errorMessage = document.getElementById('fork-form-new-jb-error-message');
-        const relayrSection = document.getElementById('relayr-quote-section');
+        const relayrSection = document.getElementById('fork-form-new-jb-relayr-quote-section');
         
         successMessage.style.display = "none";
         errorMessage.style.display = "none";
@@ -714,14 +655,14 @@
       }
 
       const showRelayrQuoteUI = (quote) => {
-        const relayrSection = document.getElementById('relayr-quote-section');
-        const paymentOptionsDiv = document.getElementById('relayr-payment-options');
+        const relayrSection = document.getElementById('fork-form-new-jb-relayr-quote-section');
+        const paymentOptionsDiv = document.getElementById('fork-form-new-jb-relayr-payment-options');
         relayrSection.style.display = 'block';
         paymentOptionsDiv.innerHTML = '';
 
         // Quote status
         const statusBox = document.createElement('div');
-        statusBox.className = 'quote-status-box';
+        statusBox.className = 'form-quote-status-box';
         statusBox.innerHTML = `Quote complete <span style="color: #3bb273; font-size: 1.3em; margin-left: 8px;">&#10003;</span>`;
         paymentOptionsDiv.appendChild(statusBox);
 
@@ -784,20 +725,15 @@
             const sendTx = tx_send_relayr(paymentInfo, quote.bundle_uuid);
             // Robust logging and error handling for status table
             try {
-              console.log('Ensuring relayr status div...');
               const statusDiv = ensureRelayrStatusDiv();
               statusDiv.style.display = 'block';
-              console.log('Rendering status table...');
               renderRelayrStatusTable({transactions: quote.payment_info.map((info) => ({
                 request: {chain: info.chain},
                 status: {state: 'Pending'}
               }))});
-              console.log('Starting polling for bundle status...');
               pollRelayrBundleStatus(quote.bundle_uuid);
-              console.log('Polling started.');
               await sendTx;
             } catch (tableErr) {
-              console.error('Error showing status table:', tableErr);
               showError('Error showing deployment status. Please try again or contact support.');
             }
           } catch (e) {
@@ -828,20 +764,15 @@
 
       // Handle Relayr deployment
       const onDeployWithRelayr = async (paymentInfo) => {
-        console.log({relayrQuote, paymentInfo});
         if (!relayrQuote || !paymentInfo) return;
         setLoadingState(true);
         relayrPolling = true;
         try {
-          console.log('Sending transaction on chain ' + paymentInfo.chain + '...');
           showSuccess('Sending transaction on chain ' + paymentInfo.chain + '...');
-          console.log("showed");
           await sendRelayrTx(paymentInfo);
-          showSuccess('Transaction sent! Polling for completion...');
-          console.log('Transaction sent! Polling for completion...');
+          showSuccess('Transaction sent! Checking for completion...');
           await pollRelayrBundle(relayrQuote.bundle_uuid);
-          showSuccess('Success! All transactions in the bundle are complete.');
-          console.log('Success! All transactions in the bundle are complete.');
+          showSuccess('Success! All transactions are complete.');
           setTimeout(resetFormAndUI, 3000);
         } catch (e) {
           showError('Relayr deploy failed: ' + e);
@@ -943,7 +874,7 @@
 
       // Remove old static event listeners for deploy-relayr-button and relayr-payment-chain-dropdown
       // Instead, use event delegation for the payment options
-    //   const paymentOptionsDiv = document.getElementById('relayr-payment-options');
+    //   const paymentOptionsDiv = document.getElementById('fork-form-new-jb-relayr-payment-options');
     //   paymentOptionsDiv.addEventListener('click', async (e) => {
     //     if (e.target && e.target.classList.contains('form-button')) {
     //       console.log('Delegated Pay button handler fired', e.target);
@@ -1137,14 +1068,14 @@
     };
 
     function ensureRelayrStatusDiv() {
-      let statusDiv = document.getElementById('relayr-deploy-status');
+      let statusDiv = document.getElementById('fork-form-new-jb-relayr-deploy-status');
       if (!statusDiv) {
         statusDiv = document.createElement('div');
-        statusDiv.id = 'relayr-deploy-status';
+        statusDiv.id = 'fork-form-new-jb-relayr-deploy-status';
         statusDiv.style.marginTop = '24px';
         statusDiv.style.display = 'none';
         // Try to insert after payment options
-        const paymentOptionsDiv = document.getElementById('relayr-payment-options');
+        const paymentOptionsDiv = document.getElementById('fork-form-new-jb-relayr-payment-options');
         if (paymentOptionsDiv && paymentOptionsDiv.parentNode) {
           paymentOptionsDiv.parentNode.insertBefore(statusDiv, paymentOptionsDiv.nextSibling);
         } else {

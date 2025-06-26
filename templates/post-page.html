@@ -162,9 +162,6 @@
     const postFormStateCollectionAddressInput = document.getElementById("post-form-state-collection-address-input");
     const postFormStateCollectionCategoryInput = document.getElementById("post-form-state-collection-category-input");
 
-    postFormStateChainInput.value = defaultChain;
-    postFormStateCollectionCategoryInput.value = defaultCollectionCategory;
-
     fetch("{{ assets_prefix }}templateSettings.json?t={{ build_timestamp }}")
       // only if response is 200 OK, parse the JSON
       .then(response => {
@@ -180,58 +177,37 @@
         };
         console.log({ env, data });
         // Dynamically populate chain select with only chains that have a collection address
-        const chainOptions = [];
-        const chainMap = [
-          { key: 'ethereumMainnetCollectionAddress', label: 'Ethereum Mainnet', value: 'ethereum mainnet', category: data.ethereumMainnetCollectionCategory },
-          { key: 'optimismMainnetCollectionAddress', label: 'Optimism Mainnet', value: 'optimism mainnet', category: data.optimismMainnetCollectionCategory },
-          { key: 'arbitrumMainnetCollectionAddress', label: 'Arbitrum Mainnet', value: 'arbitrum mainnet', category: data.arbitrumMainnetCollectionCategory },
-          { key: 'baseMainnetCollectionAddress', label: 'Base Mainnet', value: 'base mainnet', category: data.baseMainnetCollectionCategory },
-          { key: 'ethereumSepoliaCollectionAddress', label: 'Ethereum Sepolia', value: 'ethereum sepolia', category: data.ethereumSepoliaCollectionCategory },
-          { key: 'optimismSepoliaCollectionAddress', label: 'Optimism Sepolia', value: 'optimism sepolia', category: data.optimismSepoliaCollectionCategory },
-          { key: 'arbitrumSepoliaCollectionAddress', label: 'Arbitrum Sepolia', value: 'arbitrum sepolia', category: data.arbitrumSepoliaCollectionCategory },
-          { key: 'baseSepoliaCollectionAddress', label: 'Base Sepolia', value: 'base sepolia', category: data.baseSepoliaCollectionCategory },
+        const fullChainMap = [
+          { chainId: 1, address: data.ethereumMainnetCollectionAddress },
+          { chainId: 10, address: data.optimismMainnetCollectionAddress },
+          { chainId: 42161, address: data.arbitrumMainnetCollectionAddress },
+          { chainId: 8453, address: data.baseMainnetCollectionAddress },
+          { chainId: 11155111, address: data.ethereumSepoliaCollectionAddress },
+          { chainId: 11155420, address: data.optimismSepoliaCollectionAddress },
+          { chainId: 84532, address: data.arbitrumSepoliaCollectionAddress },
+          { chainId: 84532, address: data.baseSepoliaCollectionAddress },
         ];
-        chainMap.forEach(chain => {
-          if (data[chain.key]) {
-            chainOptions.push({
-              label: chain.label,
-              value: chain.value,
-              address: data[chain.key],
-              category: chain.category || data.collectionCategory || 0
-            });
-          }
-        });
+        const chainMap = fullChainMap.filter(chain => chain.address).map(chain => ({
+          value: resolveChain(chain.chainId),
+          label: resolveChainLabel(chain.chainId),
+          address: chain.address,
+          category: data.collectionCategory || 0
+        }));
+        console.log({ chainMap });
         // Clear and repopulate the select
         postFormStateChainInput.innerHTML = '';
-        chainOptions.forEach(opt => {
+        chainMap.forEach(opt => {
           const option = document.createElement('option');
           option.value = opt.value;
           option.textContent = opt.label;
           postFormStateChainInput.appendChild(option);
         });
         // Set default values
-        if (chainOptions.length > 0) {
-          postFormStateChainInput.value = chainOptions[0].value;
-          postFormStateCollectionAddressInput.value = chainOptions[0].address;
-          postFormStateCollectionCategoryInput.value = chainOptions[0].category;
+        if (chainMap.length > 0) {
+          postFormStateChainInput.value = chainMap[0].value;
+          postFormStateCollectionAddressInput.value = chainMap[0].address;
+          postFormStateCollectionCategoryInput.value = chainMap[0].category;
         }
-        // Update address/category on chain change
-        postFormStateChainInput.onchange = async function() {
-          const selected = chainOptions.find(opt => opt.value === postFormStateChainInput.value);
-          if (selected) {
-            postFormStateCollectionAddressInput.value = selected.address;
-            postFormStateCollectionCategoryInput.value = selected.category;
-            // Auto-switch wallet to the selected chain
-            try {
-              await ensureWalletOnChain(resolveChainId(selected.value));
-              postFormErrorMessage.style.display = "none";
-            } catch (e) {
-              postFormErrorMessage.innerHTML = `Browser not connected to ${selected.label}.`;
-              postFormErrorMessage.classList.add("warn");
-              postFormErrorMessage.style.display = "block";
-            }
-          }
-        };
         if (data.highlightColor) highlightColor = data.highlightColor;
         const r = document.querySelector(':root');
         r.style.setProperty('--link-color', highlightColor);
@@ -751,8 +727,11 @@
 
       // If nothing is cached, load from the contract.
       if (!tier) {
+        console.log({collectionAddress});
         // Check to see if there's a tier for this content.
         [tier] = await tx_view_tiers(collectionAddress, [encodedIPFSUri], resolveChainId(chain));
+
+        console.log({ tier });
 
         // If no tier, don't show the form.
         if (!tier) {
@@ -886,16 +865,22 @@
 
     // Change the collectionAddress input on network change to the default.
     postFormStateChainInput.addEventListener("change", async () => {
+      console.log("CHANGED", { preval: postFormStateChainInput.value, set: postFormStateCollectionAddressInput.value });
       postFormStateCollectionAddressInput.value = resolveCollectionAddress(postFormStateChainInput.value);
+      console.log("POSTVAL", { preval: postFormStateChainInput.value, set: postFormStateCollectionAddressInput.value });
 
       // Set the collection category value to the default if it hasn't changed.
       postFormStateCollectionCategoryInput.value = resolveCollectionCategory(postFormStateChainInput.value);
 
       // Show the loading animation.
       startLoadingAnimation('post-form-loading-animation');
+      
+      console.log("loading started");
 
       // Update the form's state.
       await updateFormState();
+
+      console.log("loading should be ending");
 
       // Stop the loading animation.
       stopLoadingAnimation('post-form-loading-animation');

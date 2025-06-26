@@ -628,7 +628,6 @@ details > summary:before {
   font-weight: var(--font-weight-2);
 }
 
-
 /* FORK MODAL STYLES */
 
 /* fork modal sits above other modals */
@@ -1013,6 +1012,64 @@ details > summary:before {
   text-wrap: nowrap;
 }
 
+.form-chain-checkbox-value {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 520px;
+  height: 144px;
+  align-items: flex-start;
+}
+
+.form-chain-options {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.form-checkbox-option {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.form-checkbox-option input[type="checkbox"] {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.form-checkbox-option label {
+  margin: 0;
+  cursor: pointer;
+  flex-grow: 1;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+}
+
+.form-checkbox-option:hover label {
+  background-color: #3a3a3a;
+}
+
+/* Adjust the checkbox size and alignment */
+.form-checkbox-option input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 12px;
+}
+
+.form-quote-status-box {
+  background: var(--background-secondary-color);
+  border: 1px solid rgba(128,128,128,0.25);
+  color: var(--foreground-color);
+  padding: 16px;
+  margin-bottom: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
 /* FRAMES STYLES */
 
 #post-frames-container {
@@ -1257,7 +1314,7 @@ details > summary:before {
 }
 
 /* Custom Croptop checkbox styling */
-.checkbox-option input[type="checkbox"] {
+.form-checkbox-option input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
   background: none;
@@ -1274,7 +1331,7 @@ details > summary:before {
   display: inline-block;
 }
 
-.checkbox-option input[type="checkbox"]:checked::before {
+.form-checkbox-option input[type="checkbox"]:checked::before {
   content: '\2713'; /* Unicode checkmark */
   color: var(--foreground-color);
   font-size: 1.25em;
