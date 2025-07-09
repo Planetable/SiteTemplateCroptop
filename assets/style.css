@@ -1345,6 +1345,86 @@ details > summary:before {
   text-shadow: 0 0 1px var(--foreground-color), 0 0 1px var(--foreground-color);
 }
 
+/* RELAYR STATUS TABLE STYLES */
+.relayr-status-table-desc {
+  color: #888;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.relayr-status-table-container {
+  background: rgba(30,30,30,0.95);
+  border-radius: 10px;
+  padding: 8px 8px 4px 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  display: inline-block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.relayr-status-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 3px;
+  font-size: 1em;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.relayr-status-table th {
+  text-align: center;
+  padding: 6px 8px;
+}
+
+.relayr-status-table td {
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.relayr-status-table tr {
+  background: rgba(255,255,255,0.02);
+  border-radius: 6px;
+}
+
+.relayr-status-table td:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.relayr-status-table td:last-child {
+  border-radius: 0 6px 6px 0;
+}
+
+.relayr-status-table-txlink {
+  font-style: italic;
+  color: #888;
+}
+
+.relayr-status-table-success {
+  color: #3bb273;
+}
+
+.relayr-status-table-pending {
+  color: #efab1d;
+}
+
+.relayr-status-table-failed {
+  color: #e74c3c;
+}
+
+.relayr-status-table-address {
+  margin-top: 12px;
+  color: #888;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.relayr-status-table-help {
+  margin-top: 10px;
+  color: #aaa;
+  font-size: 0.95em;
+  text-align: left;
+}
+
 /**************/
 
 @media screen and (max-width: 600px) {

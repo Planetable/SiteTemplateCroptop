@@ -633,19 +633,18 @@ const sendRelayrTx = async (paymentInfo) => {
   return tx;
 }
 
-// Poll a Relayr bundle until it's complete
-const pollRelayrBundle = async (bundle_uuid) => {
-  let isComplete = false;
-  let result;
-  while (!isComplete) {
-    const res = await fetch(`https://api.relayr.ba5ed.com/bundle/${bundle_uuid}`);
-    result = await res.json();
-    isComplete = result.isComplete;
-    if (!isComplete) await new Promise(r => setTimeout(r, 3000));
+const pollRelayrBundleStatus = async (bundleUuid, callback) => {
+	let done = false;
+	while (!done) {
+		try {
+		const res = await fetch(`https://api.relayr.ba5ed.com/v1/bundle/${bundleUuid}`);
+		const bundleStatus = await res.json();
+		callback(bundleStatus);
+		done = bundleStatus.transactions.every(tx => tx.status && (tx.status.state === 'Success' || tx.status.state === 'Failed'));
+		if (!done) await new Promise(r => setTimeout(r, 3000));
+		} catch (err) {
+		callback({ transactions: [] });
+		break;
+	}
   }
-  return result;
-}
-
-const tx_send_relayr = (paymentInfo) => {
-  return sendRelayrTx(paymentInfo);
 }

@@ -36,11 +36,24 @@ const formatTimestamp = (timestamp) => {
   return formatDate(date);
 }
 
+function formatEth(wei) {
+  return (Number(wei) / 1e18).toFixed(8).replace(/0+$/, '').replace(/\.$/, '');
+}
+
 const formatPlayclock = (seconds) => {
   const minutes = Math.floor(seconds / 60);
   seconds = Math.floor(seconds % 60);
   return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 } 
+
+const chainExplorerUrls = (chainId) => {
+  switch (chainId) {
+    case 1: return 'https://etherscan.io/tx/';
+    case 10: return 'https://optimistic.etherscan.io/tx/';
+    case 42161: return 'https://arbiscan.io/tx/';
+    case 8453: return 'https://basescan.org/tx/';
+  }
+};
 
 const resolveChainId = (value) => {
   switch (value) {
