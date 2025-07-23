@@ -1,21 +1,21 @@
 const croptopDeployerContract = (chainId) => {
   switch (chainId) {
     case 1: // Ethereum Mainnet
-      return "0xb5e79b9a418e143e79f2b0d780ff2abfa6c5ca96";
+      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
     case 8453: // Base
-      return "0xb5e79b9a418e143e79f2b0d780ff2abfa6c5ca96";
+      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
     case 10: // Optimism
-      return "0xb5e79b9a418e143e79f2b0d780ff2abfa6c5ca96";
+      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
     case 42161: // Arbitrum
-      return "0xb5e79b9a418e143e79f2b0d780ff2abfa6c5ca96";
+      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
     case 11155111:
-      return "0xb5e79b9a418e143e79f2b0d780ff2abfa6c5ca96";
+      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
     case 11155420:
-      return "0xb5e79b9a418e143e79f2b0d780ff2abfa6c5ca96";
+      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
     case 84532:
-      return "0xb5e79b9a418e143e79f2b0d780ff2abfa6c5ca96";
+      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
     case 421614:
-      return "0xb5e79b9a418e143e79f2b0d780ff2abfa6c5ca96";
+      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
   }
 }
 
