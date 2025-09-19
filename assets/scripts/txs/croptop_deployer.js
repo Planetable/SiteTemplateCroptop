@@ -924,6 +924,8 @@ const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotal
 
 	const controller = controllerContract(chainId);
 
+	console.log({ controller });
+
     return [
       owner,
       [[terminalConfiguration],
