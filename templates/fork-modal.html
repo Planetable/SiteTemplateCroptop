@@ -819,7 +819,7 @@
           // Single chain deployment
           const collectionAddress = await tx_deploy_project(
             name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply,
-            allowedAddresses, selectedChainIds[0], salt
+            allowedAddresses, selectedChainIds, salt
           );
 
           if (!collectionAddress) {

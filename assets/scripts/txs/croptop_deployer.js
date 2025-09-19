@@ -43,84 +43,84 @@ const revnetDeployerContract = (chainId) => {
 const terminalContract = (chainId) => {
   switch (chainId) {
     case 1: // Ethereum Mainnet
-      return "0xdb9644369c79c3633cde70d2df50d827d7dc7dbc";
+      return "0x2db6d704058e552defe415753465df8df0361846";
     case 8453: // Base
-      return "0xdb9644369c79c3633cde70d2df50d827d7dc7dbc";
+      return "0x2db6d704058e552defe415753465df8df0361846";
     case 10: // Optimism
-      return "0xdb9644369c79c3633cde70d2df50d827d7dc7dbc";
+      return "0x2db6d704058e552defe415753465df8df0361846";
     case 42161: // Arbitrum
-      return "0xdb9644369c79c3633cde70d2df50d827d7dc7dbc";
+      return "0x2db6d704058e552defe415753465df8df0361846";
     case 11155111:
-      return "0xdb9644369c79c3633cde70d2df50d827d7dc7dbc";
+      return "0x2db6d704058e552defe415753465df8df0361846";
     case 11155420:
-      return "0xdb9644369c79c3633cde70d2df50d827d7dc7dbc";
+      return "0x2db6d704058e552defe415753465df8df0361846";
     case 84532:
-      return "0xdb9644369c79c3633cde70d2df50d827d7dc7dbc";
+      return "0x2db6d704058e552defe415753465df8df0361846";
     case 421614:
-      return "0xdb9644369c79c3633cde70d2df50d827d7dc7dbc";
+      return "0x2db6d704058e552defe415753465df8df0361846";
   }
 }
 
 const loansContract = (chainId) => {
   switch (chainId) {
     case 1: // Ethereum Mainnet
-      return "0x03de624feb08c0edeff779ca5702aef4b85d7f06";
+      return "0x1880d832aa283d05b8eab68877717e25fbd550bb";
     case 8453: // Base
-      return "0x03de624feb08c0edeff779ca5702aef4b85d7f06";
+      return "0x1880d832aa283d05b8eab68877717e25fbd550bb";
     case 10: // Optimism
-      return "0x03de624feb08c0edeff779ca5702aef4b85d7f06";
+      return "0x1880d832aa283d05b8eab68877717e25fbd550bb";
     case 42161: // Arbitrum
-      return "0x03de624feb08c0edeff779ca5702aef4b85d7f06";
+      return "0x1880d832aa283d05b8eab68877717e25fbd550bb";
     case 11155111:
-      return "0x03de624feb08c0edeff779ca5702aef4b85d7f06";
+      return "0x1880d832aa283d05b8eab68877717e25fbd550bb";
     case 11155420:
-      return "0x03de624feb08c0edeff779ca5702aef4b85d7f06";
+      return "0x1880d832aa283d05b8eab68877717e25fbd550bb";
     case 84532:
-      return "0x03de624feb08c0edeff779ca5702aef4b85d7f06";
+      return "0x1880d832aa283d05b8eab68877717e25fbd550bb";
     case 421614:
-      return "0x03de624feb08c0edeff779ca5702aef4b85d7f06";
+      return "0x1880d832aa283d05b8eab68877717e25fbd550bb";
   }
 }
 
 const pricesContract = (chainId) => {
   switch (chainId) {
     case 1: // Ethereum Mainnet
-      return "0xe712d14b04f1a1fe464be930e3ea72b9b0a141d7";
+      return "0x9b90e507cf6b7eb681a506b111f6f50245e614c4";
     case 8453: // Base
-      return "0xe712d14b04f1a1fe464be930e3ea72b9b0a141d7";
+      return "0x9b90e507cf6b7eb681a506b111f6f50245e614c4";
     case 10: // Optimism
-      return "0xe712d14b04f1a1fe464be930e3ea72b9b0a141d7";
+      return "0x9b90e507cf6b7eb681a506b111f6f50245e614c4";
     case 42161: // Arbitrum
-      return "0xe712d14b04f1a1fe464be930e3ea72b9b0a141d7";
+      return "0x9b90e507cf6b7eb681a506b111f6f50245e614c4";
     case 11155111:
-      return "0xe712d14b04f1a1fe464be930e3ea72b9b0a141d7";
+      return "0x9b90e507cf6b7eb681a506b111f6f50245e614c4";
     case 11155420:
-      return "0xe712d14b04f1a1fe464be930e3ea72b9b0a141d7";
+      return "0x9b90e507cf6b7eb681a506b111f6f50245e614c4";
     case 84532:
-      return "0xe712d14b04f1a1fe464be930e3ea72b9b0a141d7";
+      return "0x9b90e507cf6b7eb681a506b111f6f50245e614c4";
     case 421614:
-      return "0xe712d14b04f1a1fe464be930e3ea72b9b0a141d7";
+      return "0x9b90e507cf6b7eb681a506b111f6f50245e614c4";
   }
 }
 
 const controllerContract = (chainId) => {
   switch (chainId) {
     case 1: // Ethereum Mainnet
-      return "0xd1c436eb62e1d23e66842701b09e3d65aa8522e8";
+      return "0x27da30646502e2f642be5281322ae8c394f7668a";
     case 8453: // Base
-      return "0xd1c436eb62e1d23e66842701b09e3d65aa8522e8";
+      return "0x27da30646502e2f642be5281322ae8c394f7668a";
     case 10: // Optimism
-      return "0xd1c436eb62e1d23e66842701b09e3d65aa8522e8";
+      return "0x27da30646502e2f642be5281322ae8c394f7668a";
     case 42161: // Arbitrum
-      return "0xd1c436eb62e1d23e66842701b09e3d65aa8522e8";
+      return "0x27da30646502e2f642be5281322ae8c394f7668a";
     case 11155111:
-      return "0xd1c436eb62e1d23e66842701b09e3d65aa8522e8";
+      return "0x27da30646502e2f642be5281322ae8c394f7668a";
     case 11155420:
-      return "0xd1c436eb62e1d23e66842701b09e3d65aa8522e8";
+      return "0x27da30646502e2f642be5281322ae8c394f7668a";
     case 84532:
-      return "0xd1c436eb62e1d23e66842701b09e3d65aa8522e8";
+      return "0x27da30646502e2f642be5281322ae8c394f7668a";
     case 421614:
-      return "0xd1c436eb62e1d23e66842701b09e3d65aa8522e8";
+      return "0x27da30646502e2f642be5281322ae8c394f7668a";
   }
 }
 
