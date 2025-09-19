@@ -1,42 +1,42 @@
 const croptopDeployerContract = (chainId) => {
   switch (chainId) {
     case 1: // Ethereum Mainnet
-      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
+      return "0xc3c26682ef39a4a5f4a1dc2459a6fbcba4e5d8ea";
     case 8453: // Base
-      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
+      return "0xc3c26682ef39a4a5f4a1dc2459a6fbcba4e5d8ea";
     case 10: // Optimism
-      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
+      return "0xc3c26682ef39a4a5f4a1dc2459a6fbcba4e5d8ea";
     case 42161: // Arbitrum
-      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
+      return "0xc3c26682ef39a4a5f4a1dc2459a6fbcba4e5d8ea";
     case 11155111:
-      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
+      return "0xc3c26682ef39a4a5f4a1dc2459a6fbcba4e5d8ea";
     case 11155420:
-      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
+      return "0xc3c26682ef39a4a5f4a1dc2459a6fbcba4e5d8ea";
     case 84532:
-      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
+      return "0xc3c26682ef39a4a5f4a1dc2459a6fbcba4e5d8ea";
     case 421614:
-      return "0x237ff05d9c12dc38dd85d560ce3421984060f4b9";
+      return "0xc3c26682ef39a4a5f4a1dc2459a6fbcba4e5d8ea";
   }
 }
 
 const revnetDeployerContract = (chainId) => {
   switch (chainId) {
     case 1: // Ethereum Mainnet
-      return "0x027f1684c6d31066c3f2468117f2508e8134fdfc";
+      return "0x2ca27bde7e7d33e353b44c27acfcf6c78dde251d";
     case 8453: // Base
-      return "0x027f1684c6d31066c3f2468117f2508e8134fdfc";
+      return "0x2ca27bde7e7d33e353b44c27acfcf6c78dde251d";
     case 10: // Optimism
-      return "0x027f1684c6d31066c3f2468117f2508e8134fdfc";
+      return "0x2ca27bde7e7d33e353b44c27acfcf6c78dde251d";
     case 42161: // Arbitrum
-      return "0x027f1684c6d31066c3f2468117f2508e8134fdfc";
+      return "0x2ca27bde7e7d33e353b44c27acfcf6c78dde251d";
     case 11155111:
-      return "0x027f1684c6d31066c3f2468117f2508e8134fdfc";
+      return "0x2ca27bde7e7d33e353b44c27acfcf6c78dde251d";
     case 11155420:
-      return "0x027f1684c6d31066c3f2468117f2508e8134fdfc";
+      return "0x2ca27bde7e7d33e353b44c27acfcf6c78dde251d";
     case 84532:
-      return "0x027f1684c6d31066c3f2468117f2508e8134fdfc";
+      return "0x2ca27bde7e7d33e353b44c27acfcf6c78dde251d";
     case 421614:
-      return "0x027f1684c6d31066c3f2468117f2508e8134fdfc";
+      return "0x2ca27bde7e7d33e353b44c27acfcf6c78dde251d";
   }
 }
 

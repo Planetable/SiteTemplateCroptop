@@ -1,21 +1,21 @@
 const croptopPublisherContract = (chainId) => {
   switch (chainId) {
 	case 1: // Ethereum Mainnet
-      return "0x659fcfed53169ec27fb5b15ae720dfb6dfa5954f";
+      return "0x03ef9ea1467df70d4b1e1d619aa9a2a2f820ee24";
     case 8453: // Base
-      return "0x659fcfed53169ec27fb5b15ae720dfb6dfa5954f";
+      return "0x03ef9ea1467df70d4b1e1d619aa9a2a2f820ee24";
     case 10: // Optimism
-      return "0x659fcfed53169ec27fb5b15ae720dfb6dfa5954f";
+      return "0x03ef9ea1467df70d4b1e1d619aa9a2a2f820ee24";
     case 42161: // Arbitrum
-      return "0x659fcfed53169ec27fb5b15ae720dfb6dfa5954f";
+      return "0x03ef9ea1467df70d4b1e1d619aa9a2a2f820ee24";
     case 11155111:
-      return "0x659fcfed53169ec27fb5b15ae720dfb6dfa5954f";
+      return "0x03ef9ea1467df70d4b1e1d619aa9a2a2f820ee24";
     case 11155420:
-      return "0x659fcfed53169ec27fb5b15ae720dfb6dfa5954f";
+      return "0x03ef9ea1467df70d4b1e1d619aa9a2a2f820ee24";
     case 84532:
-      return "0x659fcfed53169ec27fb5b15ae720dfb6dfa5954f";
+      return "0x03ef9ea1467df70d4b1e1d619aa9a2a2f820ee24";
     case 421614:
-      return "0x659fcfed53169ec27fb5b15ae720dfb6dfa5954f";
+      return "0x03ef9ea1467df70d4b1e1d619aa9a2a2f820ee24";
   }
 }
 
