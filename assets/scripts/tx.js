@@ -15,21 +15,21 @@ const getProvider = (chainId) => {
 const erc2771ForwarderContract = (chainId) => {
   switch (chainId) {
     case 1: // Ethereum Mainnet
-      return "0x8a5ba591ed2bed5691a378c65611ed492500f887";
+      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
     case 10: // Optimism
-      return "0x8a5ba591ed2bed5691a378c65611ed492500f887";
+      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
     case 42161: // Arbitrum
-      return "0x8a5ba591ed2bed5691a378c65611ed492500f887";
+      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
     case 8453: // Base
-      return "0x8a5ba591ed2bed5691a378c65611ed492500f887";
+      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
     case 11155111: // Arbitrum Sepolia	
-      return "0x8a5ba591ed2bed5691a378c65611ed492500f887";
+      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
     case 11155420: // Optimism Sepolia
-      return "0x8a5ba591ed2bed5691a378c65611ed492500f887";
+      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
     case 84532: // Base Sepolia
-      return "0x8a5ba591ed2bed5691a378c65611ed492500f887";
+      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
     case 421614: // Arbitrum Sepolia
-      return "0x8a5ba591ed2bed5691a378c65611ed492500f887";
+      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
   }
 }
 const trustedForwarderContractABI = [
