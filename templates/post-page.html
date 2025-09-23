@@ -11,7 +11,7 @@
   <details id="post-form-collect-reveal">
     <summary id="post-form-collect-toggle" class="form-toggle">memorialize</summary>
     <div id="post-form-collect-container">
-    <div class="form-section">
+    <div id="post-form-state-chain-section" class="form-section">
       <div class="form-item">
         <div class="form-value form-select-value">
           <select id="post-form-state-chain-input" name="chain">
@@ -37,7 +37,7 @@
             <div class="form-section-description">Set the address that will get the copies you are paying for.</div>
             <div class="form-section">
               <div class="form-item">
-                <div class="form-label">Buying</div>
+                <div class="form-label">You're buying</div>
                 <div class="form-value">
                   <input type="number" value="1" id="collect-post-form-quantity-input" min="1">
                 </div>
@@ -65,7 +65,7 @@
           </details>
         </div>
       <div id="record-post-form" class="form negative-space">
-        <span class="form-header">Buy a first copy to memorialize it onchain.</span>
+        <span id="record-post-form-header" class="form-header">Buy a first copy to memorialize it onchain.</span>
         <div class="form-body">
           <details id="record-post-form-options-reveal">
             <summary id="record-post-form-options-toggle" class="form-toggle form-main-toggle">options</summary>
@@ -84,7 +84,7 @@
                 </div>
               </div>
               <div class="form-item">
-                <div class="form-label">Buying</div>
+                <div class="form-label">You're buying</div>
                 <div class="form-value">
                   <input type="number" value="1" id="record-post-form-quantity-input" min="1">
                 </div>
@@ -220,6 +220,13 @@
       });
   }
 
+  const updateRecordFormHeader = (chain) => {
+    const recordPostFormHeader = document.getElementById("record-post-form-header");
+    const chainId = resolveChainId(chain);
+    const chainLabel = resolveChainLabel(chainId);
+    recordPostFormHeader.innerHTML = `Buy a first copy to memorialize it on ${chainLabel}.`;
+  }
+
   const decorateRecordForm = async (chain, collectionAddress, category, encodedIPFSUri, formattedMinTotalSupply, formattedMaxTotalSupply, formattedMinPrice, formattedAllowedAddresses) => {
     // Get references to record form elements that need decorating.
     const recordPostFormBeneficiaryInput = document.getElementById("record-post-form-beneficiary-input");
@@ -234,6 +241,9 @@
     const postFormErrorMessage = document.getElementById("post-form-error-message");
     const postFormButtonText = document.getElementById("post-form-button-text");
     const postFormButton = document.getElementById("post-form-button");
+
+    // Update the header text with the current chain
+    updateRecordFormHeader(chain);
 
     // Disable the button.
     postFormButton.disabled = true;
@@ -586,6 +596,7 @@
     const postSubtitle = document.getElementById("post-subtitle");
     const postLink = document.getElementById("post-link");
     const postFormStateChainInput = document.getElementById("post-form-state-chain-input");
+    const postFormStateChainSection = document.getElementById("post-form-state-chain-section");
     const postFormStateCollectionAddressInput = document.getElementById("post-form-state-collection-address-input");
     const postFormStateCollectionCategoryInput = document.getElementById("post-form-state-collection-category-input");
     const postFormStateErrorMessage = document.getElementById("post-form-state-error-message");
@@ -713,6 +724,8 @@
       const collectionAddress = postFormStateCollectionAddressInput.value;
       const category = parseInt(postFormStateCollectionCategoryInput.value);
 
+      console.log({ chain, collectionAddress, category });
+
       // Set a chain object.
       if (!tiersCache[chain]) tiersCache[chain] = {};
 
@@ -724,6 +737,8 @@
 
       // Look in the cache for a tier for the collectionAddress and encodedIPFSUri.
       let tier = tiersCache[chain][collectionAddress][encodedIPFSUri];
+
+      console.log({ cachedTier: tier });
 
       // If nothing is cached, load from the contract.
       if (!tier) {
@@ -755,6 +770,8 @@
 
       // Get a reference to the tier's ID.
       const formattedTierId = parseInt(tier[0].toString());
+
+      console.log({ formattedTierId });
 
       // If there is no tier, the form's state is in RECORD mode, meaning the content must be recorded onchain before it can be collected.
       if (formattedTierId != 0) {
@@ -813,6 +830,8 @@
         // Look in the cache for an allowance for the category within the allowances for the collection.
         let allowance = allowanceCache[collectionAddress][category];
 
+        console.log({ cachedAllowance: allowance });
+
         // If nothing is cached, load from the contract.
         if (!allowance) {
           // Get the allowance.
@@ -822,13 +841,17 @@
           allowanceCache[collectionAddress][category] = allowance;
         }
 
+        console.log({ loadedAllowance: allowance });
+
         // Get a reference to the allowance min total supply.
         const formattedMinTotalSupply = parseInt(allowance[1].toString());
 
         // Show an error message if there's no allowance set.
         if (formattedMinTotalSupply == 0) {
+          // Hide the chain selector if no chain is selected.
+          postFormStateChainSection.style.display = chain ? "block" : "none";
           // Show the error message.
-          postFormErrorMessage.innerHTML = `This site isn't accepting buys on ${chain} yet. Click "$" up top.`;
+          postFormErrorMessage.innerHTML = chain ? `This site isn't accepting buys on ${chain} yet. Click "$" up top.` : `This site isn't accepting buys yet. Click "$" up top.`;
           postFormErrorMessage.classList.add("info");
           postFormErrorMessage.style.display = "block";
           // Hide forms.
@@ -871,6 +894,9 @@
 
       // Set the collection category value to the default if it hasn't changed.
       postFormStateCollectionCategoryInput.value = resolveCollectionCategory(postFormStateChainInput.value);
+
+      // Update the record form header with the new chain
+      updateRecordFormHeader(postFormStateChainInput.value);
 
       // Show the loading animation.
       startLoadingAnimation('post-form-loading-animation');

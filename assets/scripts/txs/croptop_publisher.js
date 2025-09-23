@@ -692,7 +692,7 @@ const tx_view_tiers = async (hook, encodedIPFSUris, chainId) => {
   const contract = croptopPublisherContract(chainId);
   if (!contract) return [[0, 0, 0]];
   try {
-	console.log({ chainId, contract, croptopPublisherContractABI, encodedIPFSUris });
+	console.log({ chainId, hook, contract, croptopPublisherContractABI, encodedIPFSUris });
     return await view(chainId, contract, croptopPublisherContractABI, "tiersFor", [hook, encodedIPFSUris]);
   } catch (e) {
 	console.log({ e });
