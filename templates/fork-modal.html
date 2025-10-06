@@ -17,8 +17,6 @@
       <div id="fork-form" class="form mobile-padding negative-space">
         <div class="form-body">
           <div class="form-section">
-            <details>
-              <summary class="form-toggle form-main-toggle">Create a collection</summary>
               <div class="form-section">
                 <div class="form-section-description">Name and ticker are permanent.</div> 
                 <div class="form-item">
@@ -29,16 +27,16 @@
                   </div>
                 </div>
                 <div class="form-item">
-                  <div class="form-label">Collection Ticker</div>
+                  <div class="form-label">Ticker</div>
                   <div class="form-value">
                     <input type="text" placeholder="POSTS" id="fork-form-new-jb-collection-symbol-input">
                   </div>
                 </div>
               </div>
               <div class="form-section">
-                <div class="form-section-description">Set the admin's address that gets paid when posts are sold.</div>
+                <div class="form-section-description">Set the address that manages your collection's revenues.</div>
                 <div class="form-item form-item-large">
-                  <div class="form-label">Admin 
+                  <div class="form-label">Revenue manager
                     <button id="fork-form-new-jb-load-address-button" class="form-load-address-button"><span class="form-load-address-button-text">connect wallet</span></button>
                   </div>
                   <div class="form-value">
@@ -47,7 +45,7 @@
                 </div>
               </div>
               <div class="form-section">
-                <div class="form-section-description">Set a price and copies of each post in your collection. Anyone can add any content from anywhere to your collection, so long as they buy the first copy.</div>
+                <div class="form-section-description">Set a price and number of copies for each post in your collection.</div>
                 <div class="form-item">
                   <div class="form-label">Price</div>
                   <div class="form-value">
@@ -70,7 +68,7 @@
                 </div>
               </div>
               <div id="fork-form-new-jb-chain" class="form-section">
-                <div class="form-section-description">On which chains do you want to deploy your collection? You'll be asked for a signatute for each chain selected.</div>
+                <div class="form-section-description">Where do you want to deploy your collection? You'll be asked to sign on each.</div>
                 <div class="form-item">
                   <div class="form-value form-select-value">
                     <select id="fork-form-new-jb-state-chain-env" name="chain-env">
@@ -129,63 +127,6 @@
                 <div id="fork-form-new-jb-relayr-deploy-status" style="margin-top: 24px; display: none;"></div>
               </div>
               <div id="fork-form-new-jb-relayr-controls"></div>
-            </details>
-            <details>
-              <summary class="form-toggle form-main-toggle">Extras (wip)</summary>
-              <details>
-                <summary class="form-toggle form-main-toggle">Let Croptop post to your existing collection</summary>
-                <div class="form-section">
-                  <div class="form-section-description">Give the Croptop contract permission to sell into your existing collection.</div>
-                </div>
-                <div id="fork-form-permission-error-message" class="form-error-message mobile-padding"></div>
-                <button id="fork-form-permission-submit-button" class="form-button"><span id="fork-form-permission-submit-button-text" class="form-button-text">give permission</span><span id="fork-form-permission-button-loading-animation" class="loading-animation button-loading-animation"></span></button> 
-              </details>
-              <details>
-                <summary class="form-toggle form-main-toggle">Set how Croptop posts to your existing collection</summary>
-                <div class="form-section">
-                  <div class="form-section-description">Add new restrictions that buyers must meet when adding to your existing collection.</div>
-                  <div class="form-item">
-                    <div class="form-label">Collection Address</div>
-                    <div class="form-value">
-                      <input type="string" placeholder="0x..." id="fork-form-allowance-collection-address-input">
-                    </div>
-                  </div>
-                </div>
-                <div class="form-section">
-                  <div class="form-section-description">The price and total supply of each item in your collection. Anyone can add any content from anywhere to your collection, so long as they buy the first copy.</div>
-                  <div class="form-item">
-                    <div class="form-label">Price</div>
-                    <div class="form-value">
-                      <span class="ether form-input-prefix">Ξ</span><input type="number" placeholder="free" value="0.01" id="fork-form-allowance-minimum-price-input" min="0">
-                    </div>
-                  </div>
-                  <div class="form-item">
-                    <div class="form-label">Supply</div>
-                    <div class="form-value">
-                      <input type="number" value="1" id="fork-form-allowance-minimum-total-supply-input" min="1">
-                    </div>
-                  </div>
-                </div>
-                <div class="form-section">
-                  <div class="form-item form-item-large">
-                    <div class="form-label">Addresses allowed to mint (one per line)</div>
-                    <div class="form-value">
-                      <textarea rows="4" id="fork-form-allowance-addresses-input" placeholder="leave empty for no restrictions"></textarea>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-section">
-                  <div class="form-item">
-                    <div class="form-label">Category on your collection for which the above restrictions apply</div>
-                    <div class="form-value">
-                      <input type="number" value="0" id="fork-form-allowance-nft-category-input" min="0">
-                    </div>
-                  </div>
-                </div>
-                <div id="fork-form-allowance-error-message" class="form-error-message mobile-padding"></div>
-                <button id="fork-form-allowance-submit-button" class="form-button"><span id="fork-form-allowance-submit-button-text" class="form-button-text">save restrictions</span><span id="fork-form-allowance-button-loading-animation" class="loading-animation button-loading-animation"></span></button> 
-              </details>
-            </details>
           </div>
         </div>
       </div>
@@ -569,112 +510,7 @@
       updateDeployButtonText();
     }
   
-    const decoratePermissionForm = () => {
-      const forkFormChainInput = document.getElementById("fork-form-state-chain-input");
-      const forkFormPermissionSubmitButton = document.getElementById("fork-form-permission-submit-button");
-      const forkFormPermissionErrorMessage = document.getElementById("fork-form-permission-error-message");
   
-      // Submit the form.
-      forkFormPermissionSubmitButton.onclick = async () => {
-  
-        // Show the loading animation.
-        startLoadingAnimation('fork-form-permission-button-loading-animation');
-  
-        // Make sure the client is connected to the right network.
-        const chainId = await getChainId();
-  
-        try {
-          // Get the signer.
-          signer = (await getSigner()).address;
-  
-          // Try to process the transaction.
-          const accepted = await tx_set_permissions(signer, chainId);
-  
-          // Show incompatible network if needed.
-          if (!accepted) { 
-            // Show the error message.
-            forkFormPermissionErrorMessage.innerHTML = "The connected network isn't supported.";
-            forkFormPermissionErrorMessage.style.display = "block";
-          }
-  
-          // Hide the loading animation.
-          stopLoadingAnimation('fork-form-permission-button-loading-animation');
-        } catch (e) {
-          forkFormPermissionErrorMessage.innerHTML = e;
-          forkFormPermissionErrorMessage.style.display = "block";
-  
-          // Hide the loading animation.
-          stopLoadingAnimation('fork-form-permission-button-loading-animation');
-        }
-      }
-    }
-  
-    const decorateAllowanceForm = () => {
-      const forkFormChainInput = document.getElementById("fork-form-state-chain-input");
-      const forkFormAllowanceSubmitButton = document.getElementById("fork-form-allowance-submit-button");
-      const forkFormAllowanceCollectionAddressInput = document.getElementById("fork-form-allowance-collection-address-input");
-      const forkFormAllowanceCategoryInput = document.getElementById("fork-form-allowance-nft-category-input");
-      const forkFormAllowanceMinimumPriceInput = document.getElementById("fork-form-allowance-minimum-price-input");
-      const forkFormAllowanceMinimumTotalSupplyInput = document.getElementById("fork-form-allowance-minimum-total-supply-input");
-      const forkFormAllowanceAddressesInput = document.getElementById("fork-form-allowance-addresses-input");
-      const forkFormAllowanceErrorMessage = document.getElementById("fork-form-allowance-error-message");
-  
-      // Submit the form.
-      forkFormAllowanceSubmitButton.onclick = async () => {
-        // Check for empty values.
-        if (!forkFormAllowanceCollectionAddressInput.value || !forkFormAllowanceCategoryInput.value) {
-          forkFormAllowanceErrorMessage.innerHTML = "Fill out the form.";
-          forkFormAllowanceErrorMessage.style.display = "block";
-          return;
-        } else {
-          // Hide the error message.
-          forkFormAllowanceErrorMessage.style.display = "none";
-        }
-        // Default to 1
-        if (!forkFormAllowanceMinimumTotalSupplyInput.value) forkFormAllowanceMinimumTotalSupplyInput.value = 1;
-        // Default to free
-        if (!forkFormAllowanceMinimumPriceInput.value) forkFormAllowanceMinimumPriceInput.value = 0;
-  
-        // Show the loading animation.
-        startLoadingAnimation('fork-form-allowance-button-loading-animation');
-  
-        // Get the signer.
-        signer = (await getSigner()).address;
-  
-        // Make sure the client is connected to the right network.
-        const chainId = await getChainId();
-  
-        // Normalize values from the form.
-        const collectionAddress = forkFormAllowanceCollectionAddressInput.value;
-        const category = forkFormAllowanceCategoryInput.value;
-        const minimumPrice = fixedPointNumber(forkFormAllowanceMinimumPriceInput.value, 18); 
-        const supply = forkFormAllowanceMinimumTotalSupplyInput.value;
-        const minimumTotalSupply = supply;
-        const maximumTotalSupply = supply;
-        const allowedAddresses = !forkFormAllowanceAddressesInput.value ? [] : forkFormAllowanceAddressesInput.value.split('\n');
-  
-        try {
-          // Try to process the transaction.
-          const accepted = await tx_configure(collectionAddress, category, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses, chainId);
-  
-          // Show incompatible network if needed.
-          if (!accepted) { 
-            // Show the error message.
-            forkFormAllowanceErrorMessage.innerHTML = "The connected network isn't supported.";
-            forkFormAllowanceErrorMessage.style.display = "block";
-          }
-  
-          // Hide the loading animation.
-          stopLoadingAnimation('fork-form-allowance-button-loading-animation');
-        } catch (e) {
-          forkFormAllowanceErrorMessage.innerHTML = e;
-          forkFormAllowanceErrorMessage.style.display = "block";
-  
-          // Hide the loading animation.
-          stopLoadingAnimation('fork-form-allowance-button-loading-animation');
-        }
-      }  
-    }
 
     function renderRelayrStatusTable(bundleStatus) {
       const statusDiv = document.getElementById('fork-form-new-jb-relayr-deploy-status');
