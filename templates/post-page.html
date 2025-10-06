@@ -9,7 +9,7 @@
 </div>
 <div id="post-onchain" class="full-width mobile-padding">
   <details id="post-form-collect-reveal">
-    <summary id="post-form-collect-toggle" class="form-toggle">memorialize</summary>
+    <summary id="post-form-collect-toggle" class="form-toggle">buy & collect</summary>
     <div id="post-form-collect-container">
     <div id="post-form-state-chain-section" class="form-section">
       <div class="form-item">
@@ -175,11 +175,11 @@
       });
   }
 
-  const updateRecordFormHeader = (chain) => {
+  const updateRecordFormHeader = (chain, formattedMinPrice, formattedMinTotalSupply) => {
     const recordPostFormHeader = document.getElementById("record-post-form-header");
     const chainId = resolveChainId(chain);
     const chainLabel = resolveChainLabel(chainId);
-    recordPostFormHeader.innerHTML = `Buy a first copy to support the author, become a collector, and memorialize the post on ${chainLabel}.`;
+    recordPostFormHeader.innerHTML = `Price: <span class="ether">Ξ</span>${formattedMinPrice}  |  Copies left: ${formattedMinTotalSupply}`;
   }
 
   const decorateRecordForm = async (chain, collectionAddress, category, encodedIPFSUri, formattedMinTotalSupply, formattedMaxTotalSupply, formattedMinPrice, formattedAllowedAddresses) => {
@@ -189,14 +189,14 @@
     const postFormButton = document.getElementById("post-form-button");
 
     // Update the header text with the current chain
-    updateRecordFormHeader(chain);
+    updateRecordFormHeader(chain, formattedMinPrice, formattedMinTotalSupply);
 
     // Disable the button.
     postFormButton.disabled = true;
     postFormButton.style.display = "none";
 
     // Change the button text.
-    postFormButtonText.innerHTML = "memorialize";
+    postFormButtonText.innerHTML = "buy";
 
 
     // Re-decorate some input fields depending on the allowances set for the project and category.
@@ -312,9 +312,9 @@
 
     // Set the header text.
     if (formattedRemainingSupply == 1) {
-      collectPostFormHeader.innerHTML = `${formattedMintedSupply} bought, only 1 remaining edition of this file available for <span class="ether">Ξ</span>${formattedPrice}.`;
+      collectPostFormHeader.innerHTML = `${formattedMintedSupply} bought, only 1 copy of this post left for <span class="ether">Ξ</span>${formattedPrice}.`;
     } else {
-      collectPostFormHeader.innerHTML = `${formattedMintedSupply} bought, ${formattedRemainingSupply > 10000000 ? "infinite" : formattedRemainingSupply } editions remaining for <span class="ether">Ξ</span>${formattedPrice} each.`;
+      collectPostFormHeader.innerHTML = `${formattedMintedSupply} bought, ${formattedRemainingSupply > 10000000 ? "infinite" : formattedRemainingSupply } copies left for <span class="ether">Ξ</span>${formattedPrice} each.`;
     }
 
     // Change the button text.
@@ -332,9 +332,9 @@
       // Set error messages if the currently inputted values are too small.
       if (Number(collectPostFormQuantityInput.value) > formattedRemainingSupply) {
         if (formattedRemainingSupply == 1) {
-          postFormErrorMessage.innerHTML = `There is only 1 copy remaining. Can't buy ${collectPostFormQuantityInput.value}.`;
+          postFormErrorMessage.innerHTML = `There is only 1 copy left. Can't buy ${collectPostFormQuantityInput.value}.`;
         } else {
-          postFormErrorMessage.innerHTML = `There are only ${formattedRemainingSupply} copies remaining. Can't buy ${collectPostFormQuantityInput.value}.`;
+          postFormErrorMessage.innerHTML = `There are only ${formattedRemainingSupply} copies left. Can't buy ${collectPostFormQuantityInput.value}.`;
         }
         postFormErrorMessage.classList.add("warn");
         postFormErrorMessage.style.display = "block";
@@ -643,7 +643,7 @@
           // Disable the button.
           postFormButton.disabled = true;
           postFormButton.style.display = "none";
-          postFormCollectToggle.innerHTML = 'memorialize';
+          postFormCollectToggle.innerHTML = 'buy & collect';
           return;
         }
 
@@ -694,9 +694,9 @@
         const formattedMintedSupply = formattedInitialSupply - formattedRemainingSupply;
 
         if (formattedRemainingSupply == 1) {
-          postFormCollectToggle.innerHTML = `${formattedMintedSupply} bought, only 1 remaining`;
+          postFormCollectToggle.innerHTML = `${formattedMintedSupply} bought, only 1 left`;
         } else {
-          postFormCollectToggle.innerHTML = `${formattedMintedSupply} bought, ${formattedRemainingSupply > 10000000 ? "infinite" : formattedRemainingSupply } remaining`;
+          postFormCollectToggle.innerHTML = `${formattedMintedSupply} bought, ${formattedRemainingSupply > 10000000 ? "infinite" : formattedRemainingSupply } left`;
         }
 
         // Show the form.
@@ -743,7 +743,7 @@
           // Hide and disable the button.
           postFormButton.disabled = true;
           postFormButton.style.display = "none";
-          postFormCollectToggle.innerHTML = 'memorialize';
+          postFormCollectToggle.innerHTML = 'buy & collect';
           return;
         }
 
@@ -763,7 +763,7 @@
         // Get a reference to the allowance max total supply.
         const formattedAllowedAddresses = allowance[3];
 
-        postFormCollectToggle.innerHTML = 'memorialize';
+        postFormCollectToggle.innerHTML = 'buy & collect';
 
         await decorateRecordForm(chain, collectionAddress, category, encodedIPFSUri, formattedMinTotalSupply, formattedMaxTotalSupply, formattedMinPrice, formattedAllowedAddresses);
       }
@@ -779,7 +779,7 @@
       postFormStateCollectionCategoryInput.value = resolveCollectionCategory(postFormStateChainInput.value);
 
       // Update the record form header with the new chain
-      updateRecordFormHeader(postFormStateChainInput.value);
+      updateRecordFormHeader(postFormStateChainInput.value, formattedMinPrice, formattedMinTotalSupply);
 
       // Show the loading animation.
       startLoadingAnimation('post-form-loading-animation');
