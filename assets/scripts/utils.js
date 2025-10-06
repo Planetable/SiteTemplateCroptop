@@ -96,10 +96,10 @@ const resolveChain = (chainId) => {
 
 const resolveChainLabel = (chainId) => {
   switch (chainId) {
-    case 1: return "Ethereum Mainnet"; 
-    case 10: return "Optimism Mainnet"; 
-    case 8453: return "Base Mainnet"; 
-    case 42161: return "Arbitrum Mainnet"; 
+    case 1: return "Ethereum"; 
+    case 10: return "Optimism"; 
+    case 8453: return "Base"; 
+    case 42161: return "Arbitrum"; 
     case 11155111: return "Ethereum Sepolia"; 
     case 11155420: return "Optimism Sepolia"; 
     case 84532: return "Base Sepolia"; 

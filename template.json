@@ -23,7 +23,7 @@
       "description": "The collection's category where posts will be recorded."
     },
     "ethereumMainnetCollectionAddress": {
-      "name": "Ethereum Mainnet",
+      "name": "Ethereum",
       "type": "string",
       "defaultValue": "0x929B6c04fE40fb265Cd0AbB7928826DC965E540D",
       "description": ""
@@ -35,7 +35,7 @@
       "description": ""
     },
     "optimismMainnetCollectionAddress": {
-      "name": "Optimism Mainnet",
+      "name": "Optimism",
       "type": "string",
       "defaultValue": "",
       "description": ""
@@ -47,7 +47,7 @@
       "description": ""
     },
     "baseMainnetCollectionAddress": {
-      "name": "Base Mainnet",
+      "name": "Base",
       "type": "string",
       "defaultValue": "",
       "description": ""
@@ -59,7 +59,7 @@
       "description": ""
     },
     "arbitrumMainnetCollectionAddress": {
-      "name": "Arbitrum Mainnet",
+      "name": "Arbitrum",
       "type": "string",
       "defaultValue": "",
       "description": ""
@@ -71,7 +71,7 @@
       "description": ""
     },
     "ethereumMainnetRPC": {
-      "name": "Ethereum Mainnet RPC",
+      "name": "Ethereum RPC",
       "type": "string",
       "defaultValue": "https://eth.llamarpc.com",
       "description": "",
@@ -85,7 +85,7 @@
       "advanced": true
     },
     "optimismMainnetRPC": {
-      "name": "Optimism Mainnet RPC",
+      "name": "Optimism RPC",
       "type": "string",
       "defaultValue": "https://optimism.llamarpc.com",
       "description": "",
@@ -99,7 +99,7 @@
       "advanced": true
     },
     "baseMainnetRPC": {
-      "name": "Base Mainnet RPC",
+      "name": "Base RPC",
       "type": "string",
       "defaultValue": "https://base.llamarpc.com",
       "description": "",
@@ -113,7 +113,7 @@
       "advanced": true
     },
     "arbitrumMainnetRPC": {
-      "name": "Arbitrum Mainnet RPC",
+      "name": "Arbitrum RPC",
       "type": "string",
       "defaultValue": "https://arbitrum.llamarpc.com",
       "description": "",
