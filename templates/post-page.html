@@ -604,8 +604,6 @@
       const collectionAddress = postFormStateCollectionAddressInput.value;
       const category = parseInt(postFormStateCollectionCategoryInput.value);
 
-      console.log({ chain, collectionAddress, category });
-
       // Set a chain object.
       if (!tiersCache[chain]) tiersCache[chain] = {};
 
@@ -618,15 +616,10 @@
       // Look in the cache for a tier for the collectionAddress and encodedIPFSUri.
       let tier = tiersCache[chain][collectionAddress][encodedIPFSUri];
 
-      console.log({ cachedTier: tier });
-
       // If nothing is cached, load from the contract.
       if (!tier) {
-        console.log({collectionAddress});
         // Check to see if there's a tier for this content.
         [tier] = await tx_view_tiers(collectionAddress, [encodedIPFSUri], resolveChainId(chain));
-
-        console.log({ tier });
 
         // If no tier, don't show the form.
         if (!tier) {
@@ -651,7 +644,6 @@
       // Get a reference to the tier's ID.
       const formattedTierId = parseInt(tier[0].toString());
 
-      console.log({ formattedTierId });
 
       // If there is no tier, the form's state is in RECORD mode, meaning the content must be recorded onchain before it can be collected.
       if (formattedTierId != 0) {
@@ -710,7 +702,6 @@
         // Look in the cache for an allowance for the category within the allowances for the collection.
         let allowance = allowanceCache[collectionAddress][category];
 
-        console.log({ cachedAllowance: allowance });
 
         // If nothing is cached, load from the contract.
         if (!allowance) {
@@ -720,8 +711,6 @@
           // Cache the value.
           allowanceCache[collectionAddress][category] = allowance;
         }
-
-        console.log({ loadedAllowance: allowance });
 
         // Get a reference to the allowance min total supply.
         const formattedMinTotalSupply = parseInt(allowance[1].toString());
@@ -768,9 +757,7 @@
 
     // Change the collectionAddress input on network change to the default.
     postFormStateChainInput.addEventListener("change", async () => {
-      console.log("CHANGED", { preval: postFormStateChainInput.value, set: postFormStateCollectionAddressInput.value });
       postFormStateCollectionAddressInput.value = resolveCollectionAddress(postFormStateChainInput.value);
-      console.log("POSTVAL", { preval: postFormStateChainInput.value, set: postFormStateCollectionAddressInput.value });
 
       // Set the collection category value to the default if it hasn't changed.
       postFormStateCollectionCategoryInput.value = resolveCollectionCategory(postFormStateChainInput.value);

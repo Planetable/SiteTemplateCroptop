@@ -408,8 +408,8 @@
         const owner = forkFormNewJbProjectOwnerInput.value;
         const minimumPrice = fixedPointNumber(forkFormNewJbMinimumPriceInput.value, 18);
         const supply = forkFormNewJbMinimumTotalSupplyInput.value;
-        const minimumTotalSupply = supply;
-        const maximumTotalSupply = supply;
+        const minimumTotalSupply = BigInt(supply);
+        const maximumTotalSupply = BigInt(supply);
         const allowedAddresses = !forkFormNewJbAddressesInput.value ? [] : forkFormNewJbAddressesInput.value.split('\n');
         const stage1AutomintTokenAmount = 0; // Default to 0 automints
         const stage2AutomintTokenAmount = 0; // No stage 2

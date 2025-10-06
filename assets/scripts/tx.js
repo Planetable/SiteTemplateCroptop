@@ -574,7 +574,6 @@ const handleDeployment = async (chainIds, buildDeploymentData, contractAddress, 
     // Always ensure wallet is on the correct chain before signing
     await ensureWalletOnChain(chainId);
     // Always get a fresh provider/signer for the current chain
-    const provider = new ethers.BrowserProvider(window.ethereum);
     const contract = contractAddress(chainId);
     const deploymentData = await buildDeploymentData(chainId);
     const iface = new ethers.Interface(contractABI);

@@ -124,6 +124,48 @@ const controllerContract = (chainId) => {
   }
 }
 
+const buyHookContract = (chainId) => {
+  switch (chainId) {
+    case 1: // Ethereum Mainnet
+      return "0xd342490ec41d5982c23951253a74a1c940fe0f9b";
+    case 8453: // Base
+      return "0xb6133a222315f8e9d25e7c77bac5ddeb3451d088";
+    case 10: // Optimism
+      return "0x318f8aa6a95cb83419985c0d797c762f5a7824f3";
+    case 42161: // Arbitrum
+      return "0x4ac3e20edd1d398def0dfb44d3adb9fc244f0320";
+    case 11155111:
+      return "0xf082e3218a690ea6386506bed338f6878d21815f";
+    case 11155420:
+      return "0x79e5ca5ebe4f110965248afad88b8e539e1aa8fd";
+    case 84532:
+      return "0x79e5ca5ebe4f110965248afad88b8e539e1aa8fd";
+    case 421614:
+      return "0xb35ab801c008a64d8f3eea0a8a6209b0d176f2df";
+  }
+}
+
+const buyHookRegistryContract = (chainId) => {
+  switch (chainId) {
+    case 1: // Ethereum Mainnet
+      return "0x9e1e0fb70bc4661f2cc2d5eddd87a9d582a12b1a";	
+    case 8453: // Base
+      return "0x9e1e0fb70bc4661f2cc2d5eddd87a9d582a12b1a";
+    case 10: // Optimism
+      return "0x9e1e0fb70bc4661f2cc2d5eddd87a9d582a12b1a";
+    case 42161: // Arbitrum
+      return "0x9e1e0fb70bc4661f2cc2d5eddd87a9d582a12b1a";
+    case 11155111:
+      return "0x9e1e0fb70bc4661f2cc2d5eddd87a9d582a12b1a";
+    case 11155420:
+      return "0x9e1e0fb70bc4661f2cc2d5eddd87a9d582a12b1a";
+    case 84532:
+      return "0x9e1e0fb70bc4661f2cc2d5eddd87a9d582a12b1a";
+    case 421614:
+      return "0x9e1e0fb70bc4661f2cc2d5eddd87a9d582a12b1a";
+  }
+}
+
 const croptopDeployerContractABI = [
 	{
 		"inputs": [
@@ -3595,14 +3637,8 @@ const revnetDeployerContractABI = [
 	}
 ];
 
-
-  
-// Remove the duplicated functions and keep only the specific deployment functions
-const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses, chainIds, salt) => {
-  const projectUri = "ipfs://QmaJzQjaFKxU2LLyqPTpZoGU47owQcmmvVCP1p4YqeuMUy";
-  const contractUri = "";
-  const allowedPost = { hook: "0x0000000000000000000000000000000000000000", category: 0, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses};
-  
+// Common function to build sucker deployment configuration
+const buildSuckerDeploymentConfigurations = (chainId, chainIds) => {
   // Map of chain pairs to deployer addresses
   const SUCKER_DEPLOYERS = {
     // Mainnets
@@ -3630,30 +3666,40 @@ const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotal
     '11155420-84532': '0x58683931b146697d094c660aec1f4a8f564a3d7d',
     '84532-11155420': '0x58683931b146697d094c660aec1f4a8f564a3d7d',
     '421614-84532': '0xc295a8926f1ed0a6e3b6cbdb1d28b9d6b388c8a7',
-    '84532-421614': '0xc295a8926f1ed0a6e3b6cbdb1d28b9d6b388c8a7',
+    '84532-421614': '0xc295a8926f1ed0a6e3b6cbdb1d28b9d6b388c8a7'
   };
 
+  // Build JBSuckerDeployerConfig array for this chain
+  const otherChainIds = chainIds.filter(id => id !== chainId);
+  const deployerConfigurations = otherChainIds.map(remoteChainId => {
+    const deployerKey = `${chainId}-${remoteChainId}`;
+    const deployer = SUCKER_DEPLOYERS[deployerKey];
+    return {
+      deployer,
+      mappings: [{
+        localToken: "0x000000000000000000000000000000000000EEEe",
+        minGas: 200000,
+        remoteToken: "0x000000000000000000000000000000000000EEEe",
+        minBridgeAmount: "10000000000000000"
+      }]
+    };
+  });
+
+  return deployerConfigurations;
+};
+
+// Remove the duplicated functions and keep only the specific deployment functions
+const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses, chainIds, salt) => {
+  const projectUri = "ipfs://QmaJzQjaFKxU2LLyqPTpZoGU47owQcmmvVCP1p4YqeuMUy";
+  const contractUri = "";
+  const allowedPost = { hook: "0x0000000000000000000000000000000000000000", category: 0, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses};
+  
   const buildDeploymentData = async (chainId) => {
     const accountingContextToAccept = { token:"0x000000000000000000000000000000000000EEEe", decimals: 18, currency: 61166 };
     const terminal = terminalContract(chainId);
     const terminalConfiguration = { terminal, accountingContextsToAccept: [accountingContextToAccept] };
 
-    // Build JBSuckerDeployerConfig array for this chain
-    const otherChainIds = chainIds.filter(id => id !== chainId);
-    const deployerConfigurations = otherChainIds.map(remoteChainId => {
-      const deployerKey = `${chainId}-${remoteChainId}`;
-      const deployer = SUCKER_DEPLOYERS[deployerKey];
-      return {
-        deployer,
-        mappings: [{
-          localToken: "0x000000000000000000000000000000000000EEEe",
-          minGas: 200000,
-          remoteToken: "0x000000000000000000000000000000000000EEEe",
-          minBridgeAmount: "10000000000000000"
-        }]
-      };
-    });
-
+    const suckerDeploymentConfigurations = buildSuckerDeploymentConfigurations(chainId, chainIds);
 	const controller = controllerContract(chainId);
 
     return [
@@ -3665,7 +3711,7 @@ const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotal
       name,
       symbol,
       salt],
-      [deployerConfigurations, salt ],
+      [suckerDeploymentConfigurations, salt],
 	  controller
     ];
   };
@@ -3700,27 +3746,31 @@ const tx_deploy_revnet = async (name, symbol, owner, minimumPrice, minimumTotalS
     const terminal = terminalContract(chainId);
     const loans = loansContract(chainId);
     const accountingContextToAccept = { token:"0x000000000000000000000000000000000000EEEe", decimals: 18, currency: 61166 };
-    const terminalConfiguration = { terminal, accountingContextsToAccept: [accountingContextToAccept] };
+    const terminalConfiguration = { terminal, accountingContextsToAccept: [accountingContextToAccept], dataHook: "0x0000000000000000000000000000000000000000", hookToConfigure: "0x0000000000000000000000000000000000000000" };
     
     const baseCurrency = 1;
     const stage1StartsAtOrAfter = 1;
-    const autoMintStage1 = stage1AutomintTokenAmount == 0 ? [] : [{ chainId, count: stage1AutomintTokenAmount, beneficiary: owner}];
-    const stageConfiguration1 = { startsAtOrAfter: stage1StartsAtOrAfter, splitPercent: stage1SplitPercent, initialIssuance: stage1InitialIssuanceAmount, issuanceDecayFrequency: stage1PriceIncreaseFrequency, issuanceDecayPercent: stage1PriceIncreasePercent, cashOutTaxRate: stage1CashOutTaxRate, autoMints: autoMintStage1, extraMetadata: "0x0000" };
+    const autoMintStage1 = stage1AutomintTokenAmount == 0 ? [] : [{ chainId: Number(chainId), count: stage1AutomintTokenAmount, beneficiary: owner}];
+    const ownerSplit = { percent: 1000000000, projectId: 0, beneficiary: owner, preferAddToBalance: false, lockedUntil: 0, hook: "0x0000000000000000000000000000000000000000" };
+    const stageConfiguration1 = { startsAtOrAfter: stage1StartsAtOrAfter, splitPercent: stage1SplitPercent, initialIssuance: stage1InitialIssuanceAmount, issuanceCutFrequency: stage1PriceIncreaseFrequency, issuanceCutPercent: stage1PriceIncreasePercent, cashOutTaxRate: stage1CashOutTaxRate, autoIssuances: autoMintStage1, splits: [ownerSplit], extraMetadata: "0x0000" };
     
     const stageConfigurations = [stageConfiguration1];
     if (stage2StartsAtOrAfter != 0) {
-      const autoMintStage2 = stage2AutomintTokenAmount == 0 ? [] : [{ chainId, count: stage2AutomintTokenAmount, beneficiary: owner}];
-      stageConfigurations.push({startsAtOrAfter: stage2StartsAtOrAfter, splitPercent: stage2SplitPercent, initialIssuance: stage2InitialIssuanceAmount, issuanceDecayFrequency: stage2PriceIncreaseFrequency, issuanceDecayPercent: stage2PriceIncreasePercent, cashOutTaxRate: stage2CashOutTaxRate, autoMints: autoMintStage2, extraMetadata: "0x0000"}); 
+      const autoMintStage2 = stage2AutomintTokenAmount == 0 ? [] : [{ chainId: Number(chainId), count: stage2AutomintTokenAmount, beneficiary: owner}];
+      stageConfigurations.push({startsAtOrAfter: stage2StartsAtOrAfter, splitPercent: stage2SplitPercent, initialIssuance: stage2InitialIssuanceAmount, issuanceCutFrequency: stage2PriceIncreaseFrequency, issuanceCutPercent: stage2PriceIncreasePercent, cashOutTaxRate: stage2CashOutTaxRate, autoIssuances: autoMintStage2, splits: [], extraMetadata: "0x0000"}); 
     }
     if (stage3StartsAtOrAfter != 0) {
-      const autoMintStage3 = stage3AutomintTokenAmount == 0 ? [] : [{ chainId, count: stage3AutomintTokenAmount, beneficiary: owner}];
-      stageConfigurations.push({startsAtOrAfter: stage3StartsAtOrAfter, splitPercent: stage3SplitPercent, initialIssuance: stage3InitialIssuanceAmount, issuanceDecayFrequency: stage3PriceIncreaseFrequency, issuanceDecayPercent: stage3PriceIncreasePercent, cashOutTaxRate: stage3CashOutTaxRate, autoMints: autoMintStage3, extraMetadata: "0x0000" }); 
+      const autoMintStage3 = stage3AutomintTokenAmount == 0 ? [] : [{ chainId: Number(chainId), count: stage3AutomintTokenAmount, beneficiary: owner}];
+      stageConfigurations.push({startsAtOrAfter: stage3StartsAtOrAfter, splitPercent: stage3SplitPercent, initialIssuance: stage3InitialIssuanceAmount, issuanceCutFrequency: stage3PriceIncreaseFrequency, issuanceCutPercent: stage3PriceIncreasePercent, cashOutTaxRate: stage3CashOutTaxRate, autoIssuances: autoMintStage3, splits: [], extraMetadata: "0x0000" }); 
     }
+
+	console.log({ salt });
     
     const description = { name, ticker: symbol, uri: projectUri, salt };
     const loanSource = { token: "0x000000000000000000000000000000000000EEEe", terminal };
     const revnetConfiguration = { description, baseCurrency, splitOperator: owner, stageConfigurations, loanSources: [loanSource], loans, allowCrosschainSuckerExtension: true };
-    const buybackHookConfiguration = { hook: "0x0000000000000000000000000000000000000000", poolConfigurations: []};
+    const buybackPoolConfiguration = { token: "0x000000000000000000000000000000000000EEEe", fee: 10000, twapWindow: 2 * 24 * 60 * 60 };
+    const buybackHookConfiguration = { dataHook: buyHookRegistryContract(chainId), hookToConfigure: buyHookContract(chainId), poolConfigurations: [buybackPoolConfiguration]};
     const baseUri = "ipfs://";
     const tokenUriResolver = "0x0000000000000000000000000000000000000000";
     const tiers = [];
@@ -3731,10 +3781,10 @@ const tx_deploy_revnet = async (name, symbol, owner, minimumPrice, minimumTotalS
     const reserveBeneficiary = "0x0000000000000000000000000000000000000000";
     const flags = { noNewTiersWithReserves: false, noNewTiersWithVotes: false, noNewTiersWithOwnerMinting: false, preventOverspending: false };
     const baseline721HookConfiguration = { name, symbol, baseUri, tokenUriResolver, contractUri, tiersConfig, reserveBeneficiary, flags };
-    const hookConfiguration = {baseline721HookConfiguration, splitOperatorCanAdjustTiers: true, splitOperatorCanUpdateMetadata: true, splitOperatorCanMint: false, splitOperatorCanIncreaseDiscountPercent: true};
-    const suckerDeploymentConfiguration = { deployerConfigurations: [], salt };
+    const hookConfiguration = {baseline721HookConfiguration, salt, splitOperatorCanAdjustTiers: true, splitOperatorCanUpdateMetadata: true, splitOperatorCanMint: false, splitOperatorCanIncreaseDiscountPercent: true};
+    const suckerDeploymentConfigurations = buildSuckerDeploymentConfigurations(chainId, chainIds);
     
-    return [0, revnetConfiguration, [terminalConfiguration], buybackHookConfiguration, suckerDeploymentConfiguration, hookConfiguration, [allowedPost]];
+    return [0, revnetConfiguration, [terminalConfiguration], buybackHookConfiguration, [suckerDeploymentConfigurations, salt], hookConfiguration, [allowedPost]];
   };
 
   const receipt = await handleDeployment(
