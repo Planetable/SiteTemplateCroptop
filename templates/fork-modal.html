@@ -3,12 +3,12 @@
       <div class="exit-button mobile-padding negative-space"><span class="exit-button-text negative-space">×</span></div>
       <div id="fork-header" class="body-header mobile-padding negative-space">
         <div class="fork-title">Monetize your media with your own Croptop site</div>
-          Set yourself up with a site like the one you're currently on and learn how to start curating posts at <a href="https://croptop.eth.sucks" target="_blank">https://croptop.eth.sucks</a>.
+          Get your own site like this one and learn how to start posting at <a href="https://croptop.eth.sucks" target="_blank">https://croptop.eth.sucks</a>.
         <div class="fork-info">
-          Then, let people buy your posts by making an onchain collection below.
+          Then, let people buy your posts by making a collection below.
         </div>
         <div class="fork-info">
-          Croptop websites connect to blockchains for easy sales while giving creators pro tools to manage their money with their community. Your collection's info can be viewed by anyone, and its onchain money rules can only be adjusted by the admin of the collection. 
+          Croptop websites connect to blockchains for easy sales while giving creators pro tools to grow their money with their community. Your collection's info can be viewed by anyone, and its onchain money rules are supercharged by giving buyers rewards that incentivize buying sooner and sharing your site with others. 
         </div>
         <div class="fork-info">
           When deploying, make sure the current website you're on is https://croptop.eth.sucks, or another croptop website you trust.
@@ -36,7 +36,7 @@
                 </div>
               </div>
               <div class="form-section">
-                <div class="form-section-description">The admin you set can distribute revenues and change the collection's money rules at any time.</div>
+                <div class="form-section-description">You can supercharge your site by giving buyers rewards that incentivize buying sooner and sharing your site with others.The admin you set can distribute revenues and change the collection's money rules at any time.</div>
                 <div class="form-item form-item-large">
                   <div class="form-label">Admin 
                     <button id="fork-form-new-jb-load-address-button" class="form-load-address-button"><span class="form-load-address-button-text">connect wallet</span></button>
@@ -68,180 +68,6 @@
                     <textarea rows="4" id="fork-form-new-jb-addresses-input" placeholder="leave empty for no restrictions"></textarea>
                   </div>
                 </div>
-              </div>
-              <div class="form-section">
-                <details id="fork-form-new-jb-revnet-reveal" style="display: none;">
-                  <summary class="form-toggle form-main-toggle">advanced – make it a <a href="https://rev.eth.sucks">revnet</a></summary>
-                  <div class="form-section">
-                    <div class="form-section-description">You can give buyers access to the collection's revenues alongside the admin, with preference to those who buy sooner and stick around longer.
-                    </div>
-                    <div class="form-item">
-                      <div class="form-label">Share revenue with buyers</div>
-                      <div class="form-value">
-                        <input type="number" placeholder="0" value="50" id="fork-form-new-jb-revnet-split-input" min="0" max="100"><span class="form-input-suffix">%</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-section">
-                    <div class="form-section-description">If you want to encourage earlier participation, add a bonus for those buying sooner rather than later. Everyone who participates within the same bonus window will have the same access to the collection's revenues.
-                    </div>
-                    <div class="form-item">
-                      <div class="form-label">Earlier buyer bonus rate</div>
-                      <div class="form-value">
-                        <input type="number" placeholder="0" value="1" id="fork-form-new-jb-revnet-price-increase-percent-input" min="0" max="100"><span class="form-input-suffix">%</span>
-                      </div>
-                    </div>
-                    <div class="form-item">
-                      <div class="form-value">
-                        <span class="form-input-prefix">every</span><input type="number" value="3" id="fork-form-new-jb-revnet-price-increase-frequency-input" min="0.001"><span class="form-input-suffix">days</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-section">
-                    <div class="form-section-description">If you want to reward longer term participation from everyone including the admin, add a cash-out tax when accessing the collection's revenues sooner rather than later. The cash out tax is set by a value between 0 and 1, where 0 means no tax and 1 is a aggressive tax that makes it very expensive to access the revenue. The tax is shared between the folks remaining.
-  
-  0 - none. 0.3 - some. 0.7 - more. 0.9 - lots.  
-                    </div>
-                    <div class="form-item">
-                      <div class="form-label">Cash out tax rate</div>
-                      <div class="form-value">
-                        <input type="number" placeholder="0" value="0.5" id="fork-form-new-jb-revnet-cash-out-tax-rate-input" min="0" max="0.9">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-section">
-                    <div class="form-section-description">As purchases and contributions are made to the collection, access to revenue is tracked and distributed using a token. If you'd like, you can automint some tokens to the admin for preferencial access to revenue.
-                    </div>
-                    <div class="form-item">
-                      <div class="form-label">The price of a token made on the first day of the stage, per unit of revenue received</div>
-                      <div class="form-value">
-                        <input type="number" placeholder="1000000" value="1000000" id="fork-form-new-jb-revnet-initial-issuance-input" min="0">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-section">
-                    <div class="form-item">
-                      <div class="form-label">Tokens to automint</div>
-                      <div class="form-value">
-                        <input type="number" placeholder="0" value="0" id="fork-form-new-jb-revnet-automint-input" min="0">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-section">
-                    <div class="form-section-description">Some values you just set can evolve over time in stages. If you'd like to schedule a second stage with a new revenue share percent, buyer bonus rate, automint, or cash out tax, specify the amount of time that these first rules above should last for. 
-                    </div>
-                    <div class="form-item">
-                      <div class="form-label">Duration (days)</div>
-                      <div class="form-value">
-                        <input type="number" placeholder="forever" id="fork-form-new-jb-revnet-duration-input" min="0">
-                      </div>
-                    </div>
-                  </div>
-                  <div id="fork-form-new-jb-revnet-stage-2" class="hidden">
-                    <div class="form-section">
-                      <div class="form-section-description">Add a second stage.</div>                   
-                      <div class="form-item">
-                        <div class="form-label">Share revenue with buyers</div>
-                        <div class="form-value">
-                          <input type="number" placeholder="0" value="90" id="fork-form-new-jb-revnet-split-input-2" min="0" max="100"><span class="form-input-suffix">%</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-section">
-                      <div class="form-item">
-                        <div class="form-label">Earlier buyer bonus rate</div>
-                        <div class="form-value">
-                          <input type="number" placeholder="0" value="1" id="fork-form-new-jb-revnet-price-increase-percent-input-2" min="0" max="100"><span class="form-input-suffix">% every</span>
-                        </div>
-                      </div>
-                      <div class="form-item">
-                        <div class="form-value">
-                          <input type="number" value="3" id="fork-form-new-jb-revnet-price-increase-frequency-input-2" min="0.001"><span class="form-input-suffix">days</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-section">
-                      <div class="form-item">
-                        <div class="form-label">Cash out tax rate</div>
-                        <div class="form-value">
-                          <input type="number" placeholder="0" value="0.5" id="fork-form-new-jb-revnet-cash-out-tax-rate-input-2" min="0" max="1">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-section">
-                      <div class="form-item">
-                        <div class="form-label">The price of a token made on the first day of the stage, per unit of revenue received</div>
-                        <div class="form-value">
-                          <input type="number" placeholder="1000000" value="1000000" id="fork-form-new-jb-revnet-initial-issuance-input-2" min="0">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-section">
-                      <div class="form-item">
-                        <div class="form-label">Tokens to automint</div>
-                        <div class="form-value">
-                          <input type="number" placeholder="0" value="0" id="fork-form-new-jb-revnet-automint-input-2" min="0">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-section">
-                      <div class="form-item">
-                        <div class="form-label">Duration (days)</div>
-                        <div class="form-value">
-                          <input type="number" placeholder="forever" id="fork-form-new-jb-revnet-duration-input-2" min="0">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div id="fork-form-new-jb-revnet-stage-3" class="hidden">
-                    <div class="form-section">
-                      <div class="form-section-description">Add a third and final stage.</div>                   
-                      <div class="form-item">
-                        <div class="form-label">Share revenue with buyers</div>
-                        <div class="form-value">
-                          <input type="number" placeholder="0" value="90" id="fork-form-new-jb-revnet-split-input-3" min="0" max="100"><span class="form-input-suffix">%</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-section">
-                      <div class="form-item">
-                        <div class="form-label">Earlier buyer bonus rate</div>
-                        <div class="form-value">
-                          <input type="number" placeholder="0" value="1" id="fork-form-new-jb-revnet-price-increase-percent-input-3" min="0" max="100"><span class="form-input-suffix">% every</span>
-                        </div>
-                      </div>
-                      <div class="form-item">
-                        <div class="form-value">
-                          <input type="number" value="3" id="fork-form-new-jb-revnet-price-increase-frequency-input-3" min="0.001"><span class="form-input-suffix">days</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-section">
-                      <div class="form-item">
-                        <div class="form-label">Cash out tax rate</div>
-                        <div class="form-value">
-                          <input type="number" placeholder="0" value="0.5" id="fork-form-new-jb-revnet-cash-out-tax-rate-input-3" min="0" max="1">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-section">
-                      <div class="form-item">
-                        <div class="form-label">The price of a token made on the first day of the stage, per unit of revenue received</div>
-                        <div class="form-value">
-                          <input type="number" placeholder="1000000" value="1000000" id="fork-form-new-jb-revnet-initial-issuance-input-3" min="0">
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-section">
-                      <div class="form-item">
-                        <div class="form-label">Tokens to automint</div>
-                        <div class="form-value">
-                          <input type="number" placeholder="0" value="0" id="fork-form-new-jb-revnet-automint-input-3" min="0">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </details>
               </div>
               <div id="fork-form-new-jb-chain" class="form-section">
                 <div class="form-section-description">On which chains do you want to deploy your collection? You'll be prompted for a signatute for each chain selected.</div>
@@ -383,30 +209,6 @@
       const forkFormNewJbErrorMessage = document.getElementById("fork-form-new-jb-error-message");
       const forkFormNewJbSuccessMessage = document.getElementById("fork-form-new-jb-success-message");
       const forkFormNewJbSubmitButton = document.getElementById("fork-form-new-jb-submit-button");
-      const forkFormNewJbRevnetReveal = document.getElementById("fork-form-new-jb-revnet-reveal");
-      const forkFormNewJbRevnetSplitInput = document.getElementById("fork-form-new-jb-revnet-split-input");
-      const forkFormNewJbRevnetPriceIncreasePercentInput = document.getElementById("fork-form-new-jb-revnet-price-increase-percent-input");
-      const forkFormNewJbRevnetPriceIncreaseFrequencyInput = document.getElementById("fork-form-new-jb-revnet-price-increase-frequency-input");
-      const forkFormNewJbRevnetCashOutTaxRateInput = document.getElementById("fork-form-new-jb-revnet-cash-out-tax-rate-input");
-      const forkFormNewJbRevnetIssuanceInput = document.getElementById("fork-form-new-jb-revnet-initial-issuance-input");
-      const forkFormNewJbRevnetAutomintInput = document.getElementById("fork-form-new-jb-revnet-automint-input");
-      const forkFormNewJbRevnetDurationInput = document.getElementById("fork-form-new-jb-revnet-duration-input");
-      const forkFormNewJbRevnetSplitInput2 = document.getElementById("fork-form-new-jb-revnet-split-input-2");
-      const forkFormNewJbRevnetPriceIncreasePercentInput2 = document.getElementById("fork-form-new-jb-revnet-price-increase-percent-input-2");
-      const forkFormNewJbRevnetPriceIncreaseFrequencyInput2 = document.getElementById("fork-form-new-jb-revnet-price-increase-frequency-input-2");
-      const forkFormNewJbRevnetCashOutTaxRateInput2 = document.getElementById("fork-form-new-jb-revnet-cash-out-tax-rate-input-2");
-      const forkFormNewJbRevnetIssuanceInput2 = document.getElementById("fork-form-new-jb-revnet-initial-issuance-input-2");
-      const forkFormNewJbRevnetAutomintInput2 = document.getElementById("fork-form-new-jb-revnet-automint-input-2");
-      const forkFormNewJbRevnetDurationInput2 = document.getElementById("fork-form-new-jb-revnet-duration-input-2");
-      const forkFormNewJbRevnetSplitInput3 = document.getElementById("fork-form-new-jb-revnet-split-input-3");
-      const forkFormNewJbRevnetPriceIncreasePercentInput3 = document.getElementById("fork-form-new-jb-revnet-price-increase-percent-input-3");
-      const forkFormNewJbRevnetPriceIncreaseFrequencyInput3 = document.getElementById("fork-form-new-jb-revnet-price-increase-frequency-input-3");
-      const forkFormNewJbRevnetCashOutTaxRateInput3 = document.getElementById("fork-form-new-jb-revnet-cash-out-tax-rate-input-3");
-      const forkFormNewJbRevnetIssuanceInput3 = document.getElementById("fork-form-new-jb-revnet-initial-issuance-input-3");
-      const forkFormNewJbRevnetAutomintInput3 = document.getElementById("fork-form-new-jb-revnet-automint-input-3");
-      const forkFormNewJbRevnetDurationInput3 = document.getElementById("fork-form-new-jb-revnet-duration-input-3");
-      const forkFormNewJbRevnetStage2 = document.getElementById("fork-form-new-jb-revnet-stage-2");
-      const forkFormNewJbRevnetStage3 = document.getElementById("fork-form-new-jb-revnet-stage-3");
       const forkFormNewJbChainEnvSelect = document.getElementById('fork-form-new-jb-state-chain-env');
       const forkFormNewJbChainProductionOptions = document.getElementById('fork-form-new-jb-chain-production-options');
       const forkFormNewJbChainTestnetOptions = document.getElementById('fork-form-new-jb-chain-testnet-options');
@@ -434,64 +236,12 @@
         }
       });
   
-      // Get Duration input 1, onchange either show or hide section 2 and 3.
-      forkFormNewJbRevnetDurationInput.addEventListener("input", () => {
-        if (forkFormNewJbRevnetDurationInput.value == "" || forkFormNewJbRevnetDurationInput.value == "0") {
-           forkFormNewJbRevnetStage2.classList.add("hidden");
-           forkFormNewJbRevnetStage3.classList.add("hidden");
-        } else if (parseInt(forkFormNewJbRevnetDurationInput.value) % parseInt(forkFormNewJbRevnetPriceIncreaseFrequencyInput.value) == 0) {
-          forkFormNewJbRevnetStage2.classList.remove("hidden");
-          if (forkFormNewJbRevnetDurationInput2.value == "" || forkFormNewJbRevnetDurationInput2.value == "0") {
-            forkFormNewJbRevnetStage3.classList.add("hidden");
-          } else if (parseInt(forkFormNewJbRevnetDurationInput2.value) % parseInt(forkFormNewJbRevnetPriceIncreaseFrequencyInput2.value) == 0) {
-            forkFormNewJbRevnetStage3.classList.remove("hidden");
-          } 
-        }
-      })
-  
-      // Get Duration input 2, onchange either show or hide section 3.
-      forkFormNewJbRevnetDurationInput2.addEventListener("input", (input) => {
-        if (forkFormNewJbRevnetDurationInput2.value == "" || forkFormNewJbRevnetDurationInput2.value == "0") {
-           forkFormNewJbRevnetStage3.classList.add("hidden");
-        } else if (parseInt(forkFormNewJbRevnetDurationInput2.value) % parseInt(forkFormNewJbRevnetPriceIncreaseFrequencyInput2.value) == 0) {
-          forkFormNewJbRevnetStage3.classList.remove("hidden");
-        }
-      });
   
   
       const checkState = async () => {
-        // Set error messages if the currently inputted values are too small.
-        if (Number(forkFormNewJbRevnetPriceIncreasePercentInput.value) > 100 || Number(forkFormNewJbRevnetPriceIncreasePercentInput2.value) > 100 || Number(forkFormNewJbRevnetPriceIncreasePercentInput2.value) > 100 || 
-  Number(forkFormNewJbRevnetSplitInput.value) > 100 || Number(forkFormNewJbRevnetSplitInput2.value) > 100 || Number(forkFormNewJbRevnetSplitInput2.value) > 100) {
-          forkFormNewJbErrorMessage.innerHTML = `Percents must be between 0% and 100%.`;
-          forkFormNewJbErrorMessage.classList.add("warn");
-          forkFormNewJbErrorMessage.style.display = "block";
-          forkFormNewJbSubmitButton.disabled = true;
-        } else if (Number(forkFormNewJbRevnetCashOutTaxRateInput.value) > 1 || Number(forkFormNewJbRevnetCashOutTaxRateInput2.value) > 1 || Number(forkFormNewJbRevnetCashOutTaxRateInput3.value) > 1) {
-          forkFormNewJbErrorMessage.innerHTML = `Cash out tax rate must be between 0 and 1.`;
-          forkFormNewJbErrorMessage.classList.add("warn");
-          forkFormNewJbErrorMessage.style.display = "block";
-          forkFormNewJbSubmitButton.disabled = true;
-        } else if ((forkFormNewJbRevnetPriceIncreasePercentInput.value && !forkFormNewJbRevnetPriceIncreaseFrequencyInput.value) || (forkFormNewJbRevnetDurationInput.value && forkFormNewJbRevnetPriceIncreasePercentInput2.value && !forkFormNewJbRevnetPriceIncreaseFrequencyInput2.value) || (forkFormNewJbRevnetDurationInput2.value && forkFormNewJbRevnetPriceIncreaseFrequencyInput3.value && !forkFormNewJbRevnetPriceIncreaseFrequencyInput3)) { 
-          forkFormNewJbErrorMessage.innerHTML = `Add a bonus frequency alongside the bonus percent.`;
-          forkFormNewJbErrorMessage.classList.add("warn");
-          forkFormNewJbErrorMessage.style.display = "block";
-          forkFormNewJbSubmitButton.disabled = true;
-        } else if (forkFormNewJbRevnetDurationInput.value != "" && forkFormNewJbRevnetDurationInput.value != "0" && parseInt(forkFormNewJbRevnetDurationInput.value) % parseInt(forkFormNewJbRevnetPriceIncreaseFrequencyInput.value) != 0) { 
-          forkFormNewJbErrorMessage.innerHTML = `The stage duration (${forkFormNewJbRevnetDurationInput.value}) must be a multiple of the bonus frequency (${forkFormNewJbRevnetPriceIncreaseFrequencyInput.value}).`;
-          forkFormNewJbErrorMessage.classList.add("warn");
-          forkFormNewJbErrorMessage.style.display = "block";
-          forkFormNewJbSubmitButton.disabled = true;
-        } else if (forkFormNewJbRevnetDurationInput2.value != "" && forkFormNewJbRevnetDurationInput2.value != "0" && parseInt(forkFormNewJbRevnetDurationInput2.value) % parseInt(forkFormNewJbRevnetPriceIncreaseFrequencyInput2.value) != 0) { 
-          forkFormNewJbErrorMessage.innerHTML = `The second stage duration (${forkFormNewJbRevnetDurationInput2.value}) must be a multiple of the bonus frequency (${forkFormNewJbRevnetPriceIncreaseFrequencyInput2.value}).`;
-          forkFormNewJbErrorMessage.classList.add("warn");
-          forkFormNewJbErrorMessage.style.display = "block";
-          forkFormNewJbSubmitButton.disabled = true;
-        } else {
-          // Hide the error message.
-          forkFormNewJbErrorMessage.style.display = "none";
-          forkFormNewJbSubmitButton.disabled = false;
-        }
+        // Hide the error message.
+        forkFormNewJbErrorMessage.style.display = "none";
+        forkFormNewJbSubmitButton.disabled = false;
       }
   
       // Prevent excessive calls.
@@ -507,26 +257,6 @@
       forkFormNewJbMinimumPriceInput.addEventListener("input", queueCheckState);
       forkFormNewJbMinimumTotalSupplyInput.addEventListener("input", queueCheckState);
       forkFormNewJbMaximumTotalSupplyInput.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetSplitInput.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetSplitInput2.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetSplitInput3.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetAutomintInput.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetAutomintInput2.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetAutomintInput3.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetIssuanceInput.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetIssuanceInput2.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetIssuanceInput3.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetPriceIncreasePercentInput.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetPriceIncreasePercentInput2.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetPriceIncreasePercentInput3.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetPriceIncreaseFrequencyInput.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetPriceIncreaseFrequencyInput2.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetPriceIncreaseFrequencyInput3.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetCashOutTaxRateInput.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetCashOutTaxRateInput2.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetCashOutTaxRateInput3.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetDurationInput.addEventListener("input", queueCheckState);
-      forkFormNewJbRevnetDurationInput2.addEventListener("input", queueCheckState);
   
       // Default to max
       // Set values in the form if the fields are not yet set.
@@ -535,26 +265,6 @@
       if (!forkFormNewJbMinimumTotalSupplyInput.value) forkFormNewJbMinimumTotalSupplyInput.value = 1;
       // Default to free
       if (!forkFormNewJbMinimumPriceInput.value) forkFormNewJbMinimumPriceInput.value = 0;
-      if (!forkFormNewJbRevnetAutomintInput.value) forkFormNewJbRevnetAutomintInput.value = 0;
-      if (!forkFormNewJbRevnetAutomintInput2.value) forkFormNewJbRevnetAutomintInput2.value = 0;
-      if (!forkFormNewJbRevnetAutomintInput3.value) forkFormNewJbRevnetAutomintInput3.value = 0;
-      if (!forkFormNewJbRevnetIssuanceInput.value) forkFormNewJbRevnetIssuanceInput.value = 0;
-      if (!forkFormNewJbRevnetIssuanceInput2.value) forkFormNewJbRevnetIssuanceInput2.value = 0;
-      if (!forkFormNewJbRevnetIssuanceInput3.value) forkFormNewJbRevnetIssuanceInput3.value = 0;
-      if (!forkFormNewJbRevnetSplitInput.value) forkFormNewJbRevnetSplitInput.value = 0;
-      if (!forkFormNewJbRevnetSplitInput2.value) forkFormNewJbRevnetSplitInput2.value = 0;
-      if (!forkFormNewJbRevnetSplitInput3.value) forkFormNewJbRevnetSplitInput3.value = 0;
-      if (!forkFormNewJbRevnetPriceIncreasePercentInput.value) forkFormNewJbRevnetPriceIncreasePercentInput.value = 0;
-      if (!forkFormNewJbRevnetPriceIncreasePercentInput2.value) forkFormNewJbRevnetPriceIncreasePercentInput2.value = 0;
-      if (!forkFormNewJbRevnetPriceIncreasePercentInput3.value) forkFormNewJbRevnetPriceIncreasePercentInput3.value = 0;
-      if (!forkFormNewJbRevnetPriceIncreaseFrequencyInput.value) forkFormNewJbRevnetPriceIncreaseFrequencyInput.value = 0;
-      if (!forkFormNewJbRevnetPriceIncreaseFrequencyInput2.value) forkFormNewJbRevnetPriceIncreaseFrequencyInput2.value = 0;
-      if (!forkFormNewJbRevnetPriceIncreaseFrequencyInput3.value) forkFormNewJbRevnetPriceIncreaseFrequencyInput3.value = 0;
-      if (!forkFormNewJbRevnetCashOutTaxRateInput.value) forkFormNewJbRevnetCashOutTaxRateInput.value = 0;
-      if (!forkFormNewJbRevnetCashOutTaxRateInput2.value) forkFormNewJbRevnetCashOutTaxRateInput2.value = 0;
-      if (!forkFormNewJbRevnetCashOutTaxRateInput3.value) forkFormNewJbRevnetCashOutTaxRateInput3.value = 0;
-      if (!forkFormNewJbRevnetDurationInput.value) forkFormNewJbRevnetDurationInput.value = 0;
-      if (!forkFormNewJbRevnetDurationInput2.value) forkFormNewJbRevnetDurationInput2.value = 0;
   
       // Get selected chain IDs
       const getSelectedChainIds = () => {
@@ -734,7 +444,7 @@
       // Submit the form.
       forkFormNewJbSubmitButton.onclick = async () => {
         // Check for empty values.
-        if (!forkFormNewJbCollectionNameInput.value || !forkFormNewJbCollectionTickerInput.value || forkFormNewJbMinimumPriceInput.value == "" || !forkFormNewJbMaximumTotalSupplyInput.value || !forkFormNewJbMinimumTotalSupplyInput.value || forkFormNewJbRevnetAutomintInput.value == "" || forkFormNewJbRevnetAutomintInput2.value == "" || forkFormNewJbRevnetAutomintInput3.value == "" || forkFormNewJbRevnetIssuanceInput.value == "" || forkFormNewJbRevnetSplitInput.value == "" || forkFormNewJbRevnetPriceIncreasePercentInput.value == "" || !forkFormNewJbRevnetPriceIncreaseFrequencyInput.value || forkFormNewJbRevnetCashOutTaxRateInput.value == "" || (Number(forkFormNewJbRevnetDurationInput.value) && (forkFormNewJbRevnetIssuanceInput2.value == "" || forkFormNewJbRevnetSplitInput2.value == "" || forkFormNewJbRevnetPriceIncreasePercentInput2.value == "" || !forkFormNewJbRevnetPriceIncreaseFrequencyInput2.value || forkFormNewJbRevnetCashOutTaxRateInput2.value == "")) || (Number(forkFormNewJbRevnetDurationInput2.value) && (forkFormNewJbRevnetIssuanceInput3.value == "" || forkFormNewJbRevnetSplitInput3.value == "" || forkFormNewJbRevnetPriceIncreasePercentInput3.value == "" || !forkFormNewJbRevnetPriceIncreaseFrequencyInput3.value || forkFormNewJbRevnetCashOutTaxRateInput3.value == "" ))) {
+        if (!forkFormNewJbCollectionNameInput.value || !forkFormNewJbCollectionTickerInput.value || forkFormNewJbMinimumPriceInput.value == "" || !forkFormNewJbMaximumTotalSupplyInput.value || !forkFormNewJbMinimumTotalSupplyInput.value) {
           forkFormNewJbErrorMessage.innerHTML = "Fill out the form.";
           forkFormNewJbErrorMessage.style.display = "block";
           return;
@@ -763,37 +473,55 @@
         const minimumTotalSupply = supply;
         const maximumTotalSupply = supply;
         const allowedAddresses = !forkFormNewJbAddressesInput.value ? [] : forkFormNewJbAddressesInput.value.split('\n');
-        const stage1AutomintTokenAmount = fixedPointNumber(forkFormNewJbRevnetAutomintInput.value, 18); 
-        const stage2AutomintTokenAmount = fixedPointNumber(forkFormNewJbRevnetAutomintInput2.value, 18); 
-        const stage3AutomintTokenAmount = fixedPointNumber(forkFormNewJbRevnetAutomintInput3.value, 18); 
-        const stage1InitialIssuanceAmount = fixedPointNumber(forkFormNewJbRevnetIssuanceInput.value, 18);
-        const stage2InitialIssuanceAmount = fixedPointNumber(forkFormNewJbRevnetIssuanceInput2.value, 18);
-        const stage3InitialIssuanceAmount = fixedPointNumber(forkFormNewJbRevnetIssuanceInput3.value, 18); 
-        const stage1SplitPercent = 10000 - Math.round(forkFormNewJbRevnetSplitInput.value * 100);
-        const stage2SplitPercent = 10000 - Math.round(forkFormNewJbRevnetSplitInput2.value * 100);
-        const stage3SplitPercent = 10000 - Math.round(forkFormNewJbRevnetSplitInput3.value * 100);
-        const stage1PriceIncreasePercent = Math.round(forkFormNewJbRevnetPriceIncreasePercentInput.value * 100);
-        const stage2PriceIncreasePercent = Math.round(forkFormNewJbRevnetPriceIncreasePercentInput2.value * 100);
-        const stage3PriceIncreasePercent = Math.round(forkFormNewJbRevnetPriceIncreasePercentInput3.value * 100);
-        const stage1PriceIncreaseFrequency = forkFormNewJbRevnetPriceIncreaseFrequencyInput.value * 86400;
-        const stage2PriceIncreaseFrequency = forkFormNewJbRevnetPriceIncreaseFrequencyInput2.value * 86400;
-        const stage3PriceIncreaseFrequency = forkFormNewJbRevnetPriceIncreaseFrequencyInput3.value * 86400;
-        const stage1CashOutTaxRate = Math.round(forkFormNewJbRevnetCashOutTaxRateInput.value * 10000);
-        const stage2CashOutTaxRate = Math.round(forkFormNewJbRevnetCashOutTaxRateInput2.value * 10000);
-        const stage3CashOutTaxRate = Math.round(forkFormNewJbRevnetCashOutTaxRateInput3.value * 10000);
-        const stage2StartsAtOrAfter = forkFormNewJbRevnetDurationInput.value == "0" ? 0 : Math.floor(Date.now() / 1000) + forkFormNewJbRevnetDurationInput.value * 86400;
-        const stage3StartsAtOrAfter = forkFormNewJbRevnetDurationInput2.value == "0" ? 0 : stage2StartsAtOrAfter + forkFormNewJbRevnetDurationInput2.value * 86400;
+        const stage1AutomintTokenAmount = 0; // Default to 0 automints
+        const stage2AutomintTokenAmount = 0; // No stage 2
+        const stage3AutomintTokenAmount = 0; // No stage 3
+        const stage1InitialIssuanceAmount = fixedPointNumber("10000", 18); // Default to 10000 issuance with 18 decimals
+        const stage2InitialIssuanceAmount = 0; // No stage 2
+        const stage3InitialIssuanceAmount = 0; // No stage 3
+        const stage1SplitPercent = 10000 - Math.round(10 * 100); // 10% reward
+        const stage2SplitPercent = 0; // No stage 2
+        const stage3SplitPercent = 0; // No stage 3
+        const stage1PriceIncreasePercent = Math.round(1 * 100); // 1% bonus
+        const stage2PriceIncreasePercent = 0; // No stage 2
+        const stage3PriceIncreasePercent = 0; // No stage 3
+        const stage1PriceIncreaseFrequency = 7 * 86400; // Every 7 days
+        const stage2PriceIncreaseFrequency = 0; // No stage 2
+        const stage3PriceIncreaseFrequency = 0; // No stage 3
+        const stage1CashOutTaxRate = 1000; // Default to 0.1 (10%)
+        const stage2CashOutTaxRate = 0; // No stage 2
+        const stage3CashOutTaxRate = 0; // No stage 3
+        const stage1StartsAtOrAfter = 1; // Start immediately (no duration field)
+        const stage2StartsAtOrAfter = 0; // No stage 2
+        const stage3StartsAtOrAfter = 0; // No stage 3
         
         try {
           // Generate a salt for this deploy
           const salt = generateSalt();
 
+          // Always create a revnet (no dropdown anymore)
+          const isRevnet = true;
+
           // If multiple chains are selected, use Relayr
           if (selectedChainIds.length > 1) {
-            const quote = await tx_deploy_project(
-              name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, 
-              allowedAddresses, selectedChainIds, salt
-            );
+            let quote;
+            if (isRevnet) {
+              quote = await tx_deploy_revnet(
+                name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply,
+                allowedAddresses, stage1AutomintTokenAmount, stage2AutomintTokenAmount, stage3AutomintTokenAmount,
+                stage1InitialIssuanceAmount, stage2InitialIssuanceAmount, stage3InitialIssuanceAmount,
+                stage1SplitPercent, stage2SplitPercent, stage3SplitPercent,
+                stage1PriceIncreasePercent, stage2PriceIncreasePercent, stage3PriceIncreasePercent,
+                stage1PriceIncreaseFrequency, stage2PriceIncreaseFrequency, stage3PriceIncreaseFrequency,
+                stage1CashOutTaxRate, stage2CashOutTaxRate, stage3CashOutTaxRate,
+                stage2StartsAtOrAfter, stage3StartsAtOrAfter, selectedChainIds, salt
+              );
+            } else {
+              quote = await tx_deploy_project(
+                name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, 
+                allowedAddresses, selectedChainIds, salt
+              );
+            }
             
             if (!quote || !quote.payment_info) {
               throw new Error('Failed to get valid Relayr quote');
@@ -805,10 +533,24 @@
           }
 
           // Single chain deployment
-          const collectionAddress = await tx_deploy_project(
-            name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply,
-            allowedAddresses, selectedChainIds, salt
-          );
+          let collectionAddress;
+          if (isRevnet) {
+            collectionAddress = await tx_deploy_revnet(
+              name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply,
+              allowedAddresses, stage1AutomintTokenAmount, stage2AutomintTokenAmount, stage3AutomintTokenAmount,
+              stage1InitialIssuanceAmount, stage2InitialIssuanceAmount, stage3InitialIssuanceAmount,
+              stage1SplitPercent, stage2SplitPercent, stage3SplitPercent,
+              stage1PriceIncreasePercent, stage2PriceIncreasePercent, stage3PriceIncreasePercent,
+              stage1PriceIncreaseFrequency, stage2PriceIncreaseFrequency, stage3PriceIncreaseFrequency,
+              stage1CashOutTaxRate, stage2CashOutTaxRate, stage3CashOutTaxRate,
+              stage2StartsAtOrAfter, stage3StartsAtOrAfter, selectedChainIds, salt
+            );
+          } else {
+            collectionAddress = await tx_deploy_project(
+              name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply,
+              allowedAddresses, selectedChainIds, salt
+            );
+          }
 
           if (!collectionAddress) {
             showError("The connected network isn't supported.");

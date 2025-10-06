@@ -900,7 +900,7 @@ details > summary:before {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: end;
-  column-gap: var(--spacing-4);
+  column-gap: var(--spacing-2);
 }
 .form-section-disclaimer {
   margin-top: var(--spacing-3);
