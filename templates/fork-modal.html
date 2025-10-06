@@ -49,13 +49,13 @@
                 <div class="form-item">
                   <div class="form-label">Price</div>
                   <div class="form-value">
-                    <span class="ether form-input-prefix">Ξ</span><input type="number" placeholder="free" value="0.01" id="fork-form-new-jb-minimum-price-input" min="0">
+                    <span class="ether form-input-prefix">Ξ</span><input type="number" placeholder="free" value="0.001" id="fork-form-new-jb-minimum-price-input" min="0">
                   </div>
                 </div>
                 <div class="form-item">
                   <div class="form-label">Copies</div>
                   <div class="form-value">
-                    <input type="number" value="1" id="fork-form-new-jb-minimum-total-supply-input" min="1">
+                    <input type="number" value="100" id="fork-form-new-jb-minimum-total-supply-input" min="1">
                   </div>
                 </div>
               </div>
@@ -68,7 +68,7 @@
                 </div>
               </div>
               <div id="fork-form-new-jb-chain" class="form-section">
-                <div class="form-section-description">Choose where you want your collection. You'll be asked to sign on each.</div>
+                <div class="form-section-description">Choose where you want your collection. Each will ask for a signature.</div>
                 <div class="form-item">
                   <div class="form-value form-select-value">
                     <select id="fork-form-new-jb-state-chain-env" name="chain-env">
@@ -197,11 +197,8 @@
       forkFormNewJbCollectionTickerInput.addEventListener("input", queueCheckState);
       forkFormNewJbMinimumPriceInput.addEventListener("input", queueCheckState);
       forkFormNewJbMinimumTotalSupplyInput.addEventListener("input", queueCheckState);
-      forkFormNewJbMaximumTotalSupplyInput.addEventListener("input", queueCheckState);
   
-      // Default to max
       // Set values in the form if the fields are not yet set.
-      if (!forkFormNewJbMaximumTotalSupplyInput.value) forkFormNewJbMaximumTotalSupplyInput.value = 1000000000;
       // Default to 1
       if (!forkFormNewJbMinimumTotalSupplyInput.value) forkFormNewJbMinimumTotalSupplyInput.value = 1;
       // Default to free
@@ -385,7 +382,7 @@
       // Submit the form.
       forkFormNewJbSubmitButton.onclick = async () => {
         // Check for empty values.
-        if (!forkFormNewJbCollectionNameInput.value || !forkFormNewJbCollectionTickerInput.value || forkFormNewJbMinimumPriceInput.value == "" || !forkFormNewJbMaximumTotalSupplyInput.value || !forkFormNewJbMinimumTotalSupplyInput.value) {
+        if (!forkFormNewJbCollectionNameInput.value || !forkFormNewJbCollectionTickerInput.value || forkFormNewJbMinimumPriceInput.value == "" || !forkFormNewJbMinimumTotalSupplyInput.value) {
           forkFormNewJbErrorMessage.innerHTML = "Fill out the form.";
           forkFormNewJbErrorMessage.style.display = "block";
           return;
