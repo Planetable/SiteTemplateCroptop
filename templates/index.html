@@ -616,38 +616,11 @@ window.onpopstate = function(event) {
     // Track the modal in browse history.
     history.pushState({ modalOpened: true, postId }, "", "?id=" + postId);
 
-    // Make sure the modal is closeable when clicking on empty space.
-    let activeElementOnClose;
-    postModal.addEventListener("mousedown", () => {
-      activeElementOnClose = document.activeElement;
-    });
 
-    let isMouseDownOnInput = false;
-
-    // Event listener for mousedown - sets the flag if mouse is down on an input, select, or textarea
-    postModal.addEventListener("mousedown", (e) => {
-      if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") {
-        isMouseDownOnInput = true;
-      }
-    });
-
-    // Event listener for mouseup - resets the flag on mouse up
-    postModal.addEventListener("mouseup", (e) => {
-      if(isMouseDownOnInput && e.target.classList.contains("negative-space")) return;
-      isMouseDownOnInput = false;
-    });
-
-    // Close the modal.
-    postModal.addEventListener("click", (e) => {
-      // Ignore if the click stared in a field.
-      if (isMouseDownOnInput) return;
-
-      // Ignore if the clicked view shouldn't close the modal.
-      if (!e.target.classList.contains("negative-space")) return;
-
-      // Ignore if the clicked view comes while an input field is selected.
-      if (activeElementOnClose.tagName === "INPUT" || activeElementOnClose.tagName === "SELECT") return;
-
+    // Close the modal only when clicking the exit button.
+    // Removed click-to-close on negative space functionality.
+    const exitButton = postModal.querySelector('.exit-button');
+    exitButton.addEventListener("click", (e) => {
       // Make the body scrollable.
       document.body.style.overflow = "auto";
 
