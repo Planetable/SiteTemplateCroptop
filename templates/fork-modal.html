@@ -47,23 +47,17 @@
                 </div>
               </div>
               <div class="form-section">
-                <div class="form-section-description">The price and total supply of each item in your collection are set by its first buyer. Anyone can add any content from anywhere to your collection, so long as they buy the first copy and the following restrictions that you set are met.</div>
+                <div class="form-section-description">The price and total supply of each post in your collection. Anyone can add any content from anywhere to your collection, so long as they buy the first copy.</div>
                 <div class="form-item">
-                  <div class="form-label">Minimum price</div>
+                  <div class="form-label">Price</div>
                   <div class="form-value">
                     <span class="ether form-input-prefix">Ξ</span><input type="number" placeholder="free" value="0.01" id="fork-form-new-jb-minimum-price-input" min="0">
                   </div>
                 </div>
                 <div class="form-item">
-                  <div class="form-label">Minimum total supply</div>
+                  <div class="form-label">Total supply</div>
                   <div class="form-value">
                     <input type="number" value="1" id="fork-form-new-jb-minimum-total-supply-input" min="1">
-                  </div>
-                </div>
-                <div class="form-item">
-                  <div class="form-label">Maximum total supply</div>
-                  <div class="form-value">
-                    <input type="number" placeholder="unlimited" id="fork-form-new-jb-maximum-total-supply-input" min="1">
                   </div>
                 </div>
               </div>
@@ -332,23 +326,17 @@
                   </div>
                 </div>
                 <div class="form-section">
-                  <div class="form-section-description">The price and total supply of each item in your collection are set by the first buyer. Anyone can mint any content from anywhere to your collection, so long as the following restrictions that you set are met.</div>
+                  <div class="form-section-description">The price and total supply of each item in your collection. Anyone can add any content from anywhere to your collection, so long as they buy the first copy.</div>
                   <div class="form-item">
-                    <div class="form-label">Minimum price</div>
+                    <div class="form-label">Price</div>
                     <div class="form-value">
                       <span class="ether form-input-prefix">Ξ</span><input type="number" placeholder="free" value="0.01" id="fork-form-allowance-minimum-price-input" min="0">
                     </div>
                   </div>
                   <div class="form-item">
-                    <div class="form-label">Minimum total supply</div>
+                    <div class="form-label">Supply</div>
                     <div class="form-value">
                       <input type="number" value="1" id="fork-form-allowance-minimum-total-supply-input" min="1">
-                    </div>
-                  </div>
-                  <div class="form-item">
-                    <div class="form-label">Maximum total supply</div>
-                    <div class="form-value">
-                      <input type="number" placeholder="unlimited" id="fork-form-allowance-maximum-total-supply-input" min="1">
                     </div>
                   </div>
                 </div>
@@ -391,7 +379,6 @@
       const forkFormNewJbProjectOwnerInput = document.getElementById("fork-form-new-jb-project-owner-input");
       const forkFormNewJbMinimumPriceInput = document.getElementById("fork-form-new-jb-minimum-price-input");
       const forkFormNewJbMinimumTotalSupplyInput = document.getElementById("fork-form-new-jb-minimum-total-supply-input");
-      const forkFormNewJbMaximumTotalSupplyInput = document.getElementById("fork-form-new-jb-maximum-total-supply-input");
       const forkFormNewJbAddressesInput = document.getElementById("fork-form-new-jb-addresses-input");
       const forkFormNewJbErrorMessage = document.getElementById("fork-form-new-jb-error-message");
       const forkFormNewJbSuccessMessage = document.getElementById("fork-form-new-jb-success-message");
@@ -772,8 +759,9 @@
         const symbol = forkFormNewJbCollectionTickerInput.value;
         const owner = forkFormNewJbProjectOwnerInput.value;
         const minimumPrice = fixedPointNumber(forkFormNewJbMinimumPriceInput.value, 18);
-        const minimumTotalSupply = forkFormNewJbMinimumTotalSupplyInput.value;
-        const maximumTotalSupply = forkFormNewJbMaximumTotalSupplyInput.value;
+        const supply = forkFormNewJbMinimumTotalSupplyInput.value;
+        const minimumTotalSupply = supply;
+        const maximumTotalSupply = supply;
         const allowedAddresses = !forkFormNewJbAddressesInput.value ? [] : forkFormNewJbAddressesInput.value.split('\n');
         const stage1AutomintTokenAmount = fixedPointNumber(forkFormNewJbRevnetAutomintInput.value, 18); 
         const stage2AutomintTokenAmount = fixedPointNumber(forkFormNewJbRevnetAutomintInput2.value, 18); 
@@ -886,7 +874,6 @@
       const forkFormAllowanceCategoryInput = document.getElementById("fork-form-allowance-nft-category-input");
       const forkFormAllowanceMinimumPriceInput = document.getElementById("fork-form-allowance-minimum-price-input");
       const forkFormAllowanceMinimumTotalSupplyInput = document.getElementById("fork-form-allowance-minimum-total-supply-input");
-      const forkFormAllowanceMaximumTotalSupplyInput = document.getElementById("fork-form-allowance-maximum-total-supply-input");
       const forkFormAllowanceAddressesInput = document.getElementById("fork-form-allowance-addresses-input");
       const forkFormAllowanceErrorMessage = document.getElementById("fork-form-allowance-error-message");
   
@@ -901,8 +888,6 @@
           // Hide the error message.
           forkFormAllowanceErrorMessage.style.display = "none";
         }
-        // Default to max
-        if (!forkFormAllowanceMaximumTotalSupplyInput.value) forkFormAllowanceMaximumTotalSupplyInput.value = 1000000000;
         // Default to 1
         if (!forkFormAllowanceMinimumTotalSupplyInput.value) forkFormAllowanceMinimumTotalSupplyInput.value = 1;
         // Default to free
@@ -921,8 +906,9 @@
         const collectionAddress = forkFormAllowanceCollectionAddressInput.value;
         const category = forkFormAllowanceCategoryInput.value;
         const minimumPrice = fixedPointNumber(forkFormAllowanceMinimumPriceInput.value, 18); 
-        const minimumTotalSupply = forkFormAllowanceMinimumTotalSupplyInput.value;
-        const maximumTotalSupply = forkFormAllowanceMaximumTotalSupplyInput.value;
+        const supply = forkFormAllowanceMinimumTotalSupplyInput.value;
+        const minimumTotalSupply = supply;
+        const maximumTotalSupply = supply;
         const allowedAddresses = !forkFormAllowanceAddressesInput.value ? [] : forkFormAllowanceAddressesInput.value.split('\n');
   
         try {

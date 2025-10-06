@@ -67,51 +67,6 @@
       <div id="record-post-form" class="form negative-space">
         <span id="record-post-form-header" class="form-header">Buy a first copy to support the author, become a collector, and memorialize it onchain.</span>
         <div class="form-body">
-          <details id="record-post-form-options-reveal">
-            <summary id="record-post-form-options-toggle" class="form-toggle form-main-toggle">options</summary>
-            <div class="form-section-description">As the first buyer, you're in control. Set the price, how many copies will be made available for purchase, and the address that will be sent the first copies that you are buying.</div>
-            <div class="form-section">
-              <div class="form-item">
-                <div class="form-label">Price</div>
-                <div class="form-value">
-                  <span class="ether form-input-prefix">Ξ</span><input type="number" value="" id="record-post-form-price-input" min="0">
-                </div>
-              </div>
-              <div id="record-post-form-total-supply-field" class="form-item">
-                <div class="form-label">Total copies</div>
-                <div class="form-value">
-                  <input type="number" placeholder="10" value="" id="record-post-form-total-supply-input" min="1">
-                </div>
-              </div>
-              <div class="form-item">
-                <div class="form-label">You're buying</div>
-                <div class="form-value">
-                  <input type="number" value="1" id="record-post-form-quantity-input" min="1">
-                </div>
-              </div>
-              <div class="form-item form-item-large">
-                <div class="form-label">Address
-                  <button id="record-post-form-load-address-button" class="form-load-address-button"><span class="form-load-addres-button-text">connect wallet</span></button>
-                </div>
-                <div class="form-value">
-                  <input type="text" placeholder="Defaults to your address" id="record-post-form-beneficiary-input">
-                </div>
-              </div>
-            </div>
-            <div class="form-section-disclaimer">An added 5% feeds the <a id="record-post-form-cpn-anchor" href="https://app.revnet.eth.sucks/eth:2" target="_blank">Croptop Publishing Network</a> in exchange for $CPN to this site's author.</div>
-            <details id="record-post-form-disclaimer-reveal">
-              <summary id="record-post-form-disclaimer-toggle" class="form-toggle form-disclaimer-toggle">customize</summary>
-              <div class="form-section-description">Change who gets the $CPN</div>
-              <div class="form-section">
-                <div class="form-item form-item-large">
-                  <div class="form-label">Address</div>
-                  <div class="form-value">
-                    <input type="text" placeholder="Defaults to the address of this site's author" id="record-post-form-cpn-beneficiary-input">
-                  </div>
-                </div>
-              </div>
-            </details>
-          </details>
         </div>
       </div>
       <div id="post-form-loading-animation" class="loading-animation"></div>
@@ -229,15 +184,6 @@
 
   const decorateRecordForm = async (chain, collectionAddress, category, encodedIPFSUri, formattedMinTotalSupply, formattedMaxTotalSupply, formattedMinPrice, formattedAllowedAddresses) => {
     // Get references to record form elements that need decorating.
-    const recordPostFormBeneficiaryInput = document.getElementById("record-post-form-beneficiary-input");
-    const recordPostFormCpnBeneficiaryInput = document.getElementById("record-post-form-cpn-beneficiary-input");
-    const recordPostFormTotalSupplyField = document.getElementById("record-post-form-total-supply-field");
-    const recordPostFormTotalSupplyInput = document.getElementById("record-post-form-total-supply-input");
-    const recordPostFormPriceInput = document.getElementById("record-post-form-price-input");
-    const recordPostFormQuantityInput = document.getElementById("record-post-form-quantity-input");
-    const recordPostFormOptionsReveal = document.getElementById("record-post-form-options-reveal");
-    const recordPostFormCpnAnchor = document.getElementById("record-post-form-cpn-anchor");
-    const recordPostFormDisclaimerReveal = document.getElementById("record-post-form-disclaimer-reveal");
     const postFormErrorMessage = document.getElementById("post-form-error-message");
     const postFormButtonText = document.getElementById("post-form-button-text");
     const postFormButton = document.getElementById("post-form-button");
@@ -252,38 +198,12 @@
     // Change the button text.
     postFormButtonText.innerHTML = "memorialize";
 
-    // If the min and max total supplies are the same, hide the total supply field.
-    if (formattedMinTotalSupply == formattedMaxTotalSupply) {
-      recordPostFormTotalSupplyField.display = "none";
-    } else {
-      recordPostFormTotalSupplyField.display = "initial";
-    }
-
-    // Toggle off the sections.
-    recordPostFormOptionsReveal.open = false;
-    recordPostFormDisclaimerReveal.open = false;
-
-    // Set the correct link given the chain.
-    recordPostFormCpnAnchor.href = `${projectLinkBase(chain)}${cpnCollectionAddress(chain)}`;
 
     // Re-decorate some input fields depending on the allowances set for the project and category.
     const checkState = async () => {
       // Set error message if not allowed.
       if (signer && formattedAllowedAddresses.length && !formattedAllowedAddresses.includes(signer)) {
         postFormErrorMessage.innerHTML = `Collection ${collectionAddress} has reserved posting to category ${category} for these addresses: ${formattedAllowedAddresses}.`;
-        postFormErrorMessage.classList.add("warn");
-        postFormErrorMessage.style.display = "block";
-        postFormButton.disabled = true;
-        postFormButton.style.display = "block";
-      // Set error messages if the currently inputted values are too small.
-      } else if (Number(recordPostFormPriceInput.value) < formattedMinPrice || Number(recordPostFormTotalSupplyInput.value) < formattedMinTotalSupply || Number(recordPostFormTotalSupplyInput.value) > formattedMaxTotalSupply) {
-        postFormErrorMessage.innerHTML = `Collection ${collectionAddress} has a minimum price of <span class="ether">Ξ</span>${formattedMinPrice}, a minimum total supply of ${formattedMinTotalSupply}, and a maximum total supply of ${formattedMaxTotalSupply} to record on category ${category}.`;
-        postFormErrorMessage.classList.add("warn");
-        postFormErrorMessage.style.display = "block";
-        postFormButton.disabled = true;
-        postFormButton.style.display = "block";
-      } else if (Number(recordPostFormQuantityInput.value) > Number(recordPostFormTotalSupplyInput.value)) {
-        postFormErrorMessage.innerHTML = `The total supply is ${recordPostFormTotalSupplyInput.value}. Can't buy ${recordPostFormQuantityInput.value}.`;
         postFormErrorMessage.classList.add("warn");
         postFormErrorMessage.style.display = "block";
         postFormButton.disabled = true;
@@ -296,51 +216,14 @@
       }
     }
 
-    // Prevent excessive calls.
-    let checkStateTimer;
-    const queueCheckState = async () => {
-      clearTimeout(checkStateTimer);
-      checkStateTimer = setTimeout(checkState, formInputReactionTimeDelay);
-    }
-
-    // Update the form's state each time the price, total supply, or quantity changes.
-    recordPostFormPriceInput.addEventListener("input", queueCheckState);
-    recordPostFormTotalSupplyInput.addEventListener("input", queueCheckState);
-    recordPostFormQuantityInput.addEventListener("input", queueCheckState);
-
-    // Set values in the form if the fields are not yet set.
-    if (!recordPostFormBeneficiaryInput.value && signer) recordPostFormBeneficiaryInput.value = signer;
-    if (!recordPostFormPriceInput.value) recordPostFormPriceInput.value = formattedMinPrice;
-    if (!recordPostFormTotalSupplyInput.value) recordPostFormTotalSupplyInput.value = formattedMinTotalSupply;
-
-    // Allow connecting wallet to prefill beneficiary input field.
-    const loadAddressButton = document.getElementById("record-post-form-load-address-button");
-    loadAddressButton.onclick = async () => {
-      signer = (await getSigner()).address;
-      recordPostFormBeneficiaryInput.value = signer;
-      await checkState();
-    };
 
     // Submit the form.
     postFormButton.onclick = async () => {
-      // Check for empty values.
-      if (recordPostFormPriceInput.value == "" || !recordPostFormTotalSupplyInput.value || !recordPostFormQuantityInput.value) {
-        postFormErrorMessage.innerHTML = "Fill out the form.";
-        postFormErrorMessage.classList.add("warn");
-        postFormErrorMessage.style.display = "block";
-        return;
-      }
-
       // Show the loading animation.
       startLoadingAnimation('post-form-button-loading-animation');
 
       // Get the signer.
       signer = (await getSigner()).address;
-
-      // Default to the signer.
-      if (!recordPostFormBeneficiaryInput.value) recordPostFormBeneficiaryInput.value = signer;
-      // Default to the eth address, or the signer;
-      if (!recordPostFormCpnBeneficiaryInput.value) recordPostFormCpnBeneficiaryInput.value = resolveCPNBeneficiaryAddress(chain) || signer;
 
       // Make sure the form contents make sense.
       await checkState();
@@ -369,12 +252,12 @@
           }
       }
 
-      // Normalize values from the form.
-      const totalSupply = recordPostFormTotalSupplyInput.value;
-      const quantity = recordPostFormQuantityInput.value;
-      const price = fixedPointNumber(recordPostFormPriceInput.value, 18);
-      const beneficiary = recordPostFormBeneficiaryInput.value;
-      const cpnBeneficiary = recordPostFormCpnBeneficiaryInput.value;
+      // Use simplified values: min price, supply as total supply, buy 1 copy, default addresses
+      const totalSupply = formattedMinTotalSupply;
+      const quantity = 1;
+      const price = fixedPointNumber(formattedMinPrice, 18);
+      const beneficiary = signer; // Use signer's address as default
+      const cpnBeneficiary = resolveCPNBeneficiaryAddress(chain) || signer; // Use default CPN beneficiary
       const totalPrice = BigInt(price) * BigInt(quantity);
       const value = totalPrice + ((collectionAddress == await cpnCollectionAddress(chain)) ? BigInt(0) : (totalPrice / BigInt(feeDivisor)));
 
