@@ -167,7 +167,7 @@
     const recordPostFormHeader = document.getElementById("record-post-form-header");
     const chainId = resolveChainId(chain);
     const chainLabel = resolveChainLabel(chainId);
-    recordPostFormHeader.innerHTML = `Price: <span class="ether">Ξ</span>${formattedMinPrice}  |  Copies left: ${formattedMinTotalSupply}`;
+    recordPostFormHeader.innerHTML = `Price: <span class="ether">Ξ</span>${formattedMinPrice}  <span style="color: var(--foreground-secondary-color)">|</span>  Copies left: ${formattedMinTotalSupply}`;
   }
 
   const decorateRecordForm = async (chain, collectionAddress, category, encodedIPFSUri, formattedMinTotalSupply, formattedMaxTotalSupply, formattedMinPrice, formattedAllowedAddresses) => {
