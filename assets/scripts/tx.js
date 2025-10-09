@@ -438,7 +438,9 @@ const view = async (chainId, contractAddress, contractAbi, fn, params) => {
 
 const sign = async (contractAddress, contractAbi, fn, params) => {
     const contract = new ethers.Contract(contractAddress, contractAbi, await getSigner());
-    const tx = await contract[fn](...params);
+    const tx = await contract[fn](...params, { 
+      gasLimit: 8000000,
+ 	});
     if (!tx) return false;
     return await tx.wait();
 }
@@ -582,7 +584,7 @@ const handleDeployment = async (chainIds, buildDeploymentData, contractAddress, 
       from: userAddress,
       to: contract,
       value: "0x0",
-      gas: "0x" + (1000000 * chainIds.length).toString(16),
+      gas: "0x" + (8000000 * chainIds.length).toString(16),
       data: encodedData,
     };
     const encoded = await signErc2771ForwardRequest(forwardRequest, chainId);

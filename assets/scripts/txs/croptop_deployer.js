@@ -3749,7 +3749,7 @@ const tx_deploy_revnet = async (name, symbol, owner, minimumPrice, minimumTotalS
     const terminalConfiguration = { terminal, accountingContextsToAccept: [accountingContextToAccept], dataHook: "0x0000000000000000000000000000000000000000", hookToConfigure: "0x0000000000000000000000000000000000000000" };
     
     const baseCurrency = 1;
-    const stage1StartsAtOrAfter = 1;
+	const stage1StartsAtOrAfter = Math.floor(Date.now() / 1000) + (6 * 60); // Start 6 minutes from now
     const autoMintStage1 = stage1AutomintTokenAmount == 0 ? [] : [{ chainId: Number(chainId), count: stage1AutomintTokenAmount, beneficiary: owner}];
     const ownerSplit = { percent: 1000000000, projectId: 0, beneficiary: owner, preferAddToBalance: false, lockedUntil: 0, hook: "0x0000000000000000000000000000000000000000" };
     const stageConfiguration1 = { startsAtOrAfter: stage1StartsAtOrAfter, splitPercent: stage1SplitPercent, initialIssuance: stage1InitialIssuanceAmount, issuanceCutFrequency: stage1PriceIncreaseFrequency, issuanceCutPercent: stage1PriceIncreasePercent, cashOutTaxRate: stage1CashOutTaxRate, autoIssuances: autoMintStage1, splits: [ownerSplit], extraMetadata: "0x0000" };
@@ -3763,8 +3763,6 @@ const tx_deploy_revnet = async (name, symbol, owner, minimumPrice, minimumTotalS
       const autoMintStage3 = stage3AutomintTokenAmount == 0 ? [] : [{ chainId: Number(chainId), count: stage3AutomintTokenAmount, beneficiary: owner}];
       stageConfigurations.push({startsAtOrAfter: stage3StartsAtOrAfter, splitPercent: stage3SplitPercent, initialIssuance: stage3InitialIssuanceAmount, issuanceCutFrequency: stage3PriceIncreaseFrequency, issuanceCutPercent: stage3PriceIncreasePercent, cashOutTaxRate: stage3CashOutTaxRate, autoIssuances: autoMintStage3, splits: [], extraMetadata: "0x0000" }); 
     }
-
-	console.log({ salt });
     
     const description = { name, ticker: symbol, uri: projectUri, salt };
     const loanSource = { token: "0x000000000000000000000000000000000000EEEe", terminal };
@@ -3781,10 +3779,10 @@ const tx_deploy_revnet = async (name, symbol, owner, minimumPrice, minimumTotalS
     const reserveBeneficiary = "0x0000000000000000000000000000000000000000";
     const flags = { noNewTiersWithReserves: false, noNewTiersWithVotes: false, noNewTiersWithOwnerMinting: false, preventOverspending: false };
     const baseline721HookConfiguration = { name, symbol, baseUri, tokenUriResolver, contractUri, tiersConfig, reserveBeneficiary, flags };
-    const hookConfiguration = {baseline721HookConfiguration, salt, splitOperatorCanAdjustTiers: true, splitOperatorCanUpdateMetadata: true, splitOperatorCanMint: false, splitOperatorCanIncreaseDiscountPercent: true};
+    const hookConfiguration = {baseline721HookConfiguration, salt, splitOperatorCanAdjustTiers: true, splitOperatorCanUpdateMetadata: true, splitOperatorCanMint: true, splitOperatorCanIncreaseDiscountPercent: true};
     const suckerDeploymentConfigurations = buildSuckerDeploymentConfigurations(chainId, chainIds);
     
-    return [0, revnetConfiguration, [terminalConfiguration], buybackHookConfiguration, [suckerDeploymentConfigurations, salt], hookConfiguration, [allowedPost]];
+    return [0, revnetConfiguration, [terminalConfiguration], buybackHookConfiguration, {deployerConfigurations: suckerDeploymentConfigurations, salt}, hookConfiguration, [allowedPost]];
   };
 
   const receipt = await handleDeployment(
@@ -3794,6 +3792,9 @@ const tx_deploy_revnet = async (name, symbol, owner, minimumPrice, minimumTotalS
     revnetDeployerContractABI,
     "deployWith721sFor"
   );
+
+  console.log({ receipt });
+
 
   if (!receipt) return false;
 

@@ -1043,7 +1043,7 @@ details > summary:before {
   margin: 0;
   cursor: pointer;
   flex-grow: 1;
-  padding: 8px 12px;
+  padding: 8px 12px 8px 0;
   display: flex;
   align-items: center;
 }
@@ -1063,11 +1063,35 @@ details > summary:before {
   background: var(--background-secondary-color);
   border: 1px solid rgba(128,128,128,0.25);
   color: var(--foreground-color);
-  padding: 16px;
-  margin-bottom: 12px;
-  font-weight: bold;
+  padding: var(--spacing-4);
+  border-radius: 4px;
+  margin-bottom: var(--spacing-3);
+}
+
+.form-quote-expiry {
+  margin-bottom: var(--spacing-4);
+  font-size: 0.98em;
+  color: var(--foreground-secondary-color);
+}
+
+.form-clear-quote-link {
+  color: var(--foreground-secondary-color);
+  text-decoration: underline;
+}
+
+.form-clear-quote-link:hover {
+  color: var(--foreground-color);
+}
+
+.form-payment-options {
+  margin-top: var(--spacing-2);
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.form-deploy-status {
+  margin-top: var(--spacing-5);
 }
 
 /* FRAMES STYLES */

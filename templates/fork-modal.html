@@ -17,117 +17,114 @@
       <div id="fork-form" class="form mobile-padding negative-space">
         <div class="form-body">
           <div class="form-section">
-              <div class="form-section">
-                <div class="form-section-description">Name and ticker are permanent.</div> 
-                <div class="form-item">
-  
-                  <div class="form-label">Collection name</div>
-                  <div class="form-value">
-                    <input type="text" placeholder="Your collection name" id="fork-form-new-jb-collection-name-input">
-                  </div>
-                </div>
-                <div class="form-item">
-                  <div class="form-label">Ticker</div>
-                  <div class="form-value">
-                    <input type="text" placeholder="POSTS" id="fork-form-new-jb-collection-symbol-input">
-                  </div>
-                </div>
+            <div class="form-section-description">Name and ticker are permanent.</div> 
+            <div class="form-item">
+
+              <div class="form-label">Collection name</div>
+              <div class="form-value">
+                <input type="text" placeholder="Your collection name" id="fork-form-new-jb-collection-name-input">
               </div>
-              <div class="form-section">
-                <div class="form-section-description">Set the address that manages your collection's revenues.</div>
-                <div class="form-item form-item-large">
-                  <div class="form-label">Revenue manager
-                    <button id="fork-form-new-jb-load-address-button" class="form-load-address-button"><span class="form-load-address-button-text">connect wallet</span></button>
-                  </div>
-                  <div class="form-value">
-                    <input type="text" placeholder="Defaults to your address" id="fork-form-new-jb-project-owner-input">
-                  </div>
-                </div>
+            </div>
+            <div class="form-item">
+              <div class="form-label">Ticker</div>
+              <div class="form-value">
+                <input type="text" placeholder="POSTS" id="fork-form-new-jb-collection-symbol-input">
               </div>
-              <div class="form-section">
-                <div class="form-section-description">Set a price and number of copies for each post in your collection.</div>
-                <div class="form-item">
-                  <div class="form-label">Price</div>
-                  <div class="form-value">
-                    <span class="ether form-input-prefix">Ξ</span><input type="number" placeholder="free" value="0.001" id="fork-form-new-jb-minimum-price-input" min="0">
-                  </div>
-                </div>
-                <div class="form-item">
-                  <div class="form-label">Copies</div>
-                  <div class="form-value">
-                    <input type="number" value="100" id="fork-form-new-jb-minimum-total-supply-input" min="1">
-                  </div>
-                </div>
-              </div>
-              <div class="form-section" style="display: none;">
-                <div class="form-item form-item-large">
-                  <div class="form-label">Addresses allowed to buy (one per line)</div>
-                  <div class="form-value">
-                    <textarea rows="4" id="fork-form-new-jb-addresses-input" placeholder="leave empty for no restrictions"></textarea>
-                  </div>
-                </div>
-              </div>
-              <div id="fork-form-new-jb-chain" class="form-section">
-                <div class="form-section-description">Choose where you want your collection. Each will ask for a signature.</div>
-                <div class="form-item">
-                  <div class="form-value form-select-value">
-                    <select id="fork-form-new-jb-state-chain-env" name="chain-env">
-                      <option value="production">Production</option>
-                      <option value="testnet">Testnet</option>
-                    </select>
-                  </div>
-                  <div class="form-value form-chain-checkbox-value">
-                    <div id="fork-form-new-jb-chain-production-options" class="form-chain-options">
-                      <div class="form-checkbox-option">
-                        <input type="checkbox" id="fork-form-new-jb-ethereum-mainnet" name="chain" value="ethereum mainnet">
-                        <label for="fork-form-new-jb-ethereum-mainnet">Ethereum</label>
-                      </div>
-                      <div class="form-checkbox-option">
-                        <input type="checkbox" id="fork-form-new-jb-optimism-mainnet" name="chain" value="optimism mainnet">
-                        <label for="fork-form-new-jb-optimism-mainnet">Optimism</label>
-                      </div>
-                      <div class="form-checkbox-option">
-                        <input type="checkbox" id="fork-form-new-jb-arbitrum-mainnet" name="chain" value="arbitrum mainnet">
-                        <label for="fork-form-new-jb-arbitrum-mainnet">Arbitrum</label>
-                      </div>
-                      <div class="form-checkbox-option">
-                        <input type="checkbox" id="fork-form-new-jb-base-mainnet" name="chain" value="base mainnet">
-                        <label for="fork-form-new-jb-base-mainnet">Base</label>
-                      </div>
-                    </div>
-                    <div id="fork-form-new-jb-chain-testnet-options" class="form-chain-options" style="display: none;">
-                      <div class="form-checkbox-option">
-                        <input type="checkbox" id="fork-form-new-jb-ethereum-sepolia" name="chain" value="ethereum sepolia">
-                        <label for="fork-form-new-jb-ethereum-sepolia">Ethereum Sepolia</label>
-                      </div>
-                      <div class="form-checkbox-option">
-                        <input type="checkbox" id="fork-form-new-jb-optimism-sepolia" name="chain" value="optimism sepolia">
-                        <label for="fork-form-new-jb-optimism-sepolia">Optimism Sepolia</label>
-                      </div>
-                      <div class="form-checkbox-option">
-                        <input type="checkbox" id="fork-form-new-jb-arbitrum-sepolia" name="chain" value="arbitrum sepolia">
-                        <label for="fork-form-new-jb-arbitrum-sepolia">Arbitrum Sepolia</label>
-                      </div>
-                      <div class="form-checkbox-option">
-                        <input type="checkbox" id="fork-form-new-jb-base-sepolia" name="chain" value="base sepolia">
-                        <label for="fork-form-new-jb-base-sepolia">Base Sepolia</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>           
-              <div id="fork-form-new-jb-error-message" class="form-error-message mobile-padding"></div>
-              <button id="fork-form-new-jb-submit-button" class="form-button"><span id="fork-form-new-jb-submit-button-text" class="form-button-text">deploy collection</span><span id="fork-form-new-jb-button-loading-animation" class="loading-animation button-loading-animation"></span></button> 
-              <div id="fork-form-new-jb-success-message" class="form-success-message mobile-padding"></div>
-              <div id="fork-form-new-jb-relayr-quote-section" style="display: none;" class="mt-4">
-                <div id="fork-form-new-jb-relayr-quote-details" class="mb-4 p-4 bg-gray-100 rounded"></div>
-                <div id="fork-form-new-jb-relayr-payment-options" class="flex flex-col gap-4">
-                  <!-- Payment options will be dynamically inserted here -->
-                </div>
-                <div id="fork-form-new-jb-relayr-deploy-status" style="margin-top: 24px; display: none;"></div>
-              </div>
-              <div id="fork-form-new-jb-relayr-controls"></div>
+            </div>
           </div>
+          <div class="form-section">
+            <div class="form-section-description">Set the address that manages your collection's revenues.</div>
+            <div class="form-item form-item-large">
+              <div class="form-label">Revenue manager
+                <button id="fork-form-new-jb-load-address-button" class="form-load-address-button"><span class="form-load-address-button-text">connect wallet</span></button>
+              </div>
+              <div class="form-value">
+                <input type="text" placeholder="Defaults to your address" id="fork-form-new-jb-project-owner-input">
+              </div>
+            </div>
+          </div>
+          <div class="form-section">
+            <div class="form-section-description">Set a price and number of copies for each post in your collection.</div>
+            <div class="form-item">
+              <div class="form-label">Price</div>
+              <div class="form-value">
+                <span class="ether form-input-prefix">Ξ</span><input type="number" placeholder="free" value="0.001" id="fork-form-new-jb-minimum-price-input" min="0">
+              </div>
+            </div>
+            <div class="form-item">
+              <div class="form-label">Copies</div>
+              <div class="form-value">
+                <input type="number" value="100" id="fork-form-new-jb-minimum-total-supply-input" min="1">
+              </div>
+            </div>
+          </div>
+          <div class="form-section" style="display: none;">
+            <div class="form-item form-item-large">
+              <div class="form-label">Addresses allowed to buy (one per line)</div>
+              <div class="form-value">
+                <textarea rows="4" id="fork-form-new-jb-addresses-input" placeholder="leave empty for no restrictions"></textarea>
+              </div>
+            </div>
+          </div>
+          <div id="fork-form-new-jb-chain" class="form-section">
+            <div class="form-section-description">Choose where you want your collection. Each will ask for a signature.</div>
+            <div class="form-item">
+              <div class="form-value form-select-value">
+                <select id="fork-form-new-jb-state-chain-env" name="chain-env">
+                  <option value="production">Production</option>
+                  <option value="testnet">Testnet</option>
+                </select>
+              </div>
+              <div class="form-value form-chain-checkbox-value">
+                <div id="fork-form-new-jb-chain-production-options" class="form-chain-options">
+                  <div class="form-checkbox-option">
+                    <input type="checkbox" id="fork-form-new-jb-ethereum-mainnet" name="chain" value="ethereum mainnet">
+                    <label for="fork-form-new-jb-ethereum-mainnet">Ethereum</label>
+                  </div>
+                  <div class="form-checkbox-option">
+                    <input type="checkbox" id="fork-form-new-jb-optimism-mainnet" name="chain" value="optimism mainnet">
+                    <label for="fork-form-new-jb-optimism-mainnet">Optimism</label>
+                  </div>
+                  <div class="form-checkbox-option">
+                    <input type="checkbox" id="fork-form-new-jb-arbitrum-mainnet" name="chain" value="arbitrum mainnet">
+                    <label for="fork-form-new-jb-arbitrum-mainnet">Arbitrum</label>
+                  </div>
+                  <div class="form-checkbox-option">
+                    <input type="checkbox" id="fork-form-new-jb-base-mainnet" name="chain" value="base mainnet">
+                    <label for="fork-form-new-jb-base-mainnet">Base</label>
+                  </div>
+                </div>
+                <div id="fork-form-new-jb-chain-testnet-options" class="form-chain-options" style="display: none;">
+                  <div class="form-checkbox-option">
+                    <input type="checkbox" id="fork-form-new-jb-ethereum-sepolia" name="chain" value="ethereum sepolia">
+                    <label for="fork-form-new-jb-ethereum-sepolia">Ethereum Sepolia</label>
+                  </div>
+                  <div class="form-checkbox-option">
+                    <input type="checkbox" id="fork-form-new-jb-optimism-sepolia" name="chain" value="optimism sepolia">
+                    <label for="fork-form-new-jb-optimism-sepolia">Optimism Sepolia</label>
+                  </div>
+                  <div class="form-checkbox-option">
+                    <input type="checkbox" id="fork-form-new-jb-arbitrum-sepolia" name="chain" value="arbitrum sepolia">
+                    <label for="fork-form-new-jb-arbitrum-sepolia">Arbitrum Sepolia</label>
+                  </div>
+                  <div class="form-checkbox-option">
+                    <input type="checkbox" id="fork-form-new-jb-base-sepolia" name="chain" value="base sepolia">
+                    <label for="fork-form-new-jb-base-sepolia">Base Sepolia</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>           
+          <div id="fork-form-new-jb-relayr-quote-section" style="display: none;" class="form-section">
+            <div id="fork-form-new-jb-relayr-quote-details" class="form-quote-details"></div>
+            <div id="fork-form-new-jb-relayr-payment-options" class="form-payment-options">
+              <!-- Payment options will be dynamically inserted here -->
+            </div>
+            <div id="fork-form-new-jb-relayr-deploy-status" style="display: none;" class="form-deploy-status"></div>
+          </div>
+          <div id="fork-form-new-jb-error-message" class="form-error-message mobile-padding"></div>
+          <button id="fork-form-new-jb-submit-button" class="form-button"><span id="fork-form-new-jb-submit-button-text" class="form-button-text">deploy collection</span><span id="fork-form-new-jb-button-loading-animation" class="loading-animation button-loading-animation"></span></button> 
+          <div id="fork-form-new-jb-success-message" class="form-success-message mobile-padding"></div>
         </div>
       </div>
     </div>
@@ -266,6 +263,9 @@
         errorMessage.style.display = "none";
         relayrSection.style.display = 'none';
         
+        // Restore original button text
+        updateDeployButtonText();
+        
         selectedPaymentChainId = null;
         relayrQuote = null;
         relayrPolling = false;
@@ -274,7 +274,10 @@
       const showRelayrQuoteUI = (quote) => {
         const relayrSection = document.getElementById('fork-form-new-jb-relayr-quote-section');
         const paymentOptionsDiv = document.getElementById('fork-form-new-jb-relayr-payment-options');
+        const submitButton = document.getElementById('fork-form-new-jb-submit-button');
+        
         relayrSection.style.display = 'block';
+        // Don't hide the submit button - we're reusing it
         paymentOptionsDiv.innerHTML = '';
 
         // Quote status
@@ -286,17 +289,14 @@
         // Expiry (5 min default)
         const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // or use quote.expiry if available
         const expiresText = document.createElement('div');
-        expiresText.style.marginBottom = '16px';
-        expiresText.style.fontSize = '0.98em';
-        expiresText.style.color = '#444';
-        expiresText.innerHTML = `Quote valid until <b>${expiresAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})}</b>. <a href="#" id="clear-quote-link" style="color:#888;text-decoration:underline;">clear quote</a>`;
+        expiresText.className = 'form-quote-expiry';
+        expiresText.innerHTML = `Quote valid until <b>${expiresAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})}</b>. <a href="#" id="clear-quote-link" class="form-clear-quote-link">clear quote</a>`;
         paymentOptionsDiv.appendChild(expiresText);
 
         // Payment dropdown label
         const label = document.createElement('div');
         label.innerText = 'How would you like to pay?';
-        label.className = 'form-label'
-         ;
+        label.className = 'form-label';
         paymentOptionsDiv.appendChild(label);
 
         // Payment dropdown (styled like the rest of the site)
@@ -321,23 +321,24 @@
         formItem.appendChild(selectWrapper);
         paymentOptionsDiv.appendChild(formItem);
 
-        // Pay button (left aligned, not full width)
-        const payBtn = document.createElement('button');
-        payBtn.className = 'form-button';
-        payBtn.innerText = 'deploy collection';
-        payBtn.disabled = false;
-        // Add a unique spinner span for this button
-        const spinnerId = 'relayr-pay-btn-spinner';
-        const spinner = document.createElement('span');
-        spinner.id = spinnerId;
-        spinner.className = 'loading-animation button-loading-animation';
-        spinner.style.display = 'none';
-        payBtn.appendChild(spinner);
-        payBtn.onclick = async () => {
+        // Reuse the existing submit button for deployment
+        const existingSubmitButton = document.getElementById('fork-form-new-jb-submit-button');
+        const existingButtonText = document.getElementById('fork-form-new-jb-submit-button-text');
+        const existingSpinner = document.getElementById('fork-form-new-jb-button-loading-animation');
+        
+        // Update button text to "deploy collection"
+        existingButtonText.textContent = 'deploy collection';
+        existingSubmitButton.disabled = false;
+        
+        // Store the original onclick handler
+        const originalOnclick = existingSubmitButton.onclick;
+        
+        // Replace the onclick handler for quote deployment
+        existingSubmitButton.onclick = async () => {
           const idx = select.value;
           const paymentInfo = quote.payment_info[idx];
-          payBtn.disabled = true;
-          startLoadingAnimation(spinnerId);
+          existingSubmitButton.disabled = true;
+          startLoadingAnimation('fork-form-new-jb-button-loading-animation');
           try {
             const sendTx = sendRelayrTx(paymentInfo);
             // Robust logging and error handling for status table
@@ -360,11 +361,10 @@
             }
             showError(msg);
           } finally {
-            payBtn.disabled = false;
-            stopLoadingAnimation(spinnerId);
+            existingSubmitButton.disabled = false;
+            stopLoadingAnimation('fork-form-new-jb-button-loading-animation');
           }
         };
-        paymentOptionsDiv.appendChild(payBtn);
 
         // Clear quote handler
         setTimeout(() => {
@@ -373,6 +373,11 @@
             clearLink.onclick = (e) => {
               e.preventDefault();
               relayrSection.style.display = 'none';
+              
+              // Restore original button functionality
+              existingSubmitButton.onclick = originalOnclick;
+              updateDeployButtonText(); // Restore original button text
+              
               // Optionally reset state/quote here
             };
           }
@@ -417,10 +422,10 @@
         const stage1InitialIssuanceAmount = fixedPointNumber("10000", 18); // Default to 10000 issuance with 18 decimals
         const stage2InitialIssuanceAmount = 0; // No stage 2
         const stage3InitialIssuanceAmount = 0; // No stage 3
-        const stage1SplitPercent = 10000 - Math.round(10 * 100); // 10% reward
+        const stage1SplitPercent = 10000 - Math.round(62 * 100); // 62% reward
         const stage2SplitPercent = 0; // No stage 2
         const stage3SplitPercent = 0; // No stage 3
-        const stage1PriceIncreasePercent = Math.round(1 * 100); // 1% bonus
+        const stage1PriceIncreasePercent = 10_000_000; // 1% bonus
         const stage2PriceIncreasePercent = 0; // No stage 2
         const stage3PriceIncreasePercent = 0; // No stage 3
         const stage1PriceIncreaseFrequency = 7 * 86400; // Every 7 days
@@ -429,7 +434,6 @@
         const stage1CashOutTaxRate = 1000; // Default to 0.1 (10%)
         const stage2CashOutTaxRate = 0; // No stage 2
         const stage3CashOutTaxRate = 0; // No stage 3
-        const stage1StartsAtOrAfter = 1; // Start immediately (no duration field)
         const stage2StartsAtOrAfter = 0; // No stage 2
         const stage3StartsAtOrAfter = 0; // No stage 3
         
@@ -497,6 +501,7 @@
           }
 
         } catch (e) {
+          console.log({ e });
           showError(e.message || e);
         } finally {
           setLoadingState(false);
@@ -586,12 +591,18 @@
         html += `<div class="relayr-status-table-address">Collection address: ${collectionAddress}</div>`;
       }
 
-      // Show help message if at least one tx has a View link
+      // Show help message if at least one tx has been successful or has a View link
+      const hasSuccessfulTx = bundleStatus.transactions.some(tx => {
+        const state = tx.status && tx.status.state;
+        return (state === 'Success' || state === 'Included');
+      });
       const hasViewLink = bundleStatus.transactions.some(tx => {
         const state = tx.status && tx.status.state;
         return (state === 'Success' || state === 'Included') && (tx.status && (tx.status.tx_hash || (tx.status.data && tx.status.data.transaction && tx.status.data.transaction.hash)));
       });
-      if (hasViewLink) {
+      
+      // Show help message if there are successful transactions (even if View links aren't available yet)
+      if (hasSuccessfulTx || hasViewLink) {
         html += `<div class="relayr-status-table-help">
           <b>How to find your collection (hook) address:</b><br>
           Click a <span class='relayr-status-table-success'>View</span> button, go to the <b>Logs</b> tab, and read the first event.
