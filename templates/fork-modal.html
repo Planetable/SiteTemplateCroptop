@@ -118,9 +118,89 @@
           <div id="fork-form-new-jb-relayr-quote-section" style="display: none;" class="form-section">
             <div id="fork-form-new-jb-relayr-quote-details" class="form-quote-details"></div>
             <div id="fork-form-new-jb-relayr-payment-options" class="form-payment-options">
-              <!-- Payment options will be dynamically inserted here -->
+              <!-- Quote status -->
+              <div id="fork-form-quote-status-box" style="display: none;" class="form-quote-status-box">
+                Quote complete <span class="form-quote-success-icon">&#10003;</span>
+              </div>
+              
+              <!-- Quote expiry -->
+              <div id="fork-form-quote-expiry" style="display: none;" class="form-quote-expiry">
+                Quote valid until <b id="fork-form-quote-expiry-time"></b>. <a href="#" id="clear-quote-link" class="form-clear-quote-link">clear quote</a>
+              </div>
+              
+              <!-- Payment dropdown label -->
+              <div id="fork-form-payment-label" style="display: none;" class="form-label">
+                How would you like to pay?
+              </div>
+              
+              <!-- Payment options container -->
+              <div id="fork-form-payment-options-container" style="display: none;">
+                <!-- Payment options will be dynamically inserted here -->
+              </div>
             </div>
-            <div id="fork-form-new-jb-relayr-deploy-status" style="display: none;" class="form-deploy-status"></div>
+            
+            <!-- Relayr deploy status -->
+            <div id="fork-form-new-jb-relayr-deploy-status" style="display: none;" class="form-deploy-status">
+              <!-- Retry error message -->
+              <div id="fork-form-retry-error" style="display: none;" class="relayr-status-table-desc relayr-status-table-retry">
+                <div class="relayr-status-table-retry-content">
+                  <span id="fork-form-retry-error-text"></span>
+                </div>
+              </div>
+              
+              <!-- Bundle error message -->
+              <div id="fork-form-bundle-error" style="display: none;" class="relayr-status-table-failed">
+                <span id="fork-form-bundle-error-text"></span>
+              </div>
+              
+              <!-- No transactions error message -->
+              <div id="fork-form-no-transactions-error" style="display: none;" class="relayr-status-table-failed">
+                Error: Could not load deployment status. Please try again.
+              </div>
+              
+              <!-- Description -->
+              <div id="fork-form-status-description" style="display: none;" class="relayr-status-table-desc">
+                Your project is made up of components deployed on each blockchain where it'll accept funds and issue tokens from. These transactions take 1-2 minutes to settle.
+              </div>
+              
+              <!-- Status table container -->
+              <div id="fork-form-status-table-container" style="display: none;" class="relayr-status-table-container">
+                <table class="relayr-status-table">
+                  <thead>
+                    <tr>
+                      <th>Network</th>
+                      <th>Status</th>
+                      <th>Tx</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fork-form-status-table-body">
+                    <!-- Template rows for each chain -->
+                    <tr id="fork-form-status-row-template" style="display: none;">
+                      <td id="fork-form-status-row-chain"></td>
+                      <td id="fork-form-status-row-status"></td>
+                      <td id="fork-form-status-row-tx"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- Collection address -->
+              <div id="fork-form-collection-address" style="display: none;" class="relayr-status-table-address">
+                <strong>Your Collection Address:</strong><br>
+                <code class="relayr-status-table-address-code" id="fork-form-collection-address-code"></code>
+              </div>
+              
+              <!-- Loading message -->
+              <div id="fork-form-address-loading" style="display: none;" class="relayr-status-table-address relayr-status-table-address-loading">
+                Your collection's address will show here when the transaction is confirmed.
+              </div>
+              
+              <!-- Help message -->
+              <div id="fork-form-status-help" style="display: none;" class="relayr-status-table-help">
+                <b>How to find your collection address:</b><br>
+                Click a <span class='relayr-status-table-success'>View</span> button, go to the <b>Logs</b> tab, and read the first event.
+              </div>
+            </div>
           </div>
           <div id="fork-form-new-jb-error-message" class="form-error-message mobile-padding"></div>
           <button id="fork-form-new-jb-submit-button" class="form-button"><span id="fork-form-new-jb-submit-button-text" class="form-button-text">deploy collection</span><span id="fork-form-new-jb-button-loading-animation" class="loading-animation button-loading-animation"></span></button> 
@@ -133,8 +213,10 @@
   
     let relayrQuote = null;
     let selectedPaymentChainId = null;
-    let relayrPolling = false;
     let relayrTxHashes = {};
+    let selectedChainIds = []; // Track which chains were actually selected
+    let pendingHookExtractions = []; // Track pending hook address extractions
+    let collectionAddress = null; // Store the extracted collection (hook) address
 
     const decorateNewJbForm = () => {
       const forkFormChainInput = document.getElementById("fork-form-state-chain-input");
@@ -236,20 +318,22 @@
         } else {
           submitButton.disabled = false;
           loadingAnimation.style.display = 'none';
+          // Stop the loading animation when hiding it
+          stopLoadingAnimation('fork-form-new-jb-button-loading-animation');
         }
       };
 
       // Show error
       const showError = (message) => {
         const errorMessage = document.getElementById('fork-form-new-jb-error-message');
-        errorMessage.innerHTML = message;
+        errorMessage.textContent = message;
         errorMessage.style.display = "block";
       };
 
       // Show success
       const showSuccess = (message) => {
         const successMessage = document.getElementById('fork-form-new-jb-success-message');
-        successMessage.innerHTML = message;
+        successMessage.textContent = message;
         successMessage.style.display = "block";
       };
 
@@ -268,7 +352,6 @@
         
         selectedPaymentChainId = null;
         relayrQuote = null;
-        relayrPolling = false;
       };
 
       const showRelayrQuoteUI = (quote) => {
@@ -277,27 +360,21 @@
         const submitButton = document.getElementById('fork-form-new-jb-submit-button');
         
         relayrSection.style.display = 'block';
-        // Don't hide the submit button - we're reusing it
-        paymentOptionsDiv.innerHTML = '';
+        // Show quote status elements
+        const statusBox = document.getElementById('fork-form-quote-status-box');
+        const expiresText = document.getElementById('fork-form-quote-expiry');
+        const paymentLabel = document.getElementById('fork-form-payment-label');
+        const paymentOptionsContainer = document.getElementById('fork-form-payment-options-container');
+        
+        statusBox.style.display = 'block';
+        expiresText.style.display = 'block';
+        paymentLabel.style.display = 'block';
+        paymentOptionsContainer.style.display = 'block';
 
-        // Quote status
-        const statusBox = document.createElement('div');
-        statusBox.className = 'form-quote-status-box';
-        statusBox.innerHTML = `Quote complete <span style="color: #3bb273; font-size: 1.3em; margin-left: 8px;">&#10003;</span>`;
-        paymentOptionsDiv.appendChild(statusBox);
-
-        // Expiry (5 min default)
+        // Set expiry time
         const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // or use quote.expiry if available
-        const expiresText = document.createElement('div');
-        expiresText.className = 'form-quote-expiry';
-        expiresText.innerHTML = `Quote valid until <b>${expiresAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})}</b>. <a href="#" id="clear-quote-link" class="form-clear-quote-link">clear quote</a>`;
-        paymentOptionsDiv.appendChild(expiresText);
-
-        // Payment dropdown label
-        const label = document.createElement('div');
-        label.innerText = 'How would you like to pay?';
-        label.className = 'form-label';
-        paymentOptionsDiv.appendChild(label);
+        const expiryTimeElement = document.getElementById('fork-form-quote-expiry-time');
+        expiryTimeElement.textContent = expiresAt.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
 
         // Payment dropdown (styled like the rest of the site)
         const formItem = document.createElement('div');
@@ -319,7 +396,7 @@
         });
         selectWrapper.appendChild(select);
         formItem.appendChild(selectWrapper);
-        paymentOptionsDiv.appendChild(formItem);
+        paymentOptionsContainer.appendChild(formItem);
 
         // Reuse the existing submit button for deployment
         const existingSubmitButton = document.getElementById('fork-form-new-jb-submit-button');
@@ -328,10 +405,58 @@
         
         // Update button text to "deploy collection"
         existingButtonText.textContent = 'deploy collection';
-        existingSubmitButton.disabled = false;
+        // Keep button disabled and loading animation running until all transactions are complete
+        existingSubmitButton.disabled = true;
+        // Ensure loading animation is visible
+        if (existingSpinner) {
+          existingSpinner.style.display = 'inline-block';
+        }
         
         // Store the original onclick handler
         const originalOnclick = existingSubmitButton.onclick;
+        
+        // Function to reset UI to pre-deployment state
+        const resetToPreDeploymentState = () => {
+          // Hide all deployment status elements
+          const statusDiv = document.getElementById('fork-form-new-jb-relayr-deploy-status');
+          const paymentOptionsContainer = document.getElementById('fork-form-payment-options-container');
+          
+          if (statusDiv) statusDiv.style.display = 'none';
+          if (paymentOptionsContainer) paymentOptionsContainer.style.display = 'none';
+          
+          // Hide all specific status elements within the deployment status
+          const retryError = document.getElementById('fork-form-retry-error');
+          const bundleError = document.getElementById('fork-form-bundle-error');
+          const noTransactionsError = document.getElementById('fork-form-no-transactions-error');
+          const statusDescription = document.getElementById('fork-form-status-description');
+          const statusTableContainer = document.getElementById('fork-form-status-table-container');
+          const collectionAddressDiv = document.getElementById('fork-form-collection-address');
+          const addressLoading = document.getElementById('fork-form-address-loading');
+          const statusHelp = document.getElementById('fork-form-status-help');
+          
+          if (retryError) retryError.style.display = 'none';
+          if (bundleError) bundleError.style.display = 'none';
+          if (noTransactionsError) noTransactionsError.style.display = 'none';
+          if (statusDescription) statusDescription.style.display = 'none';
+          if (statusTableContainer) statusTableContainer.style.display = 'none';
+          if (collectionAddressDiv) collectionAddressDiv.style.display = 'none';
+          if (addressLoading) addressLoading.style.display = 'none';
+          if (statusHelp) statusHelp.style.display = 'none';
+          
+          // Clear any error messages
+          const errorMessage = document.getElementById('fork-form-new-jb-error-message');
+          const successMessage = document.getElementById('fork-form-new-jb-success-message');
+          if (errorMessage) errorMessage.style.display = 'none';
+          if (successMessage) successMessage.style.display = 'none';
+          
+          // Reset button text back to original
+          existingButtonText.textContent = 'get deploy quote';
+          
+          // Restore original onclick handler
+          existingSubmitButton.onclick = originalOnclick;
+          
+          // Reset state
+        };
         
         // Replace the onclick handler for quote deployment
         existingSubmitButton.onclick = async () => {
@@ -351,16 +476,24 @@
               }))});
               pollRelayrBundleStatus(quote.bundle_uuid, renderRelayrStatusTable);
               await sendTx;
-            } catch (tableErr) {
-              showError('Error showing deployment status. Please try again or contact support.');
+            } catch (e) {
+              // Reset UI to pre-deployment state on any error (including user cancellation)
+              resetToPreDeploymentState();
+              
+              let msg = e && e.message ? e.message : String(e);
+              if (msg.includes('insufficient funds')) {
+                msg = 'Insufficient funds for gas and payment.';
+              } else if (msg.includes('User rejected') || msg.includes('user rejected') || msg.includes('cancelled') || msg.includes('canceled')) {
+                msg = 'Transaction cancelled. You can try again.';
+              }
+              showError(msg);
+            } finally {
+              // Don't re-enable button or stop loading animation here - wait for all transactions to complete
             }
           } catch (e) {
-            let msg = e && e.message ? e.message : String(e);
-            if (msg.includes('insufficient funds')) {
-              msg = 'Insufficient funds for gas and payment.';
-            }
-            showError(msg);
-          } finally {
+            // Handle any other errors
+            resetToPreDeploymentState();
+            showError(e.message || 'An error occurred during deployment');
             existingSubmitButton.disabled = false;
             stopLoadingAnimation('fork-form-new-jb-button-loading-animation');
           }
@@ -386,9 +519,13 @@
 
       // Submit the form.
       forkFormNewJbSubmitButton.onclick = async () => {
+        // Clear any existing error and success messages when starting a new request
+        forkFormNewJbErrorMessage.style.display = "none";
+        forkFormNewJbSuccessMessage.style.display = "none";
+        
         // Check for empty values.
         if (!forkFormNewJbCollectionNameInput.value || !forkFormNewJbCollectionTickerInput.value || forkFormNewJbMinimumPriceInput.value == "" || !forkFormNewJbMinimumTotalSupplyInput.value) {
-          forkFormNewJbErrorMessage.innerHTML = "Fill out the form.";
+          forkFormNewJbErrorMessage.textContent = "Fill out the form.";
           forkFormNewJbErrorMessage.style.display = "block";
           return;
         } 
@@ -401,11 +538,14 @@
         startLoadingAnimation('fork-form-new-jb-button-loading-animation');
   
         // Get selected chain IDs
-        const selectedChainIds = getSelectedChainIds();
-        if (selectedChainIds.length === 0) {
+        const selectedChains = getSelectedChainIds();
+        if (selectedChains.length === 0) {
           showError("Please select at least one chain");
           return;
         }
+        
+        // Store selected chains for status table filtering
+        selectedChainIds = selectedChains;
   
         // Normalize values from the form.
         const name = forkFormNewJbCollectionNameInput.value;
@@ -445,24 +585,40 @@
           const isRevnet = true;
 
           // If multiple chains are selected, use Relayr
-          if (selectedChainIds.length > 1) {
+          if (selectedChains.length > 1) {
             let quote;
-            if (isRevnet) {
-              quote = await tx_deploy_revnet(
-                name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply,
-                allowedAddresses, stage1AutomintTokenAmount, stage2AutomintTokenAmount, stage3AutomintTokenAmount,
-                stage1InitialIssuanceAmount, stage2InitialIssuanceAmount, stage3InitialIssuanceAmount,
-                stage1SplitPercent, stage2SplitPercent, stage3SplitPercent,
-                stage1PriceIncreasePercent, stage2PriceIncreasePercent, stage3PriceIncreasePercent,
-                stage1PriceIncreaseFrequency, stage2PriceIncreaseFrequency, stage3PriceIncreaseFrequency,
-                stage1CashOutTaxRate, stage2CashOutTaxRate, stage3CashOutTaxRate,
-                stage2StartsAtOrAfter, stage3StartsAtOrAfter, selectedChainIds, salt
-              );
-            } else {
-              quote = await tx_deploy_project(
-                name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, 
-                allowedAddresses, selectedChainIds, salt
-              );
+            let retryCount = 0;
+            const maxRetries = 2;
+            
+            while (retryCount <= maxRetries) {
+              try {
+                if (isRevnet) {
+                  quote = await tx_deploy_revnet(
+                    name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply,
+                    allowedAddresses, stage1AutomintTokenAmount, stage2AutomintTokenAmount, stage3AutomintTokenAmount,
+                    stage1InitialIssuanceAmount, stage2InitialIssuanceAmount, stage3InitialIssuanceAmount,
+                    stage1SplitPercent, stage2SplitPercent, stage3SplitPercent,
+                    stage1PriceIncreasePercent, stage2PriceIncreasePercent, stage3PriceIncreasePercent,
+                    stage1PriceIncreaseFrequency, stage2PriceIncreaseFrequency, stage3PriceIncreaseFrequency,
+                    stage1CashOutTaxRate, stage2CashOutTaxRate, stage3CashOutTaxRate,
+                    stage2StartsAtOrAfter, stage3StartsAtOrAfter, selectedChains, salt, retryCount > 0
+                  );
+                } else {
+                  quote = await tx_deploy_project(
+                    name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, 
+                    allowedAddresses, selectedChains, salt, retryCount > 0
+                  );
+                }
+                break; // Success, exit retry loop
+              } catch (error) {
+                retryCount++;
+                if (retryCount > maxRetries) {
+                  throw error; // Re-throw if max retries exceeded
+                }
+                console.log(`Quote generation failed (attempt ${retryCount}/${maxRetries + 1}), retrying with cached signatures...`);
+                // Wait a bit before retry
+                await new Promise(resolve => setTimeout(resolve, 1000));
+              }
             }
             
             if (!quote || !quote.payment_info) {
@@ -485,19 +641,19 @@
               stage1PriceIncreasePercent, stage2PriceIncreasePercent, stage3PriceIncreasePercent,
               stage1PriceIncreaseFrequency, stage2PriceIncreaseFrequency, stage3PriceIncreaseFrequency,
               stage1CashOutTaxRate, stage2CashOutTaxRate, stage3CashOutTaxRate,
-              stage2StartsAtOrAfter, stage3StartsAtOrAfter, selectedChainIds, salt
+              stage2StartsAtOrAfter, stage3StartsAtOrAfter, selectedChains, salt
             );
           } else {
             collectionAddress = await tx_deploy_project(
               name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply,
-              allowedAddresses, selectedChainIds, salt
+              allowedAddresses, selectedChains, salt
             );
           }
 
           if (!collectionAddress) {
             showError("The connected network isn't supported.");
           } else {
-            showSuccess(`Success! ${collectionAddress} is your collection's address on chain ID ${selectedChainIds[0]}.`);
+            showSuccess(`Success! ${collectionAddress} is your collection's address on chain ID ${selectedChains[0]}.`);
           }
 
         } catch (e) {
@@ -515,29 +671,131 @@
   
 
     function renderRelayrStatusTable(bundleStatus) {
-      const statusDiv = document.getElementById('fork-form-new-jb-relayr-deploy-status');
-      statusDiv.style.display = 'block';
+      try {
+        const statusDiv = document.getElementById('fork-form-new-jb-relayr-deploy-status');
+        if (!statusDiv) {
+          return;
+        }
+        statusDiv.style.display = 'block';
 
-      if (!bundleStatus || !Array.isArray(bundleStatus.transactions)) {
-        statusDiv.innerHTML = '<div class="relayr-status-table-failed">Error: Could not load deployment status. Please try again or contact support.</div>';
+        // Calculate allTransactionsComplete early to avoid reference errors
+        let allTransactionsComplete = false;
+        if (bundleStatus && bundleStatus.transactions && Array.isArray(bundleStatus.transactions)) {
+          // Filter transactions to only show selected chains
+          const filteredTransactions = bundleStatus.transactions.filter(tx => {
+            if (!selectedChainIds || selectedChainIds.length === 0) {
+              return true; // Show all if no selection stored
+            }
+            return selectedChainIds.includes(tx.request.chain);
+          });
+          
+          allTransactionsComplete = filteredTransactions.every(tx => {
+            const state = tx.status && tx.status.state;
+            return state === 'Success' || state === 'Failed';
+          });
+        }
+
+        // Get all the HTML elements
+        const retryError = document.getElementById('fork-form-retry-error');
+        const retryErrorText = document.getElementById('fork-form-retry-error-text');
+        const bundleError = document.getElementById('fork-form-bundle-error');
+        const bundleErrorText = document.getElementById('fork-form-bundle-error-text');
+        const noTransactionsError = document.getElementById('fork-form-no-transactions-error');
+        const statusDescription = document.getElementById('fork-form-status-description');
+        const statusTableContainer = document.getElementById('fork-form-status-table-container');
+        const statusTableBody = document.getElementById('fork-form-status-table-body');
+        const collectionAddressDiv = document.getElementById('fork-form-collection-address');
+        const addressLoading = document.getElementById('fork-form-address-loading');
+        const statusHelp = document.getElementById('fork-form-status-help');
+
+        // Check if all required elements exist
+        if (!retryError || !retryErrorText || !bundleError || !bundleErrorText || 
+            !noTransactionsError || !statusDescription || !statusTableContainer || 
+            !statusTableBody || !collectionAddressDiv || !addressLoading || !statusHelp) {
+          return;
+        }
+
+      // Handle failed states (but not retrying - we want to show the table during retries)
+      if (bundleStatus && bundleStatus.error && bundleStatus.failed) {
+        // Show error message but keep table visible
+        retryError.style.display = 'none';
+        bundleError.style.display = 'none';
+        noTransactionsError.style.display = 'none';
+        statusDescription.style.display = 'none';
+        // Keep table visible: statusTableContainer.style.display = 'block';
+        // Don't hide collection address if we already have it AND all transactions are complete
+        if (!collectionAddress || !allTransactionsComplete) {
+          collectionAddressDiv.style.display = 'none';
+          addressLoading.style.display = 'block';
+        }
+        statusHelp.style.display = 'none';
+        
+        bundleErrorText.textContent = bundleStatus.error;
+        bundleError.style.display = 'block';
+        
+        // Stop loading animation on definitive failure
+        stopLoadingAnimation('fork-form-new-jb-button-loading-animation');
         return;
       }
 
-      // Table container styling
-      let html = `<div class="relayr-status-table-desc">
-        Your project is made up of components deployed on each blockchain where it'll accept funds and issue tokens from. These transactions take 1-2 minutes to settle.
-      </div>`;
+      // Don't show "no transactions" error if we're retrying - this is expected during network retries
+      if (!bundleStatus || (!Array.isArray(bundleStatus.transactions) || bundleStatus.transactions.length === 0) && !bundleStatus.retrying) {
+        // Show error message but keep table visible
+        retryError.style.display = 'none';
+        bundleError.style.display = 'none';
+        noTransactionsError.style.display = 'none';
+        statusDescription.style.display = 'none';
+        // Don't hide collection address if we already have it AND all transactions are complete
+        if (!collectionAddress || !allTransactionsComplete) {
+          collectionAddressDiv.style.display = 'none';
+          addressLoading.style.display = 'block';
+        }
+        statusHelp.style.display = 'none';
+        
+        noTransactionsError.style.display = 'block';
+        return;
+      }
 
-      html += `<div class="relayr-status-table-container">
-        <table class="relayr-status-table">
-          <tr>
-            <th>Network</th>
-            <th>Status</th>
-            <th>Tx</th>
-          </tr>`;
+      // Handle retrying state silently (don't show error message)
+      if (bundleStatus && bundleStatus.error && bundleStatus.retrying) {
+        retryError.style.display = 'none';
+        bundleError.style.display = 'none';
+        noTransactionsError.style.display = 'none';
+        statusDescription.style.display = 'none';
+        statusTableContainer.style.display = 'block';
+        // Don't hide collection address if we already have it AND all transactions are complete
+        if (!collectionAddress || !allTransactionsComplete) {
+          collectionAddressDiv.style.display = 'none';
+          addressLoading.style.display = 'block';
+        }
+        statusHelp.style.display = 'none';
+        
+        // Keep existing table data during retries - don't clear it
+        return; // Don't process new transactions during retries
+      } else {
+        retryError.style.display = 'none';
+      }
+      
+      // Show description
+      statusDescription.style.display = 'block';
 
-      let collectionAddress = null;
-      for (const tx of bundleStatus.transactions) {
+      // Show table container
+      statusTableContainer.style.display = 'block';
+      
+      // Clear existing table rows
+      statusTableBody.innerHTML = '';
+
+      // Use the global collectionAddress variable instead of a local one
+      
+      // Use the filtered transactions we calculated earlier
+      const filteredTransactions = bundleStatus.transactions.filter(tx => {
+        if (!selectedChainIds || selectedChainIds.length === 0) {
+          return true; // Show all if no selection stored
+        }
+        return selectedChainIds.includes(tx.request.chain);
+      });
+      
+      for (const tx of filteredTransactions) {
         const chain = resolveChainLabel(tx.request.chain) || tx.request.chain;
         const state = tx.status && tx.status.state;
         let statusIcon = '';
@@ -552,24 +810,59 @@
         let txLink = '<span class="relayr-status-table-txlink">generating...</span>';
 
         if (state === 'Pending' || state === 'Mempool') {
-          statusIcon = `<span class="relayr-status-table-pending" style="font-size:1.2em; vertical-align:middle;">&#9711;</span>`;
+          statusIcon = `<span class="relayr-status-table-pending relayr-status-table-icon">&#9711;</span>`;
           statusText = 'Pending';
         } else if (state === 'Success' || state === 'Included') {
-          statusIcon = `<span class="relayr-status-table-success" style="font-size:1.2em; vertical-align:middle;">&#10003;</span>`;
+          statusIcon = `<span class="relayr-status-table-success relayr-status-table-icon">&#10003;</span>`;
           statusText = state;
-          if (txHash) {
+          
+          
+          // Try to find transaction hash in alternative fields if main txHash is undefined
+          let actualTxHash = txHash;
+          if (!actualTxHash) {
+            actualTxHash = tx.status?.tx_hash || 
+                          tx.status?.data?.hash ||  // This is the correct field!
+                          tx.status?.data?.transaction?.hash || 
+                          tx.status?.data?.tx_hash || 
+                          tx.request?.tx_hash || 
+                          tx.request?.hash || 
+                          tx.hash || 
+                          tx.transaction_hash || 
+                          tx.txHash;
+            
+          }
+          
+          if (actualTxHash) {
             const explorer = chainExplorerUrls(tx.request.chain);
-            txLink = `<a href="${explorer}${txHash}" target="_blank" class="relayr-status-table-success">View</a>`;
+            txLink = `<a href="${explorer}${actualTxHash}" target="_blank" class="relayr-status-table-success">View</a>`;
           }
 
-          // Extract collection address from calldata if available
-          if (tx.receipt && !collectionAddress) {
-            const interface = new ethers.Interface(croptopDeployerContractABI);
-            const decodedLog = interface.parseLog(tx.receipt.logs[0]);
-            collectionAddress = decodedLog.args[1]; 
+          // Mark successful transactions for async hook address extraction
+          if ((state === 'Success' || state === 'Included') && actualTxHash) {
+            // Only queue for extraction if we don't already have the collection address
+            if (!collectionAddress) {
+              // Store transaction info for async extraction
+              pendingHookExtractions.push({
+                txHash: actualTxHash,
+                chainId: tx.request.chain
+              });
+            }
+            
+            // Check if we can extract collection address from the transaction response itself
+            if (tx.status && tx.status.data && tx.status.data.collection_address) {
+              if (!collectionAddress) {
+                collectionAddress = tx.status.data.collection_address;
+                updateHookAddressDisplay(tx.status.data.collection_address);
+              }
+            } else if (tx.collection_address) {
+              if (!collectionAddress) {
+                collectionAddress = tx.collection_address;
+                updateHookAddressDisplay(tx.collection_address);
+              }
+            }
           }
         } else if (state === 'Failed') {
-          statusIcon = `<span class="relayr-status-table-failed" style="font-size:1.2em; vertical-align:middle;">&#10007;</span>`;
+          statusIcon = `<span class="relayr-status-table-failed relayr-status-table-icon">&#10007;</span>`;
           statusText = 'Failed';
           txLink = '-';
         } else {
@@ -578,37 +871,176 @@
           txLink = '-';
         }
 
-        html += `<tr>
-          <td>${chain}</td>
-          <td>${statusIcon} ${statusText}</td>
-          <td>${txLink}</td>
-        </tr>`;
+        // Create table row element
+        const row = document.createElement('tr');
+        
+        const chainCell = document.createElement('td');
+        chainCell.textContent = chain;
+        row.appendChild(chainCell);
+        
+        const statusCell = document.createElement('td');
+        if (statusIcon) {
+          statusCell.innerHTML = statusIcon + ' ' + statusText;
+        } else {
+          statusCell.textContent = statusText;
+        }
+        row.appendChild(statusCell);
+        
+        const txCell = document.createElement('td');
+        if (txLink !== '-') {
+          txCell.innerHTML = txLink;
+        } else {
+          txCell.textContent = txLink;
+        }
+        row.appendChild(txCell);
+        
+        statusTableBody.appendChild(row);
       }
-      html += '</table></div>';
 
-      // Show collection address if available
-      if (collectionAddress) {
-        html += `<div class="relayr-status-table-address">Collection address: ${collectionAddress}</div>`;
+      // Show loading message if we don't have a collection address yet OR if transactions are still pending
+      if (!collectionAddress || !allTransactionsComplete) {
+        addressLoading.style.display = 'block';
+        collectionAddressDiv.style.display = 'none';
+      } else {
+        // We have the collection address AND all transactions are complete, show it
+        addressLoading.style.display = 'none';
+        collectionAddressDiv.style.display = 'block';
       }
 
       // Show help message if at least one tx has been successful or has a View link
-      const hasSuccessfulTx = bundleStatus.transactions.some(tx => {
+      const hasSuccessfulTx = filteredTransactions.some(tx => {
         const state = tx.status && tx.status.state;
         return (state === 'Success' || state === 'Included');
       });
-      const hasViewLink = bundleStatus.transactions.some(tx => {
+      const hasViewLink = filteredTransactions.some(tx => {
         const state = tx.status && tx.status.state;
         return (state === 'Success' || state === 'Included') && (tx.status && (tx.status.tx_hash || (tx.status.data && tx.status.data.transaction && tx.status.data.transaction.hash)));
       });
       
       // Show help message if there are successful transactions (even if View links aren't available yet)
       if (hasSuccessfulTx || hasViewLink) {
-        html += `<div class="relayr-status-table-help">
-          <b>How to find your collection (hook) address:</b><br>
-          Click a <span class='relayr-status-table-success'>View</span> button, go to the <b>Logs</b> tab, and read the first event.
-        </div>`;
+        statusHelp.style.display = 'block';
+      } else {
+        statusHelp.style.display = 'none';
       }
-
-      statusDiv.innerHTML = html;
+      
+      
+      // Stop loading animation and hide button when all transactions are complete and collection address is found
+      if (allTransactionsComplete && collectionAddress) {
+        stopLoadingAnimation('fork-form-new-jb-button-loading-animation');
+        
+        // Hide the deploy button since deployment is complete
+        const existingSubmitButton = document.getElementById('fork-form-new-jb-submit-button');
+        if (existingSubmitButton) {
+          existingSubmitButton.style.display = 'none';
+        }
+        
+        // Make sure the collection address is displayed
+        updateHookAddressDisplay(collectionAddress);
+      }
+      
+      // Extract hook addresses asynchronously after rendering the table
+      if (pendingHookExtractions && pendingHookExtractions.length > 0) {
+        // Create a copy and clear the original array immediately to prevent re-processing
+        const extractionsToProcess = [...pendingHookExtractions];
+        pendingHookExtractions = [];
+        extractHookAddressesAsync(extractionsToProcess);
+      }
+      } catch (error) {
+        // Don't throw the error - just handle it silently to prevent the polling from failing
+      }
+    }
+    
+    // Async function to extract hook addresses without blocking the UI
+    async function extractHookAddressesAsync(pendingExtractions) {
+      // If we already have the collection address, no need to make any requests
+      if (collectionAddress) {
+        return;
+      }
+      
+      for (let i = 0; i < pendingExtractions.length; i++) {
+        // Skip if we already have the collection address
+        if (collectionAddress) {
+          break;
+        }
+        
+        const extraction = pendingExtractions[i];
+        
+        try {
+          
+          // Get the provider for the chain
+          const provider = getProvider(extraction.chainId);
+          if (!provider) {
+            continue;
+          }
+          
+          // Check again before making RPC call
+          if (collectionAddress) {
+            break;
+          }
+          
+          // Fetch the transaction receipt with error handling
+          let receipt;
+          try {
+            receipt = await provider.getTransactionReceipt(extraction.txHash);
+          } catch (receiptError) {
+            continue; // Skip this transaction and try the next one
+          }
+          
+          if (!receipt || !receipt.logs || receipt.logs.length === 0) {
+            continue;
+          }
+          
+          // Try to find HookDeployed event in the logs
+          for (let logIndex = 0; logIndex < receipt.logs.length; logIndex++) {
+            const log = receipt.logs[logIndex];
+            try {
+              
+              // HookDeployed event signature: HookDeployed(uint256,address,address)
+              const hookDeployedTopic = '0xd76d022c77a474d529a79581eb88a726ad929fd23efbcb6a1f852d2d936299a5';
+              
+              if (log.topics && log.topics[0] === hookDeployedTopic) {
+                // Decode the event data - hook address is the second parameter (after projectId)
+                if (log.data && log.data.length >= 66) {
+                  const hookAddress = '0x' + log.data.slice(26, 66); // Extract hook address from data
+                  
+                  // Update the UI with the hook address
+                  updateHookAddressDisplay(hookAddress);
+                  return; // Found the address, we're done
+                }
+              }
+            } catch (e) {
+              continue;
+            }
+          }
+          
+        } catch (e) {
+          // Continue to next transaction on error
+        }
+      }
+    }
+    
+    // Function to update the UI with the hook address
+    function updateHookAddressDisplay(hookAddress) {
+      // Set the collection address variable
+      collectionAddress = hookAddress;
+      
+      if (hookAddress) {
+        // Hide loading message and show collection address
+        const addressLoading = document.getElementById('fork-form-address-loading');
+        const collectionAddressDiv = document.getElementById('fork-form-collection-address');
+        const collectionAddressCode = document.getElementById('fork-form-collection-address-code');
+        
+        addressLoading.style.display = 'none';
+        collectionAddressCode.textContent = hookAddress;
+        collectionAddressDiv.style.display = 'block';
+        
+        // Stop loading animation and hide deploy button since we have the collection address
+        stopLoadingAnimation('fork-form-new-jb-button-loading-animation');
+        const existingSubmitButton = document.getElementById('fork-form-new-jb-submit-button');
+        if (existingSubmitButton) {
+          existingSubmitButton.style.display = 'none';
+        }
+      }
     }
   </script>

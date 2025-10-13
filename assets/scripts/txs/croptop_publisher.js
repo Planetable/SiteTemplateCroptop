@@ -707,16 +707,16 @@ const tx_collect = async (hook, category, totalSupply, price, quantity, encodedI
   const emptyBytes = '0x';
 
   const buildDeploymentData = async () => {
-    return [hook, posts, beneficiary, cpnBeneficiary, emptyBytes, emptyBytes, { value }];
+    return [hook, posts, beneficiary, cpnBeneficiary, emptyBytes, emptyBytes];
   };
 
-  return handleDeployment(
+  return handleTransact(
     [chainId],
     buildDeploymentData,
     croptopPublisherContract,
     croptopPublisherContractABI,
     "mintFrom",
-	value
+    value
   );
 }
 
@@ -728,12 +728,13 @@ const tx_configure = async (hook, category, minimumPrice, minimumTotalSupply, ma
     return [[allowedPost]];
   };
 
-  return handleDeployment(
+  return handleTransact(
     chainIds,
     buildDeploymentData,
     croptopPublisherContract,
     croptopPublisherContractABI,
-    "configurePostingCriteriaFor"
+    "configurePostingCriteriaFor",
+    0
   );
 }
 

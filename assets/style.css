@@ -7,6 +7,7 @@
   --foreground-secondary-color: #555;
   --link-color: rgba(0,0,0,0);
   --alert-color: #efab1d;
+  --success-color: #3bb273;
   --icon-social-filter: invert(100%) sepia(0%) saturate(7460%) hue-rotate(186deg) brightness(107%) contrast(77%);
   --avatar-size-1: 3em;
   --avatar-size-2: 4.5em;
@@ -216,7 +217,7 @@ li input[type="checkbox"] {
 
 li:has(input[type="checkbox"]) {
     list-style-type: none;
-    margin-left: 0px;
+    margin-left: 0;
     /* Adjust to align with other li's*/
     pointer-events: none;
 }
@@ -282,10 +283,6 @@ table tr {
   padding: 0;
 }
 
-table tr:nth-child(2n) {
-  background-color: var(--background-secondary-color);
-}
-
 table tr th {
   font-weight: var(--font-weight-2);
   border: var(--border-width) solid var(--background-secondary-color);
@@ -324,13 +321,18 @@ details > summary:before {
   100% {opacity: 1;}
 }
 
+@keyframes spin {
+  0% {transform: rotate(0deg);}
+  100% {transform: rotate(360deg);}
+}
+
 /* BASE STYLES */
 
 .main {
   max-width: min(1800px, calc(var(--max-width) - env(safe-area-inset-left) - env(safe-area-inset-left)));
   margin: 0 auto;
   color: var(--foreground-color);
-  padding: 0px;
+  padding: 0;
 }
 
 /* DOM STYLES */
@@ -377,7 +379,7 @@ details > summary:before {
 .button-loading-animation {
   margin-left: var(--spacing-3);
   display: inline-block;
-  margin-right: 8px;
+  margin-right: var(--spacing-2);
 }
 
 .ether {
@@ -409,7 +411,7 @@ details > summary:before {
 .video-container {
   width: var(--max-width);
   padding-top: 56.25%;
-  height: 0px;
+  height: 0;
   position: relative;
   margin-bottom: var(--spacing-4);
   margin-left: auto;
@@ -581,15 +583,15 @@ details > summary:before {
 
 #subheader-about p {
   max-width: var(--max-width);
-  margin-left: 0px;
-  margin-right: 0px;
+  margin-left: 0;
+  margin-right: 0;
 }
 #subheader-about p:first-child {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 #subheader-about p:last-child {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 
 .header-social-icon {
@@ -665,7 +667,7 @@ details > summary:before {
 
 /* hot fix */
 #header-container.small #fork-button {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 #fork-button:hover, #rss-button:hover {
@@ -942,7 +944,7 @@ details > summary:before {
 }
 .form-select-value select {
   width: 250px;
-  padding-right: 30px;
+  padding-right: var(--spacing-6);
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -1012,10 +1014,18 @@ details > summary:before {
   text-wrap: nowrap;
 }
 
+.form-quantity-input {
+  width: 80px;
+}
+
+.form-header-separator {
+  color: var(--foreground-secondary-color);
+}
+
 .form-chain-checkbox-value {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--spacing-3);
   width: 520px;
   height: 144px;
   align-items: flex-start;
@@ -1043,34 +1053,29 @@ details > summary:before {
   margin: 0;
   cursor: pointer;
   flex-grow: 1;
-  padding: 8px 12px 8px 0;
+  padding: var(--spacing-2) var(--spacing-3) var(--spacing-2) 0;
   display: flex;
   align-items: center;
 }
 
 .form-checkbox-option:hover label {
-  background-color: #3a3a3a;
+  background-color: var(--background-secondary-color);
 }
 
 /* Adjust the checkbox size and alignment */
 .form-checkbox-option input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  margin-right: 12px;
+  margin-right: var(--spacing-3);
 }
 
 .form-quote-status-box {
-  background: var(--background-secondary-color);
-  border: 1px solid rgba(128,128,128,0.25);
   color: var(--foreground-color);
-  padding: var(--spacing-4);
-  border-radius: 4px;
-  margin-bottom: var(--spacing-3);
+  text-align: left;
 }
 
 .form-quote-expiry {
-  margin-bottom: var(--spacing-4);
-  font-size: 0.98em;
+  font-size: var(--font-size-1);
   color: var(--foreground-secondary-color);
 }
 
@@ -1081,6 +1086,12 @@ details > summary:before {
 
 .form-clear-quote-link:hover {
   color: var(--foreground-color);
+}
+
+.form-quote-success-icon {
+  color: var(--success-color);
+  font-size: var(--font-size-1);
+  margin-left: var(--spacing-2);
 }
 
 .form-payment-options {
@@ -1342,11 +1353,10 @@ details > summary:before {
   appearance: none;
   -webkit-appearance: none;
   background: none;
-  border: 2px solid var(--foreground-color);
+  border: var(--border-width) solid var(--foreground-color);
   width: 20px;
   height: 20px;
-  border-radius: 4px;
-  margin-right: 12px;
+  margin-right: var(--spacing-3);
   position: relative;
   cursor: pointer;
   vertical-align: middle;
@@ -1358,7 +1368,7 @@ details > summary:before {
 .form-checkbox-option input[type="checkbox"]:checked::before {
   content: '\2713'; /* Unicode checkmark */
   color: var(--foreground-color);
-  font-size: 1.25em;
+  font-size: var(--font-size-1);
   font-weight: bold;
   position: absolute;
   left: 50%;
@@ -1366,21 +1376,26 @@ details > summary:before {
   transform: translate(-50%, -55%);
   font-family: inherit;
   pointer-events: none;
-  text-shadow: 0 0 1px var(--foreground-color), 0 0 1px var(--foreground-color);
 }
 
 /* RELAYR STATUS TABLE STYLES */
 .relayr-status-table-desc {
-  color: #888;
-  margin-bottom: 16px;
+  color: var(--foreground-secondary-color);
+  margin-bottom: var(--spacing-4);
   text-align: left;
 }
 
+.relayr-status-table-retry {
+  color: var(--alert-color);
+}
+
+.relayr-status-table-retry-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
 .relayr-status-table-container {
-  background: rgba(30,30,30,0.95);
-  border-radius: 10px;
-  padding: 8px 8px 4px 8px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   display: inline-block;
   margin: 0 auto;
   text-align: center;
@@ -1388,64 +1403,71 @@ details > summary:before {
 
 .relayr-status-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 3px;
-  font-size: 1em;
+  border-collapse: collapse;
+  font-size: var(--font-size-1);
   margin: 0 auto;
   text-align: center;
+  border: 1px solid var(--background-secondary-color);
 }
 
 .relayr-status-table th {
   text-align: center;
-  padding: 6px 8px;
+  padding: var(--spacing-1) var(--spacing-2);
+  border: 1px solid var(--background-secondary-color);
 }
 
 .relayr-status-table td {
-  padding: 6px 8px;
+  padding: var(--spacing-1) var(--spacing-2);
   text-align: center;
-}
-
-.relayr-status-table tr {
-  background: rgba(255,255,255,0.02);
-  border-radius: 6px;
-}
-
-.relayr-status-table td:first-child {
-  border-radius: 6px 0 0 6px;
-}
-
-.relayr-status-table td:last-child {
-  border-radius: 0 6px 6px 0;
+  border: 1px solid var(--background-secondary-color);
 }
 
 .relayr-status-table-txlink {
   font-style: italic;
-  color: #888;
+  color: var(--foreground-secondary-color);
 }
 
 .relayr-status-table-success {
-  color: #3bb273;
+  color: var(--success-color);
 }
 
 .relayr-status-table-pending {
-  color: #efab1d;
+  color: var(--alert-color);
 }
 
 .relayr-status-table-failed {
-  color: #e74c3c;
+  color: var(--alert-color);
 }
 
 .relayr-status-table-address {
-  margin-top: 12px;
-  color: #888;
-  font-size: 0.9em;
-  text-align: center;
+  margin-top: var(--spacing-3);
+  color: var(--foreground-secondary-color);
+  font-size: var(--font-size-small);
+  text-align: left;
+}
+
+.relayr-status-table-address-loading {
+  font-style: italic;
+}
+
+.relayr-status-table-address-code {
+  background: var(--background-secondary-color);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-family: monospace;
+  word-break: break-all;
+  display: inline-block;
+  margin-top: var(--spacing-1);
+}
+
+.relayr-status-table-icon {
+  font-size: var(--font-size-1);
+  vertical-align: middle;
 }
 
 .relayr-status-table-help {
-  margin-top: 10px;
-  color: #aaa;
-  font-size: 0.95em;
+  margin-top: var(--spacing-2);
+  color: var(--foreground-secondary-color);
+  font-size: var(--font-size-small);
   text-align: left;
 }
 

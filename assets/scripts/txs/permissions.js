@@ -264,7 +264,7 @@ const permissionsData = { operator, projectId: 0, permissionIds: [20] };
     return [owner, permissionsData];
   };
 
-  return handleDeployment(
+  return handleTransact(
     [chainId],
     buildDeploymentData,
     permissionsContract,

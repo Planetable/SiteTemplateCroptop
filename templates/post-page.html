@@ -36,7 +36,7 @@
             <div class="form-item">
               <div class="form-label">Copies to buy</div>
               <div class="form-value">
-                <input type="number" value="1" id="collect-post-form-quantity-input" min="1" style="width: 80px;">
+                <input type="number" value="1" id="collect-post-form-quantity-input" min="1" class="form-quantity-input">
               </div>
             </div>
           </div>
@@ -50,7 +50,7 @@
               <div class="form-item">
                 <div class="form-label">Copies to buy</div>
                 <div class="form-value">
-                  <input type="number" value="1" id="record-post-form-quantity-input" min="1" style="width: 80px;">
+                  <input type="number" value="1" id="record-post-form-quantity-input" min="1" class="form-quantity-input">
                 </div>
               </div>
             </div>
@@ -167,7 +167,7 @@
     const recordPostFormHeader = document.getElementById("record-post-form-header");
     const chainId = resolveChainId(chain);
     const chainLabel = resolveChainLabel(chainId);
-    recordPostFormHeader.innerHTML = `Price: <span class="ether">Ξ</span>${formattedMinPrice}  <span style="color: var(--foreground-secondary-color)">|</span>  Copies left: ${formattedMinTotalSupply}`;
+    recordPostFormHeader.innerHTML = `Price: <span class="ether">Ξ</span>${formattedMinPrice}  <span class="form-header-separator">|</span>  Copies left: ${formattedMinTotalSupply}`;
   }
 
   const decorateRecordForm = async (chain, collectionAddress, category, encodedIPFSUri, formattedMinTotalSupply, formattedMaxTotalSupply, formattedMinPrice, formattedAllowedAddresses) => {

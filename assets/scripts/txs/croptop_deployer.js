@@ -3689,7 +3689,7 @@ const buildSuckerDeploymentConfigurations = (chainId, chainIds) => {
 };
 
 // Remove the duplicated functions and keep only the specific deployment functions
-const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses, chainIds, salt) => {
+const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses, chainIds, salt, useCache = false) => {
   const projectUri = "ipfs://QmaJzQjaFKxU2LLyqPTpZoGU47owQcmmvVCP1p4YqeuMUy";
   const contractUri = "";
   const allowedPost = { hook: "0x0000000000000000000000000000000000000000", category: 0, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses};
@@ -3716,12 +3716,14 @@ const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotal
     ];
   };
   
-  const receipt = await handleDeployment(
+  const receipt = await handleTransact(
     chainIds,
     buildDeploymentData,
     croptopDeployerContract,
     croptopDeployerContractABI,
-    "deployProjectFor"
+    "deployProjectFor",
+	0,
+    useCache
   );
 
   if (!receipt) return false;
@@ -3737,11 +3739,14 @@ const tx_deploy_project = async (name, symbol, owner, minimumPrice, minimumTotal
   return collectionAddress;
 }
 
-const tx_deploy_revnet = async (name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses, stage1AutomintTokenAmount, stage2AutomintTokenAmount, stage3AutomintTokenAmount, stage1InitialIssuanceAmount, stage2InitialIssuanceAmount, stage3InitialIssuanceAmount, stage1SplitPercent, stage2SplitPercent, stage3SplitPercent, stage1PriceIncreasePercent, stage2PriceIncreasePercent, stage3PriceIncreasePercent, stage1PriceIncreaseFrequency, stage2PriceIncreaseFrequency, stage3PriceIncreaseFrequency, stage1CashOutTaxRate, stage2CashOutTaxRate, stage3CashOutTaxRate, stage2StartsAtOrAfter, stage3StartsAtOrAfter, chainIds, salt) => {
+const tx_deploy_revnet = async (name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses, stage1AutomintTokenAmount, stage2AutomintTokenAmount, stage3AutomintTokenAmount, stage1InitialIssuanceAmount, stage2InitialIssuanceAmount, stage3InitialIssuanceAmount, stage1SplitPercent, stage2SplitPercent, stage3SplitPercent, stage1PriceIncreasePercent, stage2PriceIncreasePercent, stage3PriceIncreasePercent, stage1PriceIncreaseFrequency, stage2PriceIncreaseFrequency, stage3PriceIncreaseFrequency, stage1CashOutTaxRate, stage2CashOutTaxRate, stage3CashOutTaxRate, stage2StartsAtOrAfter, stage3StartsAtOrAfter, chainIds, salt, useCache = false) => {
   const projectUri = "ipfs://QmaJzQjaFKxU2LLyqPTpZoGU47owQcmmvVCP1p4YqeuMUy";
   const contractUri = "";
   const allowedPost = { hook: "0x0000000000000000000000000000000000000000", category: 0, minimumPrice, minimumTotalSupply, maximumTotalSupply, allowedAddresses};
-  
+   
+  // Define out of the loop so its the same for all chains.
+  const stage1StartsAtOrAfter = Math.floor(Date.now() / 1000) + (6 * 60); // Start 6 minutes from now
+
   const buildDeploymentData = async (chainId) => {
     const terminal = terminalContract(chainId);
     const loans = loansContract(chainId);
@@ -3749,7 +3754,6 @@ const tx_deploy_revnet = async (name, symbol, owner, minimumPrice, minimumTotalS
     const terminalConfiguration = { terminal, accountingContextsToAccept: [accountingContextToAccept], dataHook: "0x0000000000000000000000000000000000000000", hookToConfigure: "0x0000000000000000000000000000000000000000" };
     
     const baseCurrency = 1;
-	const stage1StartsAtOrAfter = Math.floor(Date.now() / 1000) + (6 * 60); // Start 6 minutes from now
     const autoMintStage1 = stage1AutomintTokenAmount == 0 ? [] : [{ chainId: Number(chainId), count: stage1AutomintTokenAmount, beneficiary: owner}];
     const ownerSplit = { percent: 1000000000, projectId: 0, beneficiary: owner, preferAddToBalance: false, lockedUntil: 0, hook: "0x0000000000000000000000000000000000000000" };
     const stageConfiguration1 = { startsAtOrAfter: stage1StartsAtOrAfter, splitPercent: stage1SplitPercent, initialIssuance: stage1InitialIssuanceAmount, issuanceCutFrequency: stage1PriceIncreaseFrequency, issuanceCutPercent: stage1PriceIncreasePercent, cashOutTaxRate: stage1CashOutTaxRate, autoIssuances: autoMintStage1, splits: [ownerSplit], extraMetadata: "0x0000" };
@@ -3785,12 +3789,14 @@ const tx_deploy_revnet = async (name, symbol, owner, minimumPrice, minimumTotalS
     return [0, revnetConfiguration, [terminalConfiguration], buybackHookConfiguration, {deployerConfigurations: suckerDeploymentConfigurations, salt}, hookConfiguration, [allowedPost]];
   };
 
-  const receipt = await handleDeployment(
+  const receipt = await handleTransact(
     chainIds,
     buildDeploymentData,
     revnetDeployerContract,
     revnetDeployerContractABI,
-    "deployWith721sFor"
+    "deployWith721sFor",
+	0,
+    useCache
   );
 
   console.log({ receipt });

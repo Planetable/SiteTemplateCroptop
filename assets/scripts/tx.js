@@ -1,13 +1,13 @@
 const getProvider = (chainId) => {
   switch (chainId) {
-    case 1: return new ethers.JsonRpcProvider(env.ethereumMainnetRPC || "https://eth-mainnet.g.alchemy.com/v2/PvnApS5JjmPVuC0A4WLdFfaF8oD_z9e5"); //https://rpc.ankr.com/eth");
-    case 8453: return new ethers.JsonRpcProvider(env.baseMainnetRPC || "https://rpc.ankr.com/base");
-    case 42161: return new ethers.JsonRpcProvider(env.arbitrumMainnetRPC || "https://rpc.ankr.com/arbitrum");
-    case 10: return new ethers.JsonRpcProvider(env.optimismMainnetRPC || "https://rpc.ankr.com/optimism");
+    case 1: return new ethers.JsonRpcProvider(env.ethereumMainnetRPC || "https://eth.llamarpc.com");
+    case 8453: return new ethers.JsonRpcProvider(env.baseMainnetRPC || "https://mainnet.base.org");
+    case 42161: return new ethers.JsonRpcProvider(env.arbitrumMainnetRPC || "https://arb1.arbitrum.io/rpc");
+    case 10: return new ethers.JsonRpcProvider(env.optimismMainnetRPC || "https://mainnet.optimism.io");
     case 11155111: return new ethers.JsonRpcProvider(env.ethereumSepoliaRPC || "https://rpc.ankr.com/eth_sepolia");
-    case 11155420: return new ethers.JsonRpcProvider(env.optimismSepoliaRPC || "https://rpc.ankr.com/optimism_sepolia");
-    case 84532: return new ethers.JsonRpcProvider(env.baseSepoliaRPC || "https://rpc.ankr.com/base_sepolia");
-    case 421614: return new ethers.JsonRpcProvider(env.arbitrumSepoliaRPC || "https://rpc.ankr.com/arbitrum_sepolia");
+    case 11155420: return new ethers.JsonRpcProvider(env.optimismSepoliaRPC || "https://sepolia.optimism.io");
+    case 84532: return new ethers.JsonRpcProvider(env.baseSepoliaRPC || "https://sepolia.base.org");
+    case 421614: return new ethers.JsonRpcProvider(env.arbitrumSepoliaRPC || "https://ethereum-sepolia-rpc.publicnode.com");
     default: return new ethers.BrowserProvider(window.ethereum);
   }
 }
@@ -436,9 +436,10 @@ const view = async (chainId, contractAddress, contractAbi, fn, params) => {
     return await contract[fn](...params);
 }
 
-const sign = async (contractAddress, contractAbi, fn, params) => {
+const sign = async (contractAddress, contractAbi, fn, params, value) => {
     const contract = new ethers.Contract(contractAddress, contractAbi, await getSigner());
     const tx = await contract[fn](...params, { 
+      value: value,
       gasLimit: 8000000,
  	});
     if (!tx) return false;
@@ -558,61 +559,113 @@ function getAddChainParams(chainId) {
 }
 
 // Helper function to handle both single and multi-chain deployments
-const handleDeployment = async (chainIds, buildDeploymentData, contractAddress, contractABI, functionName, value) => {
+const handleTransact = async (chainIds, buildDeploymentData, contractAddress, contractABI, functionName, value, useCache = false) => {
   if (!Array.isArray(chainIds)) chainIds = [chainIds];
   if (chainIds.length === 1) {
     // Single chain deployment
     const chainId = chainIds[0];
+    // Always ensure wallet is on the correct chain before signing
+    await ensureWalletOnChain(chainId);
     const contract = contractAddress(chainId);
     if (!contract) return false;
     const deploymentData = await buildDeploymentData(chainId);
-    const receipt = await sign(contract, contractABI, functionName, deploymentData);
+    const receipt = await sign(contract, contractABI, functionName, deploymentData, value);
     return receipt;
   }
   // Multi-chain deployment with Relayr
   const userAddress = (await getSigner()).address;
   const relayrTransactions = [];
-  for (const chainId of chainIds) {
-    // Always ensure wallet is on the correct chain before signing
-    await ensureWalletOnChain(chainId);
-    // Always get a fresh provider/signer for the current chain
-    const contract = contractAddress(chainId);
-    const deploymentData = await buildDeploymentData(chainId);
-    const iface = new ethers.Interface(contractABI);
-    const encodedData = iface.encodeFunctionData(functionName, deploymentData);
-    const forwardRequest = {
-      from: userAddress,
-      to: contract,
-      value: "0x0",
-      gas: "0x" + (8000000 * chainIds.length).toString(16),
-      data: encodedData,
-    };
-    const encoded = await signErc2771ForwardRequest(forwardRequest, chainId);
-    relayrTransactions.push({
-      chain: chainId,
-      data: encoded,
-      target: erc2771ForwarderContract(chainId),
-      value: "0"
-    });
+  
+  // Only sign if not using cache
+  if (!useCache) {
+    for (const chainId of chainIds) {
+      // Always ensure wallet is on the correct chain before signing
+      await ensureWalletOnChain(chainId);
+      // Always get a fresh provider/signer for the current chain
+      const contract = contractAddress(chainId);
+      const deploymentData = await buildDeploymentData(chainId);
+      const iface = new ethers.Interface(contractABI);
+      const encodedData = iface.encodeFunctionData(functionName, deploymentData);
+      const forwardRequest = {
+        from: userAddress,
+        to: contract,
+        value: "0x0",
+        gas: "0x" + (8000000 * chainIds.length).toString(16),
+        data: encodedData,
+      };
+      const encoded = await signErc2771ForwardRequest(forwardRequest, chainId);
+      relayrTransactions.push({
+        chain: chainId,
+        data: encoded,
+        target: erc2771ForwarderContract(chainId),
+        value: "0"
+      });
+    }
   }
-  const quote = await getRelayrTxQuote(relayrTransactions);
+  
+  const quote = await getRelayrTxQuote(relayrTransactions, useCache);
   if (!quote) {
     throw new Error("Failed to get Relayr quote");
   }
   return quote;
 }
 
+// Cache for signed transactions to avoid re-signing on network retries
+let signedTransactionsCache = null;
+let cacheTimestamp = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 // Get a quote for a bundle of Relayr transactions
-const getRelayrTxQuote = async (relayrTransactions) => {
-  const res = await fetch('https://api.relayr.ba5ed.com/v1/bundle/prepaid', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      transactions: relayrTransactions,
-      virtual_nonce_mode: "Disabled",
-    }),
-  });
-  return await res.json();
+const getRelayrTxQuote = async (relayrTransactions, useCache = false) => {
+	console.log('Getting Relayr quote...');
+	console.log(relayrTransactions);
+	
+	// Check if we can use cached transactions
+	if (useCache && signedTransactionsCache && cacheTimestamp) {
+		const now = Date.now();
+		if (now - cacheTimestamp < CACHE_DURATION) {
+			console.log('Using cached signed transactions for retry');
+			relayrTransactions = signedTransactionsCache;
+		} else {
+			console.log('Cache expired, will need to re-sign');
+			signedTransactionsCache = null;
+			cacheTimestamp = null;
+		}
+	}
+	
+	// Cache the transactions if this is a fresh request
+	if (!useCache) {
+		signedTransactionsCache = relayrTransactions;
+		cacheTimestamp = Date.now();
+		console.log('Cached signed transactions for potential retry');
+	}
+	
+  try {
+    const res = await fetch('https://api.relayr.ba5ed.com/v1/bundle/prepaid', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        transactions: relayrTransactions,
+        virtual_nonce_mode: "Disabled",
+      }),
+    });
+    
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    
+    const result = await res.json();
+    
+    // Clear cache on successful request
+    signedTransactionsCache = null;
+    cacheTimestamp = null;
+    console.log('Cleared signature cache after successful quote generation');
+    
+    return result;
+  } catch (error) {
+    console.error('Failed to get Relayr quote:', error);
+    throw new Error('Network error: Unable to connect to Relayr. Please check your connection and try again.');
+  }
 }
 
 // Send a Relayr transaction
@@ -636,16 +689,75 @@ const sendRelayrTx = async (paymentInfo) => {
 
 const pollRelayrBundleStatus = async (bundleUuid, callback) => {
 	let done = false;
+	let retryCount = 0;
+	const maxRetries = 10;
+	
 	while (!done) {
 		try {
-		const res = await fetch(`https://api.relayr.ba5ed.com/v1/bundle/${bundleUuid}`);
-		const bundleStatus = await res.json();
-		callback(bundleStatus);
-		done = bundleStatus.transactions.every(tx => tx.status && (tx.status.state === 'Success' || tx.status.state === 'Failed'));
-		if (!done) await new Promise(r => setTimeout(r, 3000));
+			const res = await fetch(`https://api.relayr.ba5ed.com/v1/bundle/${bundleUuid}`);
+			
+			if (!res.ok) {
+				throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+			}
+			
+			const bundleStatus = await res.json();
+			
+			try {
+				callback(bundleStatus);
+			} catch (callbackErr) {
+				// Handle callback errors silently
+			}
+			
+			// Reset retry count on successful request
+			retryCount = 0;
+			
+			done = bundleStatus.transactions.every(tx => tx.status && (tx.status.state === 'Success' || tx.status.state === 'Failed'));
+			if (done) {
+				// Make final callback with the completed state
+				try {
+					callback(bundleStatus);
+				} catch (callbackErr) {
+					// Handle callback errors silently
+				}
+				break; // Exit the polling loop
+			} else {
+				await new Promise(r => setTimeout(r, 3000));
+			}
 		} catch (err) {
-		callback({ transactions: [] });
-		break;
+			
+			retryCount++;
+			
+			if (retryCount <= maxRetries) {
+				// Show retry message to user
+				try {
+					callback({ 
+						transactions: [], 
+						error: `Checking deployment status... (${retryCount}/${maxRetries})`,
+						retrying: true 
+					});
+				} catch (callbackErr) {
+					console.error('Error in retry callback:', callbackErr);
+				}
+				
+				// Wait before retry (exponential backoff)
+				const retryDelay = Math.min(1000 * Math.pow(2, retryCount - 1), 10000);
+				await new Promise(r => setTimeout(r, retryDelay));
+			} else {
+				// Max retries exceeded, show error but continue polling with longer intervals
+				try {
+					callback({ 
+						transactions: [], 
+						error: 'Checking deployment status periodically...',
+						retrying: true 
+					});
+				} catch (callbackErr) {
+					console.error('Error in max retry callback:', callbackErr);
+				}
+				
+				// Continue polling but with longer intervals (30 seconds)
+				await new Promise(r => setTimeout(r, 30000));
+				retryCount = 0; // Reset retry count for next cycle
+			}
+		}
 	}
-  }
 }
