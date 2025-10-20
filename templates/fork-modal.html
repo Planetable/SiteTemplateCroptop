@@ -78,38 +78,30 @@
               <div class="form-value form-chain-checkbox-value">
                 <div id="fork-form-new-jb-chain-production-options" class="form-chain-options">
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-ethereum-mainnet" name="chain" value="ethereum mainnet">
-                    <label for="fork-form-new-jb-ethereum-mainnet">Ethereum</label>
+                    <label for="fork-form-new-jb-ethereum-mainnet">Ethereum</label> <input type="checkbox" id="fork-form-new-jb-ethereum-mainnet" name="chain" value="ethereum mainnet">
                   </div>
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-optimism-mainnet" name="chain" value="optimism mainnet">
-                    <label for="fork-form-new-jb-optimism-mainnet">Optimism</label>
+                    <label for="fork-form-new-jb-optimism-mainnet">Optimism</label> <input type="checkbox" id="fork-form-new-jb-optimism-mainnet" name="chain" value="optimism mainnet">
                   </div>
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-arbitrum-mainnet" name="chain" value="arbitrum mainnet">
-                    <label for="fork-form-new-jb-arbitrum-mainnet">Arbitrum</label>
+                    <label for="fork-form-new-jb-arbitrum-mainnet">Arbitrum</label> <input type="checkbox" id="fork-form-new-jb-arbitrum-mainnet" name="chain" value="arbitrum mainnet">
                   </div>
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-base-mainnet" name="chain" value="base mainnet">
-                    <label for="fork-form-new-jb-base-mainnet">Base</label>
+                    <label for="fork-form-new-jb-base-mainnet">Base</label> <input type="checkbox" id="fork-form-new-jb-base-mainnet" name="chain" value="base mainnet">
                   </div>
                 </div>
                 <div id="fork-form-new-jb-chain-testnet-options" class="form-chain-options" style="display: none;">
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-ethereum-sepolia" name="chain" value="ethereum sepolia">
-                    <label for="fork-form-new-jb-ethereum-sepolia">Ethereum Sepolia</label>
+                    <label for="fork-form-new-jb-ethereum-sepolia">Ethereum Sepolia</label> <input type="checkbox" id="fork-form-new-jb-ethereum-sepolia" name="chain" value="ethereum sepolia">
                   </div>
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-optimism-sepolia" name="chain" value="optimism sepolia">
-                    <label for="fork-form-new-jb-optimism-sepolia">Optimism Sepolia</label>
+                    <label for="fork-form-new-jb-optimism-sepolia">Optimism Sepolia</label> <input type="checkbox" id="fork-form-new-jb-optimism-sepolia" name="chain" value="optimism sepolia">
                   </div>
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-arbitrum-sepolia" name="chain" value="arbitrum sepolia">
-                    <label for="fork-form-new-jb-arbitrum-sepolia">Arbitrum Sepolia</label>
+                    <label for="fork-form-new-jb-arbitrum-sepolia">Arbitrum Sepolia</label> <input type="checkbox" id="fork-form-new-jb-arbitrum-sepolia" name="chain" value="arbitrum sepolia">
                   </div>
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-base-sepolia" name="chain" value="base sepolia">
-                    <label for="fork-form-new-jb-base-sepolia">Base Sepolia</label>
+                    <label for="fork-form-new-jb-base-sepolia">Base Sepolia</label> <input type="checkbox" id="fork-form-new-jb-base-sepolia" name="chain" value="base sepolia">
                   </div>
                 </div>
               </div>
@@ -847,19 +839,6 @@
                 chainId: tx.request.chain
               });
             }
-            
-            // Check if we can extract collection address from the transaction response itself
-            if (tx.status && tx.status.data && tx.status.data.collection_address) {
-              if (!collectionAddress) {
-                collectionAddress = tx.status.data.collection_address;
-                updateHookAddressDisplay(tx.status.data.collection_address);
-              }
-            } else if (tx.collection_address) {
-              if (!collectionAddress) {
-                collectionAddress = tx.collection_address;
-                updateHookAddressDisplay(tx.collection_address);
-              }
-            }
           }
         } else if (state === 'Failed') {
           statusIcon = `<span class="relayr-status-table-failed relayr-status-table-icon">&#10007;</span>`;
@@ -897,14 +876,15 @@
         statusTableBody.appendChild(row);
       }
 
-      // Show loading message if we don't have a collection address yet OR if transactions are still pending
-      if (!collectionAddress || !allTransactionsComplete) {
-        addressLoading.style.display = 'block';
-        collectionAddressDiv.style.display = 'none';
-      } else {
-        // We have the collection address AND all transactions are complete, show it
+      // Show collection address if we have it, otherwise show loading message
+      if (collectionAddress) {
+        // We have the collection address, show it
         addressLoading.style.display = 'none';
         collectionAddressDiv.style.display = 'block';
+      } else {
+        // We don't have the collection address yet, show loading message
+        addressLoading.style.display = 'block';
+        collectionAddressDiv.style.display = 'none';
       }
 
       // Show help message if at least one tx has been successful or has a View link
@@ -934,9 +914,6 @@
         if (existingSubmitButton) {
           existingSubmitButton.style.display = 'none';
         }
-        
-        // Make sure the collection address is displayed
-        updateHookAddressDisplay(collectionAddress);
       }
       
       // Extract hook addresses asynchronously after rendering the table
@@ -1022,6 +999,11 @@
     
     // Function to update the UI with the hook address
     function updateHookAddressDisplay(hookAddress) {
+      // Only update if we don't already have this address
+      if (collectionAddress === hookAddress) {
+        return;
+      }
+      
       // Set the collection address variable
       collectionAddress = hookAddress;
       
