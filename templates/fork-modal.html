@@ -78,30 +78,30 @@
               <div class="form-value form-chain-checkbox-value">
                 <div id="fork-form-new-jb-chain-production-options" class="form-chain-options">
                   <div class="form-checkbox-option">
-                    <label for="fork-form-new-jb-ethereum-mainnet">Ethereum</label> <input type="checkbox" id="fork-form-new-jb-ethereum-mainnet" name="chain" value="ethereum mainnet">
+                    <input type="checkbox" id="fork-form-new-jb-ethereum-mainnet" name="chain" value="ethereum mainnet"> <label for="fork-form-new-jb-ethereum-mainnet">Ethereum</label>
                   </div>
                   <div class="form-checkbox-option">
-                    <label for="fork-form-new-jb-optimism-mainnet">Optimism</label> <input type="checkbox" id="fork-form-new-jb-optimism-mainnet" name="chain" value="optimism mainnet">
+                    <input type="checkbox" id="fork-form-new-jb-optimism-mainnet" name="chain" value="optimism mainnet"> <label for="fork-form-new-jb-optimism-mainnet">Optimism</label>
                   </div>
                   <div class="form-checkbox-option">
-                    <label for="fork-form-new-jb-arbitrum-mainnet">Arbitrum</label> <input type="checkbox" id="fork-form-new-jb-arbitrum-mainnet" name="chain" value="arbitrum mainnet">
+                    <input type="checkbox" id="fork-form-new-jb-arbitrum-mainnet" name="chain" value="arbitrum mainnet"> <label for="fork-form-new-jb-arbitrum-mainnet">Arbitrum</label>
                   </div>
                   <div class="form-checkbox-option">
-                    <label for="fork-form-new-jb-base-mainnet">Base</label> <input type="checkbox" id="fork-form-new-jb-base-mainnet" name="chain" value="base mainnet">
+                    <input type="checkbox" id="fork-form-new-jb-base-mainnet" name="chain" value="base mainnet"> <label for="fork-form-new-jb-base-mainnet">Base</label>
                   </div>
                 </div>
                 <div id="fork-form-new-jb-chain-testnet-options" class="form-chain-options" style="display: none;">
                   <div class="form-checkbox-option">
-                    <label for="fork-form-new-jb-ethereum-sepolia">Ethereum Sepolia</label> <input type="checkbox" id="fork-form-new-jb-ethereum-sepolia" name="chain" value="ethereum sepolia">
+                    <input type="checkbox" id="fork-form-new-jb-ethereum-sepolia" name="chain" value="ethereum sepolia"> <label for="fork-form-new-jb-ethereum-sepolia">Ethereum Sepolia</label>
                   </div>
                   <div class="form-checkbox-option">
-                    <label for="fork-form-new-jb-optimism-sepolia">Optimism Sepolia</label> <input type="checkbox" id="fork-form-new-jb-optimism-sepolia" name="chain" value="optimism sepolia">
+                    <input type="checkbox" id="fork-form-new-jb-optimism-sepolia" name="chain" value="optimism sepolia"> <label for="fork-form-new-jb-optimism-sepolia">Optimism Sepolia</label>
                   </div>
                   <div class="form-checkbox-option">
-                    <label for="fork-form-new-jb-arbitrum-sepolia">Arbitrum Sepolia</label> <input type="checkbox" id="fork-form-new-jb-arbitrum-sepolia" name="chain" value="arbitrum sepolia">
+                    <input type="checkbox" id="fork-form-new-jb-arbitrum-sepolia" name="chain" value="arbitrum sepolia"> <label for="fork-form-new-jb-arbitrum-sepolia">Arbitrum Sepolia</label>
                   </div>
                   <div class="form-checkbox-option">
-                    <label for="fork-form-new-jb-base-sepolia">Base Sepolia</label> <input type="checkbox" id="fork-form-new-jb-base-sepolia" name="chain" value="base sepolia">
+                    <input type="checkbox" id="fork-form-new-jb-base-sepolia" name="chain" value="base sepolia"> <label for="fork-form-new-jb-base-sepolia">Base Sepolia</label>
                   </div>
                 </div>
               </div>
@@ -210,6 +210,55 @@
     let pendingHookExtractions = []; // Track pending hook address extractions
     let collectionAddress = null; // Store the extracted collection (hook) address
 
+    // Cache DOM elements for better performance
+    const DOM = {
+      submitButton: document.getElementById('fork-form-new-jb-submit-button'),
+      submitButtonText: document.getElementById('fork-form-new-jb-submit-button-text'),
+      loadingAnimation: document.getElementById('fork-form-new-jb-button-loading-animation'),
+      addressLoading: document.getElementById('fork-form-address-loading'),
+      collectionAddressDiv: document.getElementById('fork-form-collection-address'),
+      collectionAddressCode: document.getElementById('fork-form-collection-address-code'),
+      errorMessage: document.getElementById('fork-form-new-jb-error-message'),
+      successMessage: document.getElementById('fork-form-new-jb-success-message'),
+      statusHelp: document.getElementById('fork-form-status-help')
+    };
+
+    // Configuration constants
+    const CONFIG = {
+      formInputReactionTimeDelay: 600
+    };
+
+    // Deployment configuration constants
+    const DEPLOYMENT_CONFIG = {
+      stage1: {
+        automintTokenAmount: 0,
+        initialIssuanceAmount: fixedPointNumber("10000", 18), // 10000 issuance with 18 decimals
+        splitPercent: 10000 - Math.round(62 * 100), // 62% reward
+        priceIncreasePercent: 10_000_000, // 1% bonus
+        priceIncreaseFrequency: 7 * 86400, // Every 7 days
+        cashOutTaxRate: 1000 // 0.1 (10%)
+      },
+      stage2: {
+        automintTokenAmount: 0,
+        initialIssuanceAmount: 0,
+        splitPercent: 0,
+        priceIncreasePercent: 0,
+        priceIncreaseFrequency: 0,
+        cashOutTaxRate: 0
+      },
+      stage3: {
+        automintTokenAmount: 0,
+        initialIssuanceAmount: 0,
+        splitPercent: 0,
+        priceIncreasePercent: 0,
+        priceIncreaseFrequency: 0,
+        cashOutTaxRate: 0
+      }
+    };
+
+    // Helper functions
+    const hasCollectionAddress = () => !!collectionAddress;
+
     const decorateNewJbForm = () => {
       const forkFormChainInput = document.getElementById("fork-form-state-chain-input");
       const forkFormNewJbCollectionNameInput = document.getElementById("fork-form-new-jb-collection-name-input");
@@ -260,7 +309,7 @@
       let checkStateTimer;
       const queueCheckState = async () => {
         clearTimeout(checkStateTimer);
-        checkStateTimer = setTimeout(checkState, formInputReactionTimeDelay);
+        checkStateTimer = setTimeout(checkState, CONFIG.formInputReactionTimeDelay);
       }
   
       // Update the form's state each time the values change.
@@ -300,16 +349,14 @@
 
       // Set loading state
       const setLoadingState = (state) => {
-        const submitButton = document.getElementById('fork-form-new-jb-submit-button');
-        const loadingAnimation = document.getElementById('fork-form-new-jb-button-loading-animation');
         if (state) {
-          submitButton.disabled = true;
-          loadingAnimation.style.display = 'inline-block';
+          DOM.submitButton.disabled = true;
+          DOM.loadingAnimation.style.display = 'inline-block';
           // Show extra text only for get deploy quote
-          const btnText = document.getElementById('fork-form-new-jb-submit-button-text').textContent;
+          const btnText = DOM.submitButtonText.textContent;
         } else {
-          submitButton.disabled = false;
-          loadingAnimation.style.display = 'none';
+          DOM.submitButton.disabled = false;
+          DOM.loadingAnimation.style.display = 'none';
           // Stop the loading animation when hiding it
           stopLoadingAnimation('fork-form-new-jb-button-loading-animation');
         }
@@ -317,26 +364,22 @@
 
       // Show error
       const showError = (message) => {
-        const errorMessage = document.getElementById('fork-form-new-jb-error-message');
-        errorMessage.textContent = message;
-        errorMessage.style.display = "block";
+        DOM.errorMessage.textContent = message;
+        DOM.errorMessage.style.display = "block";
       };
 
       // Show success
       const showSuccess = (message) => {
-        const successMessage = document.getElementById('fork-form-new-jb-success-message');
-        successMessage.textContent = message;
-        successMessage.style.display = "block";
+        DOM.successMessage.textContent = message;
+        DOM.successMessage.style.display = "block";
       };
 
       // Reset form and UI
       const resetFormAndUI = () => {
-        const successMessage = document.getElementById('fork-form-new-jb-success-message');
-        const errorMessage = document.getElementById('fork-form-new-jb-error-message');
         const relayrSection = document.getElementById('fork-form-new-jb-relayr-quote-section');
         
-        successMessage.style.display = "none";
-        errorMessage.style.display = "none";
+        DOM.successMessage.style.display = "none";
+        DOM.errorMessage.style.display = "none";
         relayrSection.style.display = 'none';
         
         // Restore original button text
@@ -548,24 +591,24 @@
         const minimumTotalSupply = BigInt(supply);
         const maximumTotalSupply = BigInt(supply);
         const allowedAddresses = !forkFormNewJbAddressesInput.value ? [] : forkFormNewJbAddressesInput.value.split('\n');
-        const stage1AutomintTokenAmount = 0; // Default to 0 automints
-        const stage2AutomintTokenAmount = 0; // No stage 2
-        const stage3AutomintTokenAmount = 0; // No stage 3
-        const stage1InitialIssuanceAmount = fixedPointNumber("10000", 18); // Default to 10000 issuance with 18 decimals
-        const stage2InitialIssuanceAmount = 0; // No stage 2
-        const stage3InitialIssuanceAmount = 0; // No stage 3
-        const stage1SplitPercent = 10000 - Math.round(62 * 100); // 62% reward
-        const stage2SplitPercent = 0; // No stage 2
-        const stage3SplitPercent = 0; // No stage 3
-        const stage1PriceIncreasePercent = 10_000_000; // 1% bonus
-        const stage2PriceIncreasePercent = 0; // No stage 2
-        const stage3PriceIncreasePercent = 0; // No stage 3
-        const stage1PriceIncreaseFrequency = 7 * 86400; // Every 7 days
-        const stage2PriceIncreaseFrequency = 0; // No stage 2
-        const stage3PriceIncreaseFrequency = 0; // No stage 3
-        const stage1CashOutTaxRate = 1000; // Default to 0.1 (10%)
-        const stage2CashOutTaxRate = 0; // No stage 2
-        const stage3CashOutTaxRate = 0; // No stage 3
+        const stage1AutomintTokenAmount = DEPLOYMENT_CONFIG.stage1.automintTokenAmount;
+        const stage2AutomintTokenAmount = DEPLOYMENT_CONFIG.stage2.automintTokenAmount;
+        const stage3AutomintTokenAmount = DEPLOYMENT_CONFIG.stage3.automintTokenAmount;
+        const stage1InitialIssuanceAmount = DEPLOYMENT_CONFIG.stage1.initialIssuanceAmount;
+        const stage2InitialIssuanceAmount = DEPLOYMENT_CONFIG.stage2.initialIssuanceAmount;
+        const stage3InitialIssuanceAmount = DEPLOYMENT_CONFIG.stage3.initialIssuanceAmount;
+        const stage1SplitPercent = DEPLOYMENT_CONFIG.stage1.splitPercent;
+        const stage2SplitPercent = DEPLOYMENT_CONFIG.stage2.splitPercent;
+        const stage3SplitPercent = DEPLOYMENT_CONFIG.stage3.splitPercent;
+        const stage1PriceIncreasePercent = DEPLOYMENT_CONFIG.stage1.priceIncreasePercent;
+        const stage2PriceIncreasePercent = DEPLOYMENT_CONFIG.stage2.priceIncreasePercent;
+        const stage3PriceIncreasePercent = DEPLOYMENT_CONFIG.stage3.priceIncreasePercent;
+        const stage1PriceIncreaseFrequency = DEPLOYMENT_CONFIG.stage1.priceIncreaseFrequency;
+        const stage2PriceIncreaseFrequency = DEPLOYMENT_CONFIG.stage2.priceIncreaseFrequency;
+        const stage3PriceIncreaseFrequency = DEPLOYMENT_CONFIG.stage3.priceIncreaseFrequency;
+        const stage1CashOutTaxRate = DEPLOYMENT_CONFIG.stage1.cashOutTaxRate;
+        const stage2CashOutTaxRate = DEPLOYMENT_CONFIG.stage2.cashOutTaxRate;
+        const stage3CashOutTaxRate = DEPLOYMENT_CONFIG.stage3.cashOutTaxRate;
         const stage2StartsAtOrAfter = 0; // No stage 2
         const stage3StartsAtOrAfter = 0; // No stage 3
         
@@ -877,14 +920,14 @@
       }
 
       // Show collection address if we have it, otherwise show loading message
-      if (collectionAddress) {
+      if (hasCollectionAddress()) {
         // We have the collection address, show it
-        addressLoading.style.display = 'none';
-        collectionAddressDiv.style.display = 'block';
+        DOM.addressLoading.style.display = 'none';
+        DOM.collectionAddressDiv.style.display = 'block';
       } else {
         // We don't have the collection address yet, show loading message
-        addressLoading.style.display = 'block';
-        collectionAddressDiv.style.display = 'none';
+        DOM.addressLoading.style.display = 'block';
+        DOM.collectionAddressDiv.style.display = 'none';
       }
 
       // Show help message if at least one tx has been successful or has a View link
@@ -899,20 +942,19 @@
       
       // Show help message if there are successful transactions (even if View links aren't available yet)
       if (hasSuccessfulTx || hasViewLink) {
-        statusHelp.style.display = 'block';
+        DOM.statusHelp.style.display = 'block';
       } else {
-        statusHelp.style.display = 'none';
+        DOM.statusHelp.style.display = 'none';
       }
       
       
       // Stop loading animation and hide button when all transactions are complete and collection address is found
-      if (allTransactionsComplete && collectionAddress) {
+      if (allTransactionsComplete && hasCollectionAddress()) {
         stopLoadingAnimation('fork-form-new-jb-button-loading-animation');
         
         // Hide the deploy button since deployment is complete
-        const existingSubmitButton = document.getElementById('fork-form-new-jb-submit-button');
-        if (existingSubmitButton) {
-          existingSubmitButton.style.display = 'none';
+        if (DOM.submitButton) {
+          DOM.submitButton.style.display = 'none';
         }
       }
       
@@ -931,13 +973,13 @@
     // Async function to extract hook addresses without blocking the UI
     async function extractHookAddressesAsync(pendingExtractions) {
       // If we already have the collection address, no need to make any requests
-      if (collectionAddress) {
+      if (hasCollectionAddress()) {
         return;
       }
       
       for (let i = 0; i < pendingExtractions.length; i++) {
         // Skip if we already have the collection address
-        if (collectionAddress) {
+        if (hasCollectionAddress()) {
           break;
         }
         
@@ -952,7 +994,7 @@
           }
           
           // Check again before making RPC call
-          if (collectionAddress) {
+          if (hasCollectionAddress()) {
             break;
           }
           
@@ -1009,19 +1051,14 @@
       
       if (hookAddress) {
         // Hide loading message and show collection address
-        const addressLoading = document.getElementById('fork-form-address-loading');
-        const collectionAddressDiv = document.getElementById('fork-form-collection-address');
-        const collectionAddressCode = document.getElementById('fork-form-collection-address-code');
-        
-        addressLoading.style.display = 'none';
-        collectionAddressCode.textContent = hookAddress;
-        collectionAddressDiv.style.display = 'block';
+        DOM.addressLoading.style.display = 'none';
+        DOM.collectionAddressCode.textContent = hookAddress;
+        DOM.collectionAddressDiv.style.display = 'block';
         
         // Stop loading animation and hide deploy button since we have the collection address
         stopLoadingAnimation('fork-form-new-jb-button-loading-animation');
-        const existingSubmitButton = document.getElementById('fork-form-new-jb-submit-button');
-        if (existingSubmitButton) {
-          existingSubmitButton.style.display = 'none';
+        if (DOM.submitButton) {
+          DOM.submitButton.style.display = 'none';
         }
       }
     }

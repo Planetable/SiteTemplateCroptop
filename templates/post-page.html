@@ -73,16 +73,73 @@
 <div id="post-aggregation" class="mobile-padding"></div>
 <script>
 
-  // State constants.
-  const feeDivisor = 20;
-  const formInputReactionTimeDelay = 600;
+  // Configuration constants
+  const PostCONFIG = {
+    feeDivisor: 20,
+    formInputReactionTimeDelay: 600,
+    defaultChain: "ethereum sepolia",
+    defaultCollectionCategory: 0,
+    highlightColor: "#f056c1"
+  };
+
+  // Cache DOM elements for better performance
+  const PostDOM = {
+    postFormErrorMessage: document.getElementById("post-form-error-message"),
+    postFormButton: document.getElementById("post-form-button"),
+    postFormButtonText: document.getElementById("post-form-button-text"),
+    postFormButtonLoadingAnimation: document.getElementById("post-form-button-loading-animation"),
+    postFormLoadingAnimation: document.getElementById("post-form-loading-animation"),
+    postFormStateChainInput: document.getElementById("post-form-state-chain-input"),
+    postFormStateChainSection: document.getElementById("post-form-state-chain-section"),
+    postFormStateCollectionAddressInput: document.getElementById("post-form-state-collection-address-input"),
+    postFormStateCollectionCategoryInput: document.getElementById("post-form-state-collection-category-input"),
+    postName: document.getElementById("post-name"),
+    postDate: document.getElementById("post-date"),
+    postSubtitle: document.getElementById("post-subtitle"),
+    postLink: document.getElementById("post-link"),
+    postCoverImage: document.getElementById("post-cover-image"),
+    postCoverVideo: document.getElementById("post-cover-video"),
+    postCoverAudioContainer: document.getElementById("post-cover-audio-container"),
+    postCoverAudio: document.getElementById("post-cover-audio"),
+    postContent: document.getElementById("post-content"),
+    recordPostForm: document.getElementById("record-post-form"),
+    collectPostForm: document.getElementById("collect-post-form"),
+    postFormCollectReveal: document.getElementById("post-form-collect-reveal"),
+    postFormCollectToggle: document.getElementById("post-form-collect-toggle"),
+    recordPostFormQuantityInput: document.getElementById("record-post-form-quantity-input"),
+    recordPostFormOptionsReveal: document.getElementById("record-post-form-options-reveal"),
+    collectPostFormQuantityInput: document.getElementById("collect-post-form-quantity-input"),
+    collectPostFormHeader: document.getElementById("collect-post-form-header"),
+    postAttachments: document.getElementById("post-attachments"),
+    postAggregation: document.getElementById("post-aggregation"),
+    postOnchain: document.getElementById("post-onchain")
+  };
 
   let tiersCache = {};
   let allowanceCache = {};
-  let defaultChain = "ethereum sepolia";
-  let defaultCollectionCategory = 0;
-  let highlightColor = "#f056c1";
+  let highlightColor = PostCONFIG.highlightColor;
   let signer;
+
+  // Error handling utilities
+  const showError = (message, type = "warn") => {
+    PostDOM.postFormErrorMessage.innerHTML = message;
+    PostDOM.postFormErrorMessage.classList.add(type);
+    PostDOM.postFormErrorMessage.style.display = "block";
+  };
+
+  const hideError = () => {
+    PostDOM.postFormErrorMessage.style.display = "none";
+  };
+
+  const showButton = (enabled = true) => {
+    PostDOM.postFormButton.disabled = !enabled;
+    PostDOM.postFormButton.style.display = "block";
+  };
+
+  const hideButton = () => {
+    PostDOM.postFormButton.disabled = true;
+    PostDOM.postFormButton.style.display = "none";
+  };
 
   const loadAndRenderArticle = (articleID) => {
     return fetch(`{{ assets_prefix }}${articleID}/article.json`)
@@ -100,10 +157,6 @@
 
   /// Get admin settings.
   const loadSettings = () => {
-    const postFormErrorMessage = document.getElementById("post-form-error-message");
-    const postFormStateChainInput = document.getElementById("post-form-state-chain-input");
-    const postFormStateCollectionAddressInput = document.getElementById("post-form-state-collection-address-input");
-    const postFormStateCollectionCategoryInput = document.getElementById("post-form-state-collection-category-input");
 
     fetch("{{ assets_prefix }}templateSettings.json?t={{ build_timestamp }}")
       // only if response is 200 OK, parse the JSON
@@ -138,18 +191,18 @@
         }));
         console.log({ chainMap });
         // Clear and repopulate the select
-        postFormStateChainInput.innerHTML = '';
+        PostDOM.postFormStateChainInput.innerHTML = '';
         chainMap.forEach(opt => {
           const option = document.createElement('option');
           option.value = opt.value;
           option.textContent = opt.label;
-          postFormStateChainInput.appendChild(option);
+          PostDOM.postFormStateChainInput.appendChild(option);
         });
         // Set default values
         if (chainMap.length > 0) {
-          postFormStateChainInput.value = chainMap[0].value;
-          postFormStateCollectionAddressInput.value = chainMap[0].address;
-          postFormStateCollectionCategoryInput.value = chainMap[0].category;
+          PostDOM.postFormStateChainInput.value = chainMap[0].value;
+          PostDOM.postFormStateCollectionAddressInput.value = chainMap[0].address;
+          PostDOM.postFormStateCollectionCategoryInput.value = chainMap[0].category;
         }
         if (data.highlightColor) highlightColor = data.highlightColor;
         const r = document.querySelector(':root');
@@ -164,66 +217,55 @@
   }
 
   const updateRecordFormHeader = (chain, formattedMinPrice, formattedMinTotalSupply) => {
-    const recordPostFormHeader = document.getElementById("record-post-form-header");
     const chainId = resolveChainId(chain);
     const chainLabel = resolveChainLabel(chainId);
-    recordPostFormHeader.innerHTML = `Price: <span class="ether">Ξ</span>${formattedMinPrice}  <span class="form-header-separator">|</span>  Copies left: ${formattedMinTotalSupply}`;
+    // Note: recordPostFormHeader is not in our DOM cache as it's dynamically created
+    const recordPostFormHeader = document.getElementById("record-post-form-header");
+    if (recordPostFormHeader) {
+      recordPostFormHeader.innerHTML = `Price: <span class="ether">Ξ</span>${formattedMinPrice}  <span class="form-header-separator">|</span>  Copies left: ${formattedMinTotalSupply}`;
+    }
   }
 
   const decorateRecordForm = async (chain, collectionAddress, category, encodedIPFSUri, formattedMinTotalSupply, formattedMaxTotalSupply, formattedMinPrice, formattedAllowedAddresses) => {
-    // Get references to record form elements that need decorating.
-    const recordPostFormQuantityInput = document.getElementById("record-post-form-quantity-input");
-    const recordPostFormOptionsReveal = document.getElementById("record-post-form-options-reveal");
-    const postFormErrorMessage = document.getElementById("post-form-error-message");
-    const postFormButtonText = document.getElementById("post-form-button-text");
-    const postFormButton = document.getElementById("post-form-button");
 
     // Update the header text with the current chain
     updateRecordFormHeader(chain, formattedMinPrice, formattedMinTotalSupply);
 
     // Toggle off the options section by default
-    recordPostFormOptionsReveal.open = false;
+    PostDOM.recordPostFormOptionsReveal.open = false;
 
     // Disable the button.
-    postFormButton.disabled = true;
-    postFormButton.style.display = "none";
+    hideButton();
 
     // Change the button text.
-    postFormButtonText.innerHTML = "buy";
+    PostDOM.postFormButtonText.innerHTML = "buy";
 
 
     // Re-decorate some input fields depending on the allowances set for the project and category.
     const checkState = async () => {
       // Set error message if not allowed.
       if (signer && formattedAllowedAddresses.length && !formattedAllowedAddresses.includes(signer)) {
-        postFormErrorMessage.innerHTML = `Collection ${collectionAddress} has reserved posting to category ${category} for these addresses: ${formattedAllowedAddresses}.`;
-        postFormErrorMessage.classList.add("warn");
-        postFormErrorMessage.style.display = "block";
-        postFormButton.disabled = true;
-        postFormButton.style.display = "block";
-      } else if (Number(recordPostFormQuantityInput.value) > Number(formattedMinTotalSupply)) {
-        postFormErrorMessage.innerHTML = `There are only ${formattedMinTotalSupply} copies left. Can't buy ${recordPostFormQuantityInput.value}.`;
-        postFormErrorMessage.classList.add("warn");
-        postFormErrorMessage.style.display = "block";
-        postFormButton.disabled = true;
-        postFormButton.style.display = "block";
+        showError(`Collection ${collectionAddress} has reserved posting to category ${category} for these addresses: ${formattedAllowedAddresses}.`);
+        showButton(false);
+      } else if (Number(PostDOM.recordPostFormQuantityInput.value) > Number(formattedMinTotalSupply)) {
+        showError(`There are only ${formattedMinTotalSupply} copies left. Can't buy ${PostDOM.recordPostFormQuantityInput.value}.`);
+        showButton(false);
       } else {
         // Hide the error message.
-        postFormErrorMessage.style.display = "none";
-        postFormButton.disabled = false;
-        postFormButton.style.display = "block";
+        hideError();
+        showButton(true);
       }
     }
 
     // Add event listener for quantity input changes
-    recordPostFormQuantityInput.addEventListener("input", checkState);
+    PostDOM.recordPostFormQuantityInput.addEventListener("input", checkState);
 
     // Set default quantity if not set
-    if (!recordPostFormQuantityInput.value) recordPostFormQuantityInput.value = 1;
+    if (!PostDOM.recordPostFormQuantityInput.value) PostDOM.recordPostFormQuantityInput.value = 1;
 
 
     // Submit the form.
-    postFormButton.onclick = async () => {
+    PostDOM.postFormButton.onclick = async () => {
       // Show the loading animation.
       startLoadingAnimation('post-form-button-loading-animation');
 
@@ -233,7 +275,7 @@
       // Make sure the form contents make sense.
       await checkState();
 
-      if (postFormButton.disabled) {
+      if (PostDOM.postFormButton.disabled) {
         // Hide the loading animation.
         stopLoadingAnimation('post-form-button-loading-animation');
         return;
@@ -246,9 +288,7 @@
           try {
             await switchChain(expectedChainId);
           } catch (e) {
-            postFormErrorMessage.innerHTML = `Browser not connected to ${chain}.`;
-            postFormErrorMessage.classList.add("warn");
-            postFormErrorMessage.style.display = "block";
+            showError(`Browser not connected to ${chain}.`);
 
             // Hide the loading animation.
             stopLoadingAnimation('post-form-button-loading-animation');
@@ -259,12 +299,12 @@
 
       // Use simplified values: min price, supply as total supply, quantity from input, default addresses
       const totalSupply = formattedMinTotalSupply;
-      const quantity = recordPostFormQuantityInput.value;
+      const quantity = PostDOM.recordPostFormQuantityInput.value;
       const price = fixedPointNumber(formattedMinPrice, 18);
       const beneficiary = signer; // Use signer's address as default
       const cpnBeneficiary = resolveCPNBeneficiaryAddress(chain) || signer; // Use default CPN beneficiary
       const totalPrice = BigInt(price) * BigInt(quantity);
-      const value = totalPrice + ((collectionAddress == await cpnCollectionAddress(chain)) ? BigInt(0) : (totalPrice / BigInt(feeDivisor)));
+      const value = totalPrice + ((collectionAddress == await cpnCollectionAddress(chain)) ? BigInt(0) : (totalPrice / BigInt(PostCONFIG.feeDivisor)));
 
       try {
         // Try to process the transaction.
@@ -273,13 +313,10 @@
           // Show incompatible network if needed.
         if (!accepted) {
           // Show the error message.
-          postFormErrorMessage.innerHTML = "The connected network isn't supported.";
-          postFormErrorMessage.classList.add("info");
-          postFormErrorMessage.style.display = "block";
+          showError("The connected network isn't supported.", "info");
 
           // Hide and disable the button.
-          postFormButton.disabled = true;
-          postFormButton.style.display = "none";
+          hideButton();
         }
 
         // Hide the loading animation.
@@ -299,49 +336,38 @@
   }
 
   const decorateCollectForm = async (chain, collectionAddress, category, encodedIPFSUri, formattedMintedSupply, formattedRemainingSupply, formattedPrice) => {
-    // Get references to record form elements that need decorating.
-    const collectPostFormHeader = document.getElementById("collect-post-form-header");
-    const collectPostFormQuantityInput = document.getElementById("collect-post-form-quantity-input");
-    const postFormErrorMessage = document.getElementById("post-form-error-message");
-    const postFormButtonText = document.getElementById("post-form-button-text");
-    const postFormButton = document.getElementById("post-form-button");
 
 
     // Set the header text.
     if (formattedRemainingSupply == 1) {
-      collectPostFormHeader.innerHTML = `${formattedMintedSupply} bought, only 1 copy of this post left for <span class="ether">Ξ</span>${formattedPrice}.`;
+      PostDOM.collectPostFormHeader.innerHTML = `${formattedMintedSupply} bought, only 1 copy of this post left for <span class="ether">Ξ</span>${formattedPrice}.`;
     } else {
-      collectPostFormHeader.innerHTML = `${formattedMintedSupply} bought, ${formattedRemainingSupply > 10000000 ? "infinite" : formattedRemainingSupply } copies left for <span class="ether">Ξ</span>${formattedPrice} each.`;
+      PostDOM.collectPostFormHeader.innerHTML = `${formattedMintedSupply} bought, ${formattedRemainingSupply > 10000000 ? "infinite" : formattedRemainingSupply } copies left for <span class="ether">Ξ</span>${formattedPrice} each.`;
     }
 
     // Change the button text.
-    postFormButtonText.innerHTML = "buy";
+    PostDOM.postFormButtonText.innerHTML = "buy";
 
     // Disable the button.
-    postFormButton.disabled = true;
-    postFormButton.style.display = "none";
+    hideButton();
 
     // Set the correct link given the chain.
-    collectPostFormCpnAnchor.href = `${projectLinkBase(chain)}${cpnCollectionAddress(chain)}`;
+    // Note: collectPostFormCpnAnchor element not found in HTML, skipping href assignment
 
     // Re-decorate some input fields depending on the allowances set for the project and category.
     const checkState = async () => {
       // Set error messages if the currently inputted values are too small.
-      if (Number(collectPostFormQuantityInput.value) > formattedRemainingSupply) {
+      if (Number(PostDOM.collectPostFormQuantityInput.value) > formattedRemainingSupply) {
         if (formattedRemainingSupply == 1) {
-          postFormErrorMessage.innerHTML = `There is only 1 copy left. Can't buy ${collectPostFormQuantityInput.value}.`;
+          showError(`There is only 1 copy left. Can't buy ${PostDOM.collectPostFormQuantityInput.value}.`);
         } else {
-          postFormErrorMessage.innerHTML = `There are only ${formattedRemainingSupply} copies left. Can't buy ${collectPostFormQuantityInput.value}.`;
+          showError(`There are only ${formattedRemainingSupply} copies left. Can't buy ${PostDOM.collectPostFormQuantityInput.value}.`);
         }
-        postFormErrorMessage.classList.add("warn");
-        postFormErrorMessage.style.display = "block";
-        postFormButton.disabled = true;
-        postFormButton.style.display = "block";
+        showButton(false);
       } else {
         // Hide the error message.
-        postFormErrorMessage.style.display = "none";
-        postFormButton.disabled = false;
-        postFormButton.style.display = "block";
+        hideError();
+        showButton(true);
       }
     }
 
@@ -349,30 +375,36 @@
     let checkStateTimer;
     const queueCheckState = async () => {
       clearTimeout(checkStateTimer);
-      checkStateTimer = setTimeout(checkState, formInputReactionTimeDelay);
+      checkStateTimer = setTimeout(checkState, PostCONFIG.formInputReactionTimeDelay);
     }
 
     // Update the form's state each time the price or quantity changes.
-    collectPostFormQuantityInput.addEventListener("input", queueCheckState);
+    PostDOM.collectPostFormQuantityInput.addEventListener("input", queueCheckState);
 
     // Set values in the form if the fields are not yet set.
-    if (!collectPostFormBeneficiaryInput.value && signer) collectPostFormBeneficiaryInput.value = signer;
+    // Note: collectPostFormBeneficiaryInput is not in our DOM cache as it may not exist
+    const collectPostFormBeneficiaryInput = document.getElementById("collect-post-form-beneficiary-input");
+    if (collectPostFormBeneficiaryInput && !collectPostFormBeneficiaryInput.value && signer) {
+      collectPostFormBeneficiaryInput.value = signer;
+    }
 
     // Allow connecting wallet to prefill beneficiary input field.
     const loadAddressButton = document.getElementById("collect-post-form-load-address-button");
-    loadAddressButton.onclick = async () => {
-      signer = (await getSigner()).address;
-      collectPostFormBeneficiaryInput.value = signer;
-      await checkState();
-    };
+    if (loadAddressButton) {
+      loadAddressButton.onclick = async () => {
+        signer = (await getSigner()).address;
+        if (collectPostFormBeneficiaryInput) {
+          collectPostFormBeneficiaryInput.value = signer;
+        }
+        await checkState();
+      };
+    }
 
     // Submit the form.
-    postFormButton.onclick = async () => {
+    PostDOM.postFormButton.onclick = async () => {
       // Check for empty values.
-      if (!collectPostFormQuantityInput.value) {
-        postFormErrorMessage.innerHTML = "Fill out the form.";
-        postFormErrorMessage.classList.add("warn");
-        postFormErrorMessage.style.display = "block";
+      if (!PostDOM.collectPostFormQuantityInput.value) {
+        showError("Fill out the form.");
         return;
       }
 
@@ -383,14 +415,19 @@
       signer = (await getSigner()).address;
 
       // Default to the signer.
-      if (!collectPostFormBeneficiaryInput.value) collectPostFormBeneficiaryInput.value = signer;
+      if (collectPostFormBeneficiaryInput && !collectPostFormBeneficiaryInput.value) {
+        collectPostFormBeneficiaryInput.value = signer;
+      }
       // Default to the eth address, or the signer;
-      if (!collectPostFormCpnBeneficiaryInput.value) collectPostFormCpnBeneficiaryInput.value = resolveCPNBeneficiaryAddress(chain) || signer;
+      const collectPostFormCpnBeneficiaryInput = document.getElementById("collect-post-form-cpn-beneficiary-input");
+      if (collectPostFormCpnBeneficiaryInput && !collectPostFormCpnBeneficiaryInput.value) {
+        collectPostFormCpnBeneficiaryInput.value = resolveCPNBeneficiaryAddress(chain) || signer;
+      }
 
       // Make sure the form contents make sense.
       await checkState();
 
-      if (postFormButton.disabled) {
+      if (PostDOM.postFormButton.disabled) {
         // Hide the loading animation.
         stopLoadingAnimation('post-form-button-loading-animation');
 
@@ -404,9 +441,7 @@
         try {
           await switchChain(expectedChainId);
         } catch (e) {
-          postFormErrorMessage.innerHTML = `Browser not connected to ${chain}.`;
-          postFormErrorMessage.classList.add("info");
-          postFormErrorMessage.style.display = "block";
+          showError(`Browser not connected to ${chain}.`, "info");
 
           // Hide the loading animation.
           stopLoadingAnimation('post-form-button-loading-animation');
@@ -418,12 +453,12 @@
       // Normalize values from the form.
       const totalSupply = 1;
       const price = fixedPointNumber(formattedPrice, 18);
-      const quantity = collectPostFormQuantityInput.value;
+      const quantity = PostDOM.collectPostFormQuantityInput.value;
       const beneficiary = signer; // Use signer's address as default
       const cpnBeneficiary = resolveCPNBeneficiaryAddress(chain) || signer; // Use default CPN beneficiary
       // Add a fee if the project being paid isn't the fee collectionAddress.
       const totalPrice = BigInt(price) * BigInt(quantity);
-      const value = totalPrice + ((collectionAddress == await cpnCollectionAddress(chain)) ? BigInt(0) : (totalPrice / BigInt(feeDivisor)));
+      const value = totalPrice + ((collectionAddress == await cpnCollectionAddress(chain)) ? BigInt(0) : (totalPrice / BigInt(PostCONFIG.feeDivisor)));
 
       try {
         // Try to process the transaction.
@@ -431,21 +466,16 @@
         // Show incompatible network if needed.
         if (!accepted) {
           // Show the error message.
-          postFormErrorMessage.innerHTML = "The connected network isn't supported.";
-          postFormErrorMessage.classList.add("info");
-          postFormErrorMessage.style.display = "block";
+          showError("The connected network isn't supported.", "info");
 
           // Disable the button.
-          postFormButton.disabled = true;
-          postFormButton.style.display = "none";
+          hideButton();
         }
 
         // Hide the loading animation.
         stopLoadingAnimation('post-form-button-loading-animation');
       } catch (e) {
-        postFormErrorMessage.innerHTML = e;
-        postFormErrorMessage.classList.add("warn");
-        postFormErrorMessage.style.display = "block";
+        showError(e);
 
         // Hide the loading animation.
         stopLoadingAnimation('post-form-button-loading-animation');
@@ -457,8 +487,7 @@
   }
 
   const decoratePostBody = () => {
-      const postContent = document.getElementById('post-content');
-      const firstChild = postContent.firstChild;
+      const firstChild = PostDOM.postContent.firstChild;
   }
 
   const getCleanerURL = (url) => {
@@ -470,32 +499,11 @@
   const decoratePostPage = async (postId, name, date, link, content, imageSrc, videoSrc, audioSrc, encodedIPFSUri, thumbnailAutogenerated, slug="") => {
     // Show the loading animation.
     startLoadingAnimation('post-form-loading-animation');
-    // Get references to the form state.
-    const postName = document.getElementById("post-name");
-    const postDate = document.getElementById("post-date");
-    const postSubtitle = document.getElementById("post-subtitle");
-    const postLink = document.getElementById("post-link");
-    const postFormStateChainInput = document.getElementById("post-form-state-chain-input");
-    const postFormStateChainSection = document.getElementById("post-form-state-chain-section");
-    const postFormStateCollectionAddressInput = document.getElementById("post-form-state-collection-address-input");
-    const postFormStateCollectionCategoryInput = document.getElementById("post-form-state-collection-category-input");
-    const postFormStateErrorMessage = document.getElementById("post-form-state-error-message");
-    const postFormErrorMessage = document.getElementById("post-form-error-message");
-    const postFormButton = document.getElementById("post-form-button");
-    const postCoverImage = document.getElementById("post-cover-image");
-    const postCoverVideo = document.getElementById("post-cover-video");
-    const postCoverAudioContainer = document.getElementById("post-cover-audio-container");
-    const postCoverAudio = document.getElementById("post-cover-audio");
-    const postContent = document.getElementById("post-content");
-    const recordPostForm = document.getElementById("record-post-form");
-    const collectPostForm = document.getElementById("collect-post-form");
-    const postFormCollectReveal = document.getElementById("post-form-collect-reveal");
-    const postFormCollectToggle = document.getElementById("post-form-collect-toggle");
     let postContentHasImgTags = false;
     if (content) {
-      postContent.style.display = "block";
-      postContent.innerHTML = content;
-      let imgs = postContent.getElementsByTagName("img");
+      PostDOM.postContent.style.display = "block";
+      PostDOM.postContent.innerHTML = content;
+      let imgs = PostDOM.postContent.getElementsByTagName("img");
       for (let img of imgs) {
         let src = img.getAttribute("src");
         if (src) {
@@ -526,83 +534,83 @@
         }
       }
     } else {
-      postContent.style.display = "none";
+      PostDOM.postContent.style.display = "none";
     }
 
     // Hide the form.
-    collectPostForm.style.display = "none";
-    recordPostForm.style.display = "none";
+    PostDOM.collectPostForm.style.display = "none";
+    PostDOM.recordPostForm.style.display = "none";
 
     // Decorate the frame's title.
-    postName.innerHTML = name;
-    postDate.innerHTML = `${date} `;
+    PostDOM.postName.innerHTML = name;
+    PostDOM.postDate.innerHTML = `${date} `;
 
     // Reset the label for the collect toggle.
     let storedPostFormCollectToggleText;
 
     // Show and populate the frame's subtitle if there's a link.
     if (link) {
-      postSubtitle.style.display = "block";
-      postLink.innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
+      PostDOM.postSubtitle.style.display = "block";
+      PostDOM.postLink.innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
     } else {
-      postSubtitle.style.display = "none";
+      PostDOM.postSubtitle.style.display = "none";
     }
 
     // Decorate the image or video content.
 
     if (videoSrc) {
-      postCoverImage.style.display = "none";
-      postCoverAudioContainer.style.display = "none";
-      postCoverVideo.style.display = "block";
-      postCoverVideo.autoplay = true;
-      postCoverVideo.loop = true;
-      postCoverVideo.muted = true;
-      postCoverVideo.controls = true;
-      postCoverVideo.playsInline = true;
-      postCoverVideo.preload = "auto";
-      postCoverVideo.poster = "{{ assets_prefix }}" + postId + "/_videoThumbnail.png";
-      postCoverImage.src = "";
-      postCoverVideo.src = videoSrc;
-      postCoverVideo.addEventListener("click", (e) => e.stopPropagation());
+      PostDOM.postCoverImage.style.display = "none";
+      PostDOM.postCoverAudioContainer.style.display = "none";
+      PostDOM.postCoverVideo.style.display = "block";
+      PostDOM.postCoverVideo.autoplay = true;
+      PostDOM.postCoverVideo.loop = true;
+      PostDOM.postCoverVideo.muted = true;
+      PostDOM.postCoverVideo.controls = true;
+      PostDOM.postCoverVideo.playsInline = true;
+      PostDOM.postCoverVideo.preload = "auto";
+      PostDOM.postCoverVideo.poster = "{{ assets_prefix }}" + postId + "/_videoThumbnail.png";
+      PostDOM.postCoverImage.src = "";
+      PostDOM.postCoverVideo.src = videoSrc;
+      PostDOM.postCoverVideo.addEventListener("click", (e) => e.stopPropagation());
     } else if (audioSrc) {
       const postCoverAudioSource = document.createElement("source");
-      postCoverImage.style.display = "none"
-      postCoverVideo.style.display = "none"
-      postCoverAudioContainer.style.display = "block";
-      postCoverAudio.autoplay = false;
-      postCoverAudio.loop = false;
-      postCoverAudio.muted = false;
-      postCoverAudio.controls = true;
+      PostDOM.postCoverImage.style.display = "none"
+      PostDOM.postCoverVideo.style.display = "none"
+      PostDOM.postCoverAudioContainer.style.display = "block";
+      PostDOM.postCoverAudio.autoplay = false;
+      PostDOM.postCoverAudio.loop = false;
+      PostDOM.postCoverAudio.muted = false;
+      PostDOM.postCoverAudio.controls = true;
       postCoverAudioSource.src = audioSrc;
-      postCoverVideo.src = "";
-      postCoverImage.src = "";
-      postCoverAudio.appendChild(postCoverAudioSource);
+      PostDOM.postCoverVideo.src = "";
+      PostDOM.postCoverImage.src = "";
+      PostDOM.postCoverAudio.appendChild(postCoverAudioSource);
     } else if (imageSrc && postContentHasImgTags) {
-      postCoverVideo.src = "";
-      postCoverVideo.style.display = "none";
-      postCoverImage.src = "";
-      postCoverImage.style.display = "none";
-      postCoverAudioContainer.style.display = "none";
+      PostDOM.postCoverVideo.src = "";
+      PostDOM.postCoverVideo.style.display = "none";
+      PostDOM.postCoverImage.src = "";
+      PostDOM.postCoverImage.style.display = "none";
+      PostDOM.postCoverAudioContainer.style.display = "none";
     } else if (imageSrc && !thumbnailAutogenerated && !postContentHasImgTags) {
-      postCoverImage.style.display = "block"
-      postCoverVideo.style.display = "none"
-      postCoverAudioContainer.style.display = "none";
-      postCoverVideo.src = "";
-      postCoverImage.src = imageSrc;
-      postCoverImage.addEventListener("click", (e) => e.stopPropagation());
+      PostDOM.postCoverImage.style.display = "block"
+      PostDOM.postCoverVideo.style.display = "none"
+      PostDOM.postCoverAudioContainer.style.display = "none";
+      PostDOM.postCoverVideo.src = "";
+      PostDOM.postCoverImage.src = imageSrc;
+      PostDOM.postCoverImage.addEventListener("click", (e) => e.stopPropagation());
     } else {
-      postCoverImage.style.display = "none"
-      postCoverVideo.style.display = "none"
-      postCoverAudioContainer.style.display = "none";
-      postCoverVideo.src = "";
-      postCoverImage.src = "";
+      PostDOM.postCoverImage.style.display = "none"
+      PostDOM.postCoverVideo.style.display = "none"
+      PostDOM.postCoverAudioContainer.style.display = "none";
+      PostDOM.postCoverVideo.src = "";
+      PostDOM.postCoverImage.src = "";
     }
 
     const updateFormState = async () => {
       // Get a reference to the chain, collectionAddress, and category fields.
-      const chain = postFormStateChainInput.value;
-      const collectionAddress = postFormStateCollectionAddressInput.value;
-      const category = parseInt(postFormStateCollectionCategoryInput.value);
+      const chain = PostDOM.postFormStateChainInput.value;
+      const collectionAddress = PostDOM.postFormStateCollectionAddressInput.value;
+      const category = parseInt(PostDOM.postFormStateCollectionCategoryInput.value);
 
       // Set a chain object.
       if (!tiersCache[chain]) tiersCache[chain] = {};
@@ -624,16 +632,13 @@
         // If no tier, don't show the form.
         if (!tier) {
           // Show the error message.
-          postFormErrorMessage.innerHTML = "-";
-          postFormErrorMessage.classList.add("info");
-          postFormErrorMessage.style.display = "block";
+          showError("-", "info");
           // Hide the forms.
-          recordPostForm.style.display = "none";
-          collectPostForm.style.display = "none";
+          PostDOM.recordPostForm.style.display = "none";
+          PostDOM.collectPostForm.style.display = "none";
           // Disable the button.
-          postFormButton.disabled = true;
-          postFormButton.style.display = "none";
-          postFormCollectToggle.innerHTML = 'buy & collect';
+          hideButton();
+          PostDOM.postFormCollectToggle.innerHTML = 'buy & collect';
           return;
         }
 
@@ -655,25 +660,22 @@
         // If there's no remaining supply, the form's state is in SOLD_OUT mode, meaning it can't be minted anymore.
         if (formattedRemainingSupply == 0) {
           // Show the error message.
-          postFormErrorMessage.innerHTML = "This post is sold out";
-          postFormErrorMessage.classList.add("info");
-          postFormErrorMessage.style.display = "block";
+          showError("This post is sold out", "info");
           // Hide the forms.
-          recordPostForm.style.display = "none";
-          collectPostForm.style.display = "none";
+          PostDOM.recordPostForm.style.display = "none";
+          PostDOM.collectPostForm.style.display = "none";
           // Disable the button.
-          postFormButton.disabled = true;
-          postFormButton.style.display = "none";
-          postFormCollectToggle.innerHTML = 'sold out';
+          hideButton();
+          PostDOM.postFormCollectToggle.innerHTML = 'sold out';
           return;
         }
 
         // Show the COLLECT form.
-        collectPostForm.style.display = "block";
+        PostDOM.collectPostForm.style.display = "block";
         // Hide the RECORD form.
-        recordPostForm.style.display = "none";
+        PostDOM.recordPostForm.style.display = "none";
         // Hide the error message.
-        postFormErrorMessage.style.display = "none";
+        hideError();
 
         // Get a reference to the tier's price.
         const formattedPrice = ethers.formatEther(tier[1]);
@@ -683,9 +685,9 @@
         const formattedMintedSupply = formattedInitialSupply - formattedRemainingSupply;
 
         if (formattedRemainingSupply == 1) {
-          postFormCollectToggle.innerHTML = `${formattedMintedSupply} bought, only 1 left`;
+          PostDOM.postFormCollectToggle.innerHTML = `${formattedMintedSupply} bought, only 1 left`;
         } else {
-          postFormCollectToggle.innerHTML = `${formattedMintedSupply} bought, ${formattedRemainingSupply > 10000000 ? "infinite" : formattedRemainingSupply } left`;
+          PostDOM.postFormCollectToggle.innerHTML = `${formattedMintedSupply} bought, ${formattedRemainingSupply > 10000000 ? "infinite" : formattedRemainingSupply } left`;
         }
 
         // Show the form.
@@ -718,27 +720,24 @@
         // Show an error message if there's no allowance set.
         if (formattedMinTotalSupply == 0) {
           // Hide the chain selector if no chain is selected.
-          postFormStateChainSection.style.display = chain ? "block" : "none";
+          PostDOM.postFormStateChainSection.style.display = chain ? "block" : "none";
           // Show the error message.
-          postFormErrorMessage.innerHTML = chain ? `This site isn't accepting buys on ${chain} yet. Click "$" up top.` : `This site isn't accepting buys yet. Click "$" up top.`;
-          postFormErrorMessage.classList.add("info");
-          postFormErrorMessage.style.display = "block";
+          showError(chain ? `This site isn't accepting buys on ${chain} yet. Click "$" up top.` : `This site isn't accepting buys yet. Click "$" up top.`, "info");
           // Hide forms.
-          recordPostForm.style.display = "none";
-          collectPostForm.style.display = "none";
+          PostDOM.recordPostForm.style.display = "none";
+          PostDOM.collectPostForm.style.display = "none";
           // Hide and disable the button.
-          postFormButton.disabled = true;
-          postFormButton.style.display = "none";
-          postFormCollectToggle.innerHTML = 'buy & collect';
+          hideButton();
+          PostDOM.postFormCollectToggle.innerHTML = 'buy & collect';
           return;
         }
 
         // Show the RECORD form.
-        recordPostForm.style.display = "block";
+        PostDOM.recordPostForm.style.display = "block";
         // Hide the COLLECT form.
-        collectPostForm.style.display = "none";
+        PostDOM.collectPostForm.style.display = "none";
         // Hide the error message.
-        postFormErrorMessage.style.display = "none";
+        hideError();
 
         // Get a reference to the allowance min price.
         const formattedMinPrice = ethers.formatEther(allowance[0]);
@@ -749,21 +748,21 @@
         // Get a reference to the allowance max total supply.
         const formattedAllowedAddresses = allowance[3];
 
-        postFormCollectToggle.innerHTML = 'buy & collect';
+        PostDOM.postFormCollectToggle.innerHTML = 'buy & collect';
 
         await decorateRecordForm(chain, collectionAddress, category, encodedIPFSUri, formattedMinTotalSupply, formattedMaxTotalSupply, formattedMinPrice, formattedAllowedAddresses);
       }
     }
 
     // Change the collectionAddress input on network change to the default.
-    postFormStateChainInput.addEventListener("change", async () => {
-      postFormStateCollectionAddressInput.value = resolveCollectionAddress(postFormStateChainInput.value);
+    PostDOM.postFormStateChainInput.addEventListener("change", async () => {
+      PostDOM.postFormStateCollectionAddressInput.value = resolveCollectionAddress(PostDOM.postFormStateChainInput.value);
 
       // Set the collection category value to the default if it hasn't changed.
-      postFormStateCollectionCategoryInput.value = resolveCollectionCategory(postFormStateChainInput.value);
+      PostDOM.postFormStateCollectionCategoryInput.value = resolveCollectionCategory(PostDOM.postFormStateChainInput.value);
 
       // Update the record form header with the new chain
-      updateRecordFormHeader(postFormStateChainInput.value, formattedMinPrice, formattedMinTotalSupply);
+      updateRecordFormHeader(PostDOM.postFormStateChainInput.value, formattedMinPrice, formattedMinTotalSupply);
 
       // Show the loading animation.
       startLoadingAnimation('post-form-loading-animation');
@@ -788,8 +787,7 @@
   }
 
   const decorateAttachments = async (post) => {
-    const container = document.getElementById("post-attachments")
-    container.innerHTML = '';
+    PostDOM.postAttachments.innerHTML = '';
     const previousPreview = document.getElementById("preview-pdf");
     if (previousPreview) {
       previousPreview.remove();
@@ -802,14 +800,12 @@
         preview.className = "preview-pdf";
         preview.id = "preview-pdf";
 
-        const postCoverImage = document.getElementById("post-cover-image");
-        if (postCoverImage) {
-          postCoverImage.style.display = "none";
+        if (PostDOM.postCoverImage) {
+          PostDOM.postCoverImage.style.display = "none";
         }
 
-        const postOnchain = document.getElementById("post-onchain");
-        if (postOnchain) {
-          postOnchain.parentNode.insertBefore(preview, postOnchain.nextSibling);
+        if (PostDOM.postOnchain) {
+          PostDOM.postOnchain.parentNode.insertBefore(preview, PostDOM.postOnchain.nextSibling);
         }
 
         const link = document.createElement("a");
@@ -817,16 +813,15 @@
         link.target = "_blank";
         link.innerHTML = attachment;
         link.className = "attachment-link";
-        container.appendChild(link);
+        PostDOM.postAttachments.appendChild(link);
 
-        container.style.paddingTop = "1em";
+        PostDOM.postAttachments.style.paddingTop = "1em";
       }
     }
   }
 
   const decorateAggregation = async (post) => {
-    const container = document.getElementById("post-aggregation")
-    container.innerHTML = '';
+    PostDOM.postAggregation.innerHTML = '';
     const originalSiteDomain = post.originalSiteDomain;
     const originalSiteName = post.originalSiteName;
     const originalPostID = post.originalPostID;
@@ -847,13 +842,13 @@
       link.target = "_blank";
       link.innerHTML = "Posted by " + originalSiteDomain;
       link.className = "aggregation-link";
-      container.appendChild(link);
-      container.style.paddingTop = "1em";
+      PostDOM.postAggregation.appendChild(link);
+      PostDOM.postAggregation.style.paddingTop = "1em";
     }
   }
 </script>
 {% if article_type == 1 %}
 <script>
-  document.getElementById("post-onchain").style.display = "none";
+  PostDOM.postOnchain.style.display = "none";
 </script>
 {% endif %}
