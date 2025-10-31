@@ -7,7 +7,6 @@
       <div id="header-info">
         <!--<div id="header-treasury">Peers: <span class="value" id="peers-count">-</span><span class="spaced">•</span>Revenue: <span class="value">$420,00</span><span class="spaced">•</span>Mints:  <span class="value">69</span><span class="spaced">•</span><a href="" id="page-metrics-link">Page analytics</a></div>-->
         <!--<div id="header-treasury">$BANNY<span class="spaced">•</span>Peers: <span class="value" id="peers-count">-</span><span class="spaced">•</span><a href="" id="page-metrics-link">Page analytics</a></div>-->
-        <div id="header-treasury"><!--Peers: <span class="value" id="peers-count">-</span><span class="spaced">•</span>-->Balance: <a href="#" class="value clickable-value" id="balance-value">-</a><span class="spaced">•</span>Owners: <a href="#" class="value clickable-value" id="owners-count">-</a><span class="spaced">•</span>Operated by: <a href="#" class="value clickable-value" id="operator-value">-</a><!--<span id="feature-page-metrics"><span class="spaced">•</span><a href="" id="page-metrics-link">Page analytics</a></span>--></div>
         <div id="header-top">
           <div id="header-title"><span id="header-title-button">{{ planet.name }}</span></div>
           <div id="header-aux">
@@ -21,6 +20,7 @@
     </div>
     <div id="subheader-container">
       {% if page_description_html.count > 0 %}<div id="subheader-about">{{ page_description_html }}</div>{% endif %}
+      <div id="header-treasury"><!--Peers: <span class="value" id="peers-count">-</span><span class="spaced">•</span>-->Balance: <a href="#" class="value clickable-value" id="balance-value">-</a><span class="spaced"></span>Owners: <a href="#" class="value clickable-value" id="owners-count">-</a><span class="spaced"></span>Operated by: <a href="#" class="value clickable-value" id="operator-value">-</a><!--<span id="feature-page-metrics"><span class="spaced">•</span><a href="" id="page-metrics-link">Page analytics</a></span>--></div>
       <div id="nav-container">
         <div id="nav">
           {% for item in site_navigation %}

@@ -496,7 +496,7 @@ details > summary:before {
 
 #subheader-container.shifted {
   padding-left: calc(var(--spacing-4) + var(--avatar-size-3) + var(--spacing-3) + var(--spacing-1));
-  margin-top: calc(-1 * (var(--spacing-6) + var(--spacing-5)));
+  margin-top: calc(-1 * (var(--spacing-6) + var(--spacing-4) + var(--spacing-6)));
 }
 
 #header-container.small {
@@ -557,7 +557,7 @@ details > summary:before {
   color: var(--foreground-secondary-color);
   white-space: nowrap;
   overflow: scroll;
-  margin-bottom: var(--spacing-3);
+  margin-bottom: var(--spacing-2);
 }
 
 #header-treasury::-webkit-scrollbar {
@@ -595,6 +595,7 @@ details > summary:before {
 
 #subheader-about {
   color: var(--foreground-color);
+  margin-bottom: var(--spacing-2);
   width: 50%;
 }
 
@@ -1506,6 +1507,10 @@ details > summary:before {
   }
 
   /* HEADER STYLES */
+
+  #header-info {
+    align-content: center;
+  }
 
   #header-avatar {
     width: var(--avatar-size-2);
