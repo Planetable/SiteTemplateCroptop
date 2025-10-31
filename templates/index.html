@@ -924,7 +924,7 @@ window.onpopstate = function(event) {
           IndexDOM.balanceValue.target = "_blank";
         }
       } else {
-        IndexDOM.balanceValue.textContent = "-";
+        IndexDOM.balanceValue.textContent = "$0";
         IndexDOM.balanceValue.href = "#";
       }
       
@@ -961,7 +961,7 @@ window.onpopstate = function(event) {
       });
     } catch (error) {
       console.error('Error fetching balance, owners, and operator:', error);
-      IndexDOM.balanceValue.textContent = "-";
+      IndexDOM.balanceValue.textContent = "$0";
       IndexDOM.balanceValue.href = "#";
       IndexDOM.ownersCount.textContent = "-";
       IndexDOM.ownersCount.href = "#";

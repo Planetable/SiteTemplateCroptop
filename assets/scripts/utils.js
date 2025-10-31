@@ -849,7 +849,7 @@ const aggregateProjectData = async () => {
   
   // Format balance
   console.log(`[aggregateProjectData] Formatting balance`);
-  let formattedBalance = null;
+  let formattedBalance = "$0"; // Default to $0 if no balance
   if (tokenInfo && balance && totalBalance > 0n) {
     const divisor = BigInt(10 ** tokenInfo.decimals);
     const balanceNumber = Number(totalBalance) / Number(divisor);
