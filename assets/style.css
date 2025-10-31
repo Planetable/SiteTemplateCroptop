@@ -570,6 +570,23 @@ details > summary:before {
 
 #header-treasury .value {
   font-weight: var(--font-weight-2);
+  text-decoration: none;
+}
+
+#header-treasury .clickable-value {
+  cursor: pointer;
+}
+
+#header-treasury .clickable-value:hover {
+  text-decoration: underline;
+}
+
+#header-treasury .clickable-value[href="#"] {
+  cursor: default;
+}
+
+#header-treasury .clickable-value[href="#"]:hover {
+  text-decoration: none;
 }
 #header-treasury .spaced {
   margin-left: var(--spacing-1);

@@ -72,6 +72,9 @@ window.onpopstate = function(event) {
     topDom: document.getElementById("top-dom"),
     bodyDom: document.getElementById("body-dom"),
     peersCountLabel: document.getElementById("peers-count"),
+    balanceValue: document.getElementById("balance-value"),
+    ownersCount: document.getElementById("owners-count"),
+    operatorValue: document.getElementById("operator-value"),
     featurePageMetrics: document.getElementById("feature-page-metrics"),
     pageMetricsLink: document.getElementById("page-metrics-link")
   };
@@ -899,23 +902,89 @@ window.onpopstate = function(event) {
 
   const decorateHeader = async (data) => {
     // peers
-    let ipns = data.ipns;
-    const response = await fetch(
-      `https://www.pinnable.xyz/api/v0/ipfs/peers/${ipns}`
-    );
-    const peers = await response.json();
-    const peersCount = peers["peers"].length;
-    IndexDOM.peersCountLabel.innerHTML = peersCount;
+    // Peers fetching commented out
+    // let ipns = data.ipns;
+    // const response = await fetch(
+    //   `https://www.pinnable.xyz/api/v0/ipfs/peers/${ipns}`
+    // );
+    // const peers = await response.json();
+    // const peersCount = peers["peers"].length;
+    // IndexDOM.peersCountLabel.innerHTML = peersCount;
 
-    // page metrics
-    if (data.plausibleEnabled && data.plausibleDomain && data.plausibleAPIServer) {
-      IndexDOM.pageMetricsLink.href = `https://${data.plausibleAPIServer}/${data.plausibleDomain}`;
-      IndexDOM.pageMetricsLink.target = "_blank";
-    } else {
-      if (IndexDOM.featurePageMetrics) {
-        IndexDOM.featurePageMetrics.remove();
+    // balance, owners, and operator
+    // Keep initial "-" values while loading (set in HTML)
+    try {
+      const projectData = await aggregateProjectData();
+      
+      // Set balance value and link
+      if (projectData.balance !== null) {
+        IndexDOM.balanceValue.textContent = projectData.balance;
+        if (projectData.revnetUrl) {
+          IndexDOM.balanceValue.href = projectData.revnetUrl;
+          IndexDOM.balanceValue.target = "_blank";
+        }
+      } else {
+        IndexDOM.balanceValue.textContent = "-";
+        IndexDOM.balanceValue.href = "#";
       }
+      
+      // Set owners value and link
+      IndexDOM.ownersCount.textContent = projectData.owners;
+      if (projectData.revnetUrl) {
+        IndexDOM.ownersCount.href = projectData.revnetUrl;
+        IndexDOM.ownersCount.target = "_blank";
+      } else {
+        IndexDOM.ownersCount.href = "#";
+      }
+      
+      // Set operator value and link
+      if (projectData.operator && projectData.operator !== "(n/a)") {
+        IndexDOM.operatorValue.textContent = projectData.operator;
+        if (projectData.revnetUrl) {
+          IndexDOM.operatorValue.href = projectData.revnetUrl;
+          IndexDOM.operatorValue.target = "_blank";
+        } else {
+          IndexDOM.operatorValue.href = "#";
+        }
+      } else {
+        IndexDOM.operatorValue.textContent = "(n/a)";
+        IndexDOM.operatorValue.href = "#";
+      }
+      
+      // Prevent default behavior for placeholder links
+      [IndexDOM.balanceValue, IndexDOM.ownersCount, IndexDOM.operatorValue].forEach(element => {
+        element.addEventListener('click', (e) => {
+          if (element.href === '#' || element.href.endsWith('#') || !element.href.includes('revnet.eth.sucks')) {
+            e.preventDefault();
+          }
+        });
+      });
+    } catch (error) {
+      console.error('Error fetching balance, owners, and operator:', error);
+      IndexDOM.balanceValue.textContent = "-";
+      IndexDOM.balanceValue.href = "#";
+      IndexDOM.ownersCount.textContent = "-";
+      IndexDOM.ownersCount.href = "#";
+      IndexDOM.operatorValue.textContent = "(n/a)";
+      IndexDOM.operatorValue.href = "#";
+      
+      // Prevent default behavior for error state links
+      [IndexDOM.balanceValue, IndexDOM.ownersCount, IndexDOM.operatorValue].forEach(element => {
+        element.addEventListener('click', (e) => {
+          e.preventDefault();
+        });
+      });
     }
+
+    // page metrics - commented out
+    // if (data.plausibleEnabled && data.plausibleDomain && data.plausibleAPIServer) {
+    //   IndexDOM.pageMetricsLink.href = `https://${data.plausibleAPIServer}/${data.plausibleDomain}`;
+    //   IndexDOM.pageMetricsLink.target = "_blank";
+    // } else {
+    //   if (IndexDOM.featurePageMetrics) {
+    //     IndexDOM.featurePageMetrics.remove();
+    //   }
+    // }
   }
 
   const decorateTags = () => {
