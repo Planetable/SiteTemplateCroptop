@@ -637,6 +637,34 @@ const fetchPermissionHolders = async (projectId, chainId) => {
   }
 }
 
+// Wait for env to be populated with collection addresses
+const waitForEnv = async (maxRetries = 10, delayMs = 200) => {
+  for (let i = 0; i < maxRetries; i++) {
+    // Check if env has at least one collection address
+    const hasAddress = env.ethereumMainnetCollectionAddress || 
+                       env.optimismMainnetCollectionAddress || 
+                       env.arbitrumMainnetCollectionAddress || 
+                       env.baseMainnetCollectionAddress ||
+                       env.ethereumSepoliaCollectionAddress ||
+                       env.optimismSepoliaCollectionAddress ||
+                       env.baseSepoliaCollectionAddress ||
+                       env.arbitrumSepoliaCollectionAddress;
+    
+    if (hasAddress) {
+      console.log(`[waitForEnv] Env populated after ${i + 1} attempt(s)`);
+      return true;
+    }
+    
+    if (i < maxRetries - 1) {
+      console.log(`[waitForEnv] Env not ready, waiting ${delayMs}ms (attempt ${i + 1}/${maxRetries})`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+  
+  console.warn(`[waitForEnv] Env not populated after ${maxRetries} attempts`);
+  return false;
+}
+
 // Get all collection addresses and their chain IDs from env
 const getAllCollectionAddresses = () => {
   console.log(`[getAllCollectionAddresses] env object:`, env);
@@ -674,6 +702,10 @@ const getAllCollectionAddresses = () => {
 // Aggregate balance and owners across all chains
 const aggregateProjectData = async () => {
   console.log(`[aggregateProjectData] Starting aggregation`);
+  
+  // Wait for env to be populated before proceeding
+  await waitForEnv();
+  
   const collections = getAllCollectionAddresses();
   
   if (collections.length === 0) {
