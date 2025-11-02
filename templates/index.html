@@ -1003,22 +1003,35 @@ window.onpopstate = function(event) {
       let startX;
       let scrollLeft;
 
+      let isDragging = false;
       slider.addEventListener('mousedown', (e) => {
+        // Don't start dragging if clicking on a tag
+        if (e.target.closest('.tag')) {
+          return;
+        }
         isDown = true;
+        isDragging = false;
         slider.classList.add('active');
         startX = e.pageX - slider.offsetLeft;
         scrollLeft = slider.scrollLeft;
       });
       slider.addEventListener('mouseleave', () => {
         isDown = false;
+        isDragging = false;
         slider.classList.remove('active');
       });
-      slider.addEventListener('mouseup', () => {
+      slider.addEventListener('mouseup', (e) => {
+        // If we were dragging, don't trigger tag clicks
+        if (isDragging) {
+          e.preventDefault();
+        }
         isDown = false;
+        isDragging = false;
         slider.classList.remove('active');
       });
       slider.addEventListener('mousemove', (e) => {
         if(!isDown) return;
+        isDragging = true;
         e.preventDefault();
         const x = e.pageX - slider.offsetLeft;
         const walk = (x - startX) * IndexCONFIG.scrollFast; //scroll-fast
@@ -1077,7 +1090,7 @@ window.onpopstate = function(event) {
         const url = new URL(window.location.href);
 
         // If there weren't
-        if (!activeTags.length) defaultTag.classList.remove("active");
+        if (!activeTags.length) IndexDOM.defaultTag.classList.remove("active");
 
         // Set the active tags.
         if (activeTags.includes(tagValue)) {
