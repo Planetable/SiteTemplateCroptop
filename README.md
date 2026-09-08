@@ -34,6 +34,7 @@ collection (a revnet plus a 721 hook) from the `$` button in the header.
 | `assets/scripts/utils.js` | Formatting, markdown, IPFS CID encoding, bendystraw queries |
 | `assets/scripts/tx.js` | Providers, signing, ERC-2771 forwarding, Relayr bundles |
 | `assets/scripts/txs/*.js` | Contract addresses, ABIs, and the `tx_*` calls |
+| `assets/scripts/croptop.js` | `window.croptop`: the runtime widgets attached to posts can use (site, post, env, chains, wallet, ipfs) |
 | `dev/` | Render and serve the template locally without Planet |
 
 ## Local development
