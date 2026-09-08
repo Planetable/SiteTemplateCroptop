@@ -1,4 +1,5 @@
 <div id="top-dom">
+  {% if user_settings['maintenanceMessage'].count > 0 %}<div id="maintenance-banner">{{ user_settings['maintenanceMessage'] }}</div>{% endif %}
   <div id="top-dom-shrink-wrapper">
     <div id="header-container">
       {% if has_avatar == true %}
@@ -88,13 +89,14 @@
   const decorateForkModal = () => {
     // Get references to elements that need decorating.
     const forkModal = document.getElementById("fork-modal");
-    const topDomShrinkWrapper = document.getElementById("top-dom-shrink-wrapper");
+    const topDom = document.getElementById("top-dom");
 
-    // Adjust the size.
+    // Sit below the whole fixed header (banner included).
     requestAnimationFrame(() => {
-      forkModal.style.paddingTop = topDomShrinkWrapper.offsetHeight + 'px';
-      forkModal.style.scrollPaddingTop = parseFloat(window.getComputedStyle(forkModal).getPropertyValue('scroll-padding-top')) + topDomShrinkWrapper.offsetHeight + "px";
-      forkModal.style.height = `calc(100vh - (${topDomShrinkWrapper.offsetHeight + 'px'}))`;
+      const headerHeight = topDom.offsetHeight;
+      forkModal.style.paddingTop = headerHeight + 'px';
+      forkModal.style.scrollPaddingTop = parseFloat(window.getComputedStyle(forkModal).getPropertyValue('scroll-padding-top')) + headerHeight + "px";
+      forkModal.style.height = `calc(100vh - ${headerHeight}px)`;
     });
 
     // Close the modal only when clicking the exit button.

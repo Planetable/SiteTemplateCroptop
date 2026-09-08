@@ -5,7 +5,7 @@
   --background-secondary-color-opacity: rgba(226, 226, 226, 0.7);
   --foreground-color: #000;
   --foreground-secondary-color: #555;
-  --link-color: rgba(0,0,0,0);
+  --link-color: #F056C1; /* overridden by the highlightColor template setting */
   --alert-color: #efab1d;
   --success-color: #3bb273;
   --icon-social-filter: invert(100%) sepia(0%) saturate(7460%) hue-rotate(186deg) brightness(107%) contrast(77%);
@@ -50,18 +50,6 @@
     --foreground-secondary-color: #adadaf;
     --icon-social-filter: invert(24%) sepia(11%) saturate(0%) hue-rotate(188deg) brightness(95%) contrast(95%);
   }
-}
-
-@font-face{
-  font-family: "Simplon Mono";
-  src: url(./SimplonMono-Bold-WebXL.woff2) format("woff2");
-  font-weight: 600;
-}
-
-@font-face{
-  font-family: "Simplon Mono";
-  src: url(./SimplonMono-Regular-WebXL.woff2) format("woff2");
-  font-weight: 300;
 }
 
 @font-face{
@@ -197,16 +185,6 @@ hr {
 p, ul, ol, pre, hr, table {
   line-height: var(--line-height-2);
 }
-
-h1:hover .header-anchor,
-h2:hover .header-anchor,
-h3:hover .header-anchor,
-h4:hover .header-anchor,
-h5:hover .header-anchor,
-h6:hover .header-anchor {
-  visibility: visible;
-}
-
 ul:has(input[type="checkbox"]) {
     padding-inline-start: 0px;
 }
@@ -326,6 +304,33 @@ details > summary:before {
   100% {transform: rotate(360deg);}
 }
 
+/* Text spinner for .loading-animation elements; JS only toggles display. */
+@keyframes loading-ticks {
+  0%   { content: "-"; }
+  25%  { content: "\\"; }
+  50%  { content: "|"; }
+  75%  { content: "/"; }
+}
+.loading-animation::after {
+  content: "-";
+  animation: loading-ticks 0.4s steps(1, end) infinite;
+}
+
+/* markdown-it-anchor permalinks (class comes from the library, not the templates) */
+h1:hover .header-anchor,
+h2:hover .header-anchor,
+h3:hover .header-anchor,
+h4:hover .header-anchor,
+h5:hover .header-anchor,
+h6:hover .header-anchor {
+  visibility: visible;
+}
+
+.header-anchor:link, .header-anchor:visited {
+  font-weight: var(--font-weight-1);
+  visibility: hidden;
+}
+
 /* BASE STYLES */
 
 .main {
@@ -344,6 +349,14 @@ details > summary:before {
   z-index: var(--top-dom-z-index);
   width: var(--max-width);
   pointer-events: none;
+}
+
+#maintenance-banner {
+  background-color: var(--alert-color);
+  color: #000;
+  text-align: center;
+  font-size: var(--font-size-small);
+  padding: var(--spacing-1) var(--spacing-4);
 }
 
 #top-dom-shrink-wrapper {
@@ -374,11 +387,11 @@ details > summary:before {
 
 .loading-animation {
   color: var(--foreground-color);
+  display: none; /* JS sets an inline display while loading */
 }
 
 .button-loading-animation {
   margin-left: var(--spacing-3);
-  display: inline-block;
   margin-right: var(--spacing-2);
 }
 
@@ -407,17 +420,6 @@ details > summary:before {
   color: var(--foreground-secondary-color);
   transition: opacity var(--transition-duration) var(--transition-timing-function);
 }
-
-.video-container {
-  width: var(--max-width);
-  padding-top: 56.25%;
-  height: 0;
-  position: relative;
-  margin-bottom: var(--spacing-4);
-  margin-left: auto;
-  margin-right: auto;
-}
-
 .video {
   width: var(--max-width);
   height: 100%;
@@ -426,11 +428,6 @@ details > summary:before {
   left: 0;
   z-index: var(--base-z-index);
 }
-
-.hidden-cursor {
-  cursor: none;
-}
-
 #post-content #fork-header .form-section-description {
   word-break: break-word;
   line-height: var(--line-height-1);
@@ -610,18 +607,6 @@ details > summary:before {
 #subheader-about p:last-child {
   margin-bottom: 0;
 }
-
-.header-social-icon {
-  width: 1em;
-  height: 1em;
-  filter: var(--icon-social-filter);
-}
-
-.header-anchor:link, .header-anchor:visited {
-  font-weight: var(--font-weight-1);
-  visibility: hidden;
-}
-
 /* NAV STYLES */
 
 #nav-container {
@@ -663,12 +648,7 @@ details > summary:before {
   margin-bottom: var(--spacing-4);
   font-weight: var(--font-weight-2);
   font-size: var(--font-size-2);
-}
-
-#fork-form .main-toggle {
-  margin-top: var(--spacing-4);
-}
-#fork-button, #rss-button {
+}#fork-button, #rss-button {
   cursor: pointer;
   display: inline-block;
   color: var(--foreground-secondary-color);
@@ -692,11 +672,7 @@ details > summary:before {
 }
 #fork-form {
   width: var(--reduced-width1);
-}
-#fork-form-new-jb-revnet-stage-2.hidden, #fork-form-new-jb-revnet-stage-3.hidden {
-  display: none;
-}
-#fork-form details .form-item {
+}#fork-form details .form-item {
   margin-top: var(--spacing-3);
 }
 
@@ -840,22 +816,6 @@ details > summary:before {
 #post-form-collect-toggle {
   margin: var(--spacing-2) 0;
 }
-
-#post-form-state {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--spacing-1);
-}
-
-#post-body {
-  margin-top: var(--spacing-5);
-}
-
-#post-body .body-image {
-  margin: var(--spacing-3) 0;
-}
-
 #post-cover-image, #post-cover-video, #post-content img {
   border: var(--border-width) solid var(--background-secondary-color);
   max-width: var(--max-width);
@@ -899,15 +859,7 @@ details > summary:before {
 .form-toggle {
   color: var(--foreground-secondary-color);
   cursor: pointer;
-}
-.form-main-toggle {
-  margin-top: var(--spacing-4);
-}
-.form-disclaimer-toggle {
-  font-weight: var(--font-weight-1);
-  font-style: italic;
-}
-.form-section-description {
+}.form-section-description {
   margin-top: var(--spacing-3);
   margin-bottom: var(--spacing-2);
   color: var(--foreground-secondary-color);
@@ -920,20 +872,7 @@ details > summary:before {
   flex-wrap: wrap;
   align-items: end;
   column-gap: var(--spacing-2);
-}
-.form-section-disclaimer {
-  margin-top: var(--spacing-3);
-  color: var(--foreground-secondary-color);
-  font-style: italic;
-  font-weight: var(--font-weight-1);
-}
-.form-section-disclaimer a {
-  color: var(--foreground-secondary-color);
-}
-.form-section-disclaimer a:hover {
-  text-decoration: underline;
-}
-.form-item {
+}.form-item {
   margin-bottom: var(--spacing-2);
   flex: 1 0 10%;
   display: flex;
@@ -952,6 +891,16 @@ details > summary:before {
   flex-direction: row;
   align-items: center;
 }
+/* Chrome paints autofilled fields light blue; keep them on the theme colors. */
+.form-value input:-webkit-autofill,
+.form-value input:-webkit-autofill:hover,
+.form-value input:-webkit-autofill:focus,
+.form-value textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--foreground-color);
+  -webkit-box-shadow: 0 0 0 1000px var(--background-color) inset;
+  caret-color: var(--foreground-color);
+}
+
 .form-value input, .form-value select, .form-value textarea {
   width: var(--max-width);
   padding: var(--spacing-2);
@@ -981,11 +930,7 @@ details > summary:before {
   border: none;
   color: var(--foreground-secondary-color);
   cursor: pointer;
-}
-.form-load-address-button:hover .form-load-addres-button-text {
-  text-decoration: underline;
-}
-.form-error-message {
+}.form-error-message {
   margin-top: var(--spacing-3);
   line-break: anywhere;
 }
@@ -1025,16 +970,6 @@ details > summary:before {
 .form-input-prefix {
   padding-right: var(--spacing-2);
 }
-
-.form-input-suffix {
-  padding-left: var(--spacing-2);
-  text-wrap: nowrap;
-}
-
-.form-quantity-input {
-  width: 80px;
-}
-
 .form-header-separator {
   color: var(--foreground-secondary-color);
 }
@@ -1245,11 +1180,6 @@ details > summary:before {
 .post-frame-w1 {
   width: 28%;
 }
-
-.post-frame-w2 {
-  width: 32%;
-}
-
 .post-frame-w3 {
   width: 36%;
 }
@@ -1540,11 +1470,6 @@ details > summary:before {
   #fork-form {
     width: auto;
   }
-
-  #fork-form-chain  {
-    width: var(--reduced-width1);
-  }
-
   /* NAV STYLES */
 
   #nav-container {
@@ -1584,11 +1509,6 @@ details > summary:before {
   #post-frames-container {
     margin-right: 0;
   }
-
-  .post-frame-w1, .post-frame-w2, .post-frame-w3 {
-    width: var(--max-width);
-  }
-
   .post-frame {
     display: block;
     margin-left: 0;

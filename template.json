@@ -10,29 +10,29 @@
   "generateNFTMetadata": true,
   "generateTagPages": true,
   "settings": {
+    "maintenanceMessage": {
+      "name": "Maintenance Banner",
+      "type": "string",
+      "defaultValue": "Under maintenance: this site is moving to Juicebox v6. Buying and deploying may not work yet.",
+      "description": "Shown at the top of every page. Leave blank to hide."
+    },
     "curatorAddress": {
       "name": "Your Address",
       "type": "string",
       "defaultValue": "",
       "description": "The Ethereum address of the curator of this collection where you'll receive rewards."
     },
-    "collectionCategory": {
-      "name": "Collection Category",
-      "type": "int",
-      "defaultValue": "0",
-      "description": "The collection's category where posts will be recorded."
-    },
     "ethereumMainnetCollectionAddress": {
       "name": "Ethereum",
       "type": "string",
-      "defaultValue": "0x929B6c04fE40fb265Cd0AbB7928826DC965E540D",
-      "description": ""
+      "defaultValue": "0x779957e5376571adaf544e63ffc8404e98f30d30",
+      "description": "Defaults to the Croptop network's collection. Replace with your own after deploying one (the \"$\" button)."
     },
     "ethereumSepoliaCollectionAddress": {
       "name": "Ethereum Sepolia",
       "type": "string",
-      "defaultValue": "0x929B6c04fE40fb265Cd0AbB7928826DC965E540D",
-      "description": ""
+      "defaultValue": "0x2b70edc0b7db710f7d8708c6240d6fa9e62b71f5",
+      "description": "Defaults to the Croptop network's testnet collection."
     },
     "optimismMainnetCollectionAddress": {
       "name": "Optimism",
@@ -73,7 +73,7 @@
     "ethereumMainnetRPC": {
       "name": "Ethereum RPC",
       "type": "string",
-      "defaultValue": "https://eth.llamarpc.com",
+      "defaultValue": "https://ethereum-rpc.publicnode.com",
       "description": "",
       "advanced": true
     },
@@ -87,7 +87,7 @@
     "optimismMainnetRPC": {
       "name": "Optimism RPC",
       "type": "string",
-      "defaultValue": "https://optimism.llamarpc.com",
+      "defaultValue": "https://optimism-rpc.publicnode.com",
       "description": "",
       "advanced": true
     },
@@ -101,7 +101,7 @@
     "baseMainnetRPC": {
       "name": "Base RPC",
       "type": "string",
-      "defaultValue": "https://base.llamarpc.com",
+      "defaultValue": "https://base-rpc.publicnode.com",
       "description": "",
       "advanced": true
     },
@@ -115,7 +115,7 @@
     "arbitrumMainnetRPC": {
       "name": "Arbitrum RPC",
       "type": "string",
-      "defaultValue": "https://arbitrum.llamarpc.com",
+      "defaultValue": "https://arbitrum-one-rpc.publicnode.com",
       "description": "",
       "advanced": true
     },

@@ -2,13 +2,13 @@
     <div class="modal-content body-content centered-content content-top-offset negative-space">
       <div class="exit-button mobile-padding negative-space"><span class="exit-button-text negative-space">×</span></div>
       <div id="fork-header" class="body-header mobile-padding negative-space">
-        <div class="fork-title">Monetize your media with your own Croptop site</div>
+        <div class="fork-title">Sell from your own site</div>
           Get your own site like this one and learn how to start posting at <a href="https://croptop.eth.sucks" target="_blank">https://croptop.eth.sucks</a>.
         <div class="fork-info">
-          Then, let people buy your posts by making a collection below.
+          Let people buy your posts by making a shop below.
         </div>
         <div class="fork-info">
-          Croptop websites connect to blockchains for easy sales while giving creators pro tools to grow their money with their community. Your collection's info can be viewed by anyone, and its onchain money rules are supercharged by giving collectors rewards that incentivize buying sooner and sharing your site with others. 
+          Croptop websites connect to blockchains for easy sales while giving creators pro tools to grow their money with their community.
         </div>
         <div class="fork-info">
           When deploying, make sure the current website you're on is https://croptop.eth.sucks, or another croptop website you trust.
@@ -17,23 +17,22 @@
       <div id="fork-form" class="form mobile-padding negative-space">
         <div class="form-body">
           <div class="form-section">
-            <div class="form-section-description">Name and ticker are permanent.</div> 
             <div class="form-item">
 
-              <div class="form-label">Collection name</div>
+              <div class="form-label">Store name</div>
               <div class="form-value">
-                <input type="text" placeholder="Your collection name" id="fork-form-new-jb-collection-name-input">
+                <input type="text" placeholder="Banny's Shop" id="fork-form-new-jb-collection-name-input">
               </div>
             </div>
             <div class="form-item">
-              <div class="form-label">Ticker</div>
+              <div class="form-label">ID</div>
               <div class="form-value">
-                <input type="text" placeholder="POSTS" id="fork-form-new-jb-collection-symbol-input">
+                <input type="text" placeholder="BANNY" id="fork-form-new-jb-collection-symbol-input">
               </div>
             </div>
           </div>
           <div class="form-section">
-            <div class="form-section-description">Set the address that manages your collection's revenues.</div>
+            <div class="form-section-description">Set the address that manages your store's revenues.</div>
             <div class="form-item form-item-large">
               <div class="form-label">Revenue manager
                 <button id="fork-form-new-jb-load-address-button" class="form-load-address-button"><span class="form-load-address-button-text">connect wallet</span></button>
@@ -44,30 +43,47 @@
             </div>
           </div>
           <div class="form-section">
-            <div class="form-section-description">Set a price and number of copies for each post in your collection.</div>
-            <div class="form-item">
-              <div class="form-label">Price</div>
-              <div class="form-value">
-                <span class="ether form-input-prefix">Ξ</span><input type="number" placeholder="free" value="0.001" id="fork-form-new-jb-minimum-price-input" min="0">
+            <div class="form-section-description"><input type="checkbox" id="fork-form-new-jb-others-input"> <label for="fork-form-new-jb-others-input">Let others add posts to your shop.</label></div>
+            <div id="fork-form-new-jb-others-rules" style="display: none;">
+              <div class="form-section-description">The account adding a post to your shop must buy the first copy. They can route up to the max cut of each sale of their post to an address they choose.</div>
+              <div class="form-section">
+              <div class="form-item">
+                <div class="form-label">Minimum price</div>
+                <div class="form-value">
+                  <span class="ether form-input-prefix">Ξ</span><input type="number" placeholder="free" value="0.001" id="fork-form-new-jb-others-minimum-price-input" min="0" step="any">
+                </div>
               </div>
-            </div>
-            <div class="form-item">
-              <div class="form-label">Copies</div>
-              <div class="form-value">
-                <input type="number" value="100" id="fork-form-new-jb-minimum-total-supply-input" min="1">
+              <div class="form-item">
+                <div class="form-label">Min copies</div>
+                <div class="form-value">
+                  <input type="number" value="1" id="fork-form-new-jb-others-minimum-total-supply-input" min="1">
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="form-section" style="display: none;">
-            <div class="form-item form-item-large">
-              <div class="form-label">Addresses allowed to buy (one per line)</div>
-              <div class="form-value">
-                <textarea rows="4" id="fork-form-new-jb-addresses-input" placeholder="leave empty for no restrictions"></textarea>
+              <div class="form-item">
+                <div class="form-label">Max copies</div>
+                <div class="form-value">
+                  <input type="number" placeholder="no limit" id="fork-form-new-jb-others-maximum-total-supply-input" min="0">
+                </div>
+              </div>
+              <div class="form-item">
+                <div class="form-label">Max cut</div>
+                <div class="form-value">
+                  <input type="number" value="10" id="fork-form-new-jb-others-maximum-split-input" min="0" max="100" step="any"><span class="form-input-prefix">%</span>
+                </div>
+              </div>
+              </div>
+              <div class="form-section">
+              <div class="form-item form-item-large">
+                <div class="form-label">Who can add posts</div>
+                <div class="form-value">
+                  <textarea rows="3" id="fork-form-new-jb-addresses-input" placeholder="Anyone. Paste addresses, one per line, to limit it."></textarea>
+                </div>
+              </div>
               </div>
             </div>
           </div>
           <div id="fork-form-new-jb-chain" class="form-section">
-            <div class="form-section-description">Choose where you want your collection. Each will ask for a signature.</div>
+            <div class="form-section-description">Choose where you want your shop.</div>
             <div class="form-item">
               <div class="form-value form-select-value">
                 <select id="fork-form-new-jb-state-chain-env" name="chain-env">
@@ -78,21 +94,21 @@
               <div class="form-value form-chain-checkbox-value">
                 <div id="fork-form-new-jb-chain-production-options" class="form-chain-options">
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-ethereum-mainnet" name="chain" value="ethereum mainnet"> <label for="fork-form-new-jb-ethereum-mainnet">Ethereum</label>
+                    <input type="checkbox" id="fork-form-new-jb-ethereum-mainnet" name="chain" checked value="ethereum mainnet"> <label for="fork-form-new-jb-ethereum-mainnet">Ethereum</label>
                   </div>
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-optimism-mainnet" name="chain" value="optimism mainnet"> <label for="fork-form-new-jb-optimism-mainnet">Optimism</label>
+                    <input type="checkbox" id="fork-form-new-jb-optimism-mainnet" name="chain" checked value="optimism mainnet"> <label for="fork-form-new-jb-optimism-mainnet">Optimism</label>
                   </div>
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-arbitrum-mainnet" name="chain" value="arbitrum mainnet"> <label for="fork-form-new-jb-arbitrum-mainnet">Arbitrum</label>
+                    <input type="checkbox" id="fork-form-new-jb-arbitrum-mainnet" name="chain" checked value="arbitrum mainnet"> <label for="fork-form-new-jb-arbitrum-mainnet">Arbitrum</label>
                   </div>
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-base-mainnet" name="chain" value="base mainnet"> <label for="fork-form-new-jb-base-mainnet">Base</label>
+                    <input type="checkbox" id="fork-form-new-jb-base-mainnet" name="chain" checked value="base mainnet"> <label for="fork-form-new-jb-base-mainnet">Base</label>
                   </div>
                 </div>
                 <div id="fork-form-new-jb-chain-testnet-options" class="form-chain-options" style="display: none;">
                   <div class="form-checkbox-option">
-                    <input type="checkbox" id="fork-form-new-jb-ethereum-sepolia" name="chain" value="ethereum sepolia"> <label for="fork-form-new-jb-ethereum-sepolia">Ethereum Sepolia</label>
+                    <input type="checkbox" id="fork-form-new-jb-ethereum-sepolia" name="chain" checked value="ethereum sepolia"> <label for="fork-form-new-jb-ethereum-sepolia">Ethereum Sepolia</label>
                   </div>
                   <div class="form-checkbox-option">
                     <input type="checkbox" id="fork-form-new-jb-optimism-sepolia" name="chain" value="optimism sepolia"> <label for="fork-form-new-jb-optimism-sepolia">Optimism Sepolia</label>
@@ -228,33 +244,15 @@
       formInputReactionTimeDelay: 600
     };
 
-    // Deployment configuration constants
-    const DEPLOYMENT_CONFIG = {
-      stage1: {
-        automintTokenAmount: 0,
-        initialIssuanceAmount: fixedPointNumber("10000", 18), // 10000 issuance with 18 decimals
-        splitPercent: 10000 - Math.round(62 * 100), // 62% reward
-        priceIncreasePercent: 10_000_000, // 1% bonus
-        priceIncreaseFrequency: 7 * 86400, // Every 7 days
-        cashOutTaxRate: 1000 // 0.1 (10%)
-      },
-      stage2: {
-        automintTokenAmount: 0,
-        initialIssuanceAmount: 0,
-        splitPercent: 0,
-        priceIncreasePercent: 0,
-        priceIncreaseFrequency: 0,
-        cashOutTaxRate: 0
-      },
-      stage3: {
-        automintTokenAmount: 0,
-        initialIssuanceAmount: 0,
-        splitPercent: 0,
-        priceIncreasePercent: 0,
-        priceIncreaseFrequency: 0,
-        cashOutTaxRate: 0
-      }
-    };
+    // Revnet stages for new collections. One stage; add more with startsAtOrAfter set.
+    const REVNET_STAGES = [{
+      automintTokenAmount: 0,
+      initialIssuanceAmount: fixedPointNumber("10000", 18), // 10000 tokens per ETH, 18 decimals
+      splitPercent: 10000 - Math.round(62 * 100), // 62% to the operator
+      priceIncreasePercent: 10_000_000, // 1% issuance cut
+      priceIncreaseFrequency: 7 * 86400, // every 7 days
+      cashOutTaxRate: 1000 // 10%
+    }];
 
     // Helper functions
     const hasCollectionAddress = () => !!collectionAddress;
@@ -264,8 +262,12 @@
       const forkFormNewJbCollectionNameInput = document.getElementById("fork-form-new-jb-collection-name-input");
       const forkFormNewJbCollectionTickerInput = document.getElementById("fork-form-new-jb-collection-symbol-input");
       const forkFormNewJbProjectOwnerInput = document.getElementById("fork-form-new-jb-project-owner-input");
-      const forkFormNewJbMinimumPriceInput = document.getElementById("fork-form-new-jb-minimum-price-input");
-      const forkFormNewJbMinimumTotalSupplyInput = document.getElementById("fork-form-new-jb-minimum-total-supply-input");
+      const forkFormNewJbOthersInput = document.getElementById("fork-form-new-jb-others-input");
+      const forkFormNewJbOthersRules = document.getElementById("fork-form-new-jb-others-rules");
+      const forkFormNewJbOthersMinimumPriceInput = document.getElementById("fork-form-new-jb-others-minimum-price-input");
+      const forkFormNewJbOthersMinimumTotalSupplyInput = document.getElementById("fork-form-new-jb-others-minimum-total-supply-input");
+      const forkFormNewJbOthersMaximumTotalSupplyInput = document.getElementById("fork-form-new-jb-others-maximum-total-supply-input");
+      const forkFormNewJbOthersMaximumSplitInput = document.getElementById("fork-form-new-jb-others-maximum-split-input");
       const forkFormNewJbAddressesInput = document.getElementById("fork-form-new-jb-addresses-input");
       const forkFormNewJbErrorMessage = document.getElementById("fork-form-new-jb-error-message");
       const forkFormNewJbSuccessMessage = document.getElementById("fork-form-new-jb-success-message");
@@ -287,6 +289,8 @@
         forkFormNewJbProjectOwnerInput.value = signer;
       };
   
+      forkFormNewJbOthersInput.onchange = () => { forkFormNewJbOthersRules.style.display = forkFormNewJbOthersInput.checked ? "block" : "none"; };
+
       forkFormNewJbChainEnvSelect.addEventListener('change', function() {
         if (this.value === 'production') {
           forkFormNewJbChainProductionOptions.style.display = 'block';
@@ -295,6 +299,7 @@
           forkFormNewJbChainProductionOptions.style.display = 'none';
           forkFormNewJbChainTestnetOptions.style.display = 'block';
         }
+        updateDeployButtonText(); // the selected set changed
       });
   
   
@@ -315,14 +320,7 @@
       // Update the form's state each time the values change.
       forkFormNewJbCollectionNameInput.addEventListener("input", queueCheckState);
       forkFormNewJbCollectionTickerInput.addEventListener("input", queueCheckState);
-      forkFormNewJbMinimumPriceInput.addEventListener("input", queueCheckState);
-      forkFormNewJbMinimumTotalSupplyInput.addEventListener("input", queueCheckState);
   
-      // Set values in the form if the fields are not yet set.
-      // Default to 1
-      if (!forkFormNewJbMinimumTotalSupplyInput.value) forkFormNewJbMinimumTotalSupplyInput.value = 1;
-      // Default to free
-      if (!forkFormNewJbMinimumPriceInput.value) forkFormNewJbMinimumPriceInput.value = 0;
   
       // Get selected chain IDs
       const getSelectedChainIds = () => {
@@ -559,7 +557,7 @@
         forkFormNewJbSuccessMessage.style.display = "none";
         
         // Check for empty values.
-        if (!forkFormNewJbCollectionNameInput.value || !forkFormNewJbCollectionTickerInput.value || forkFormNewJbMinimumPriceInput.value == "" || !forkFormNewJbMinimumTotalSupplyInput.value) {
+        if (!forkFormNewJbCollectionNameInput.value || !forkFormNewJbCollectionTickerInput.value) {
           forkFormNewJbErrorMessage.textContent = "Fill out the form.";
           forkFormNewJbErrorMessage.style.display = "block";
           return;
@@ -583,67 +581,37 @@
         selectedChainIds = selectedChains;
   
         // Normalize values from the form.
-        const name = forkFormNewJbCollectionNameInput.value;
-        const symbol = forkFormNewJbCollectionTickerInput.value;
-        const owner = forkFormNewJbProjectOwnerInput.value;
-        const minimumPrice = fixedPointNumber(forkFormNewJbMinimumPriceInput.value, 18);
-        const supply = forkFormNewJbMinimumTotalSupplyInput.value;
-        const minimumTotalSupply = BigInt(supply);
-        const maximumTotalSupply = BigInt(supply);
-        const allowedAddresses = !forkFormNewJbAddressesInput.value ? [] : forkFormNewJbAddressesInput.value.split('\n');
-        const stage1AutomintTokenAmount = DEPLOYMENT_CONFIG.stage1.automintTokenAmount;
-        const stage2AutomintTokenAmount = DEPLOYMENT_CONFIG.stage2.automintTokenAmount;
-        const stage3AutomintTokenAmount = DEPLOYMENT_CONFIG.stage3.automintTokenAmount;
-        const stage1InitialIssuanceAmount = DEPLOYMENT_CONFIG.stage1.initialIssuanceAmount;
-        const stage2InitialIssuanceAmount = DEPLOYMENT_CONFIG.stage2.initialIssuanceAmount;
-        const stage3InitialIssuanceAmount = DEPLOYMENT_CONFIG.stage3.initialIssuanceAmount;
-        const stage1SplitPercent = DEPLOYMENT_CONFIG.stage1.splitPercent;
-        const stage2SplitPercent = DEPLOYMENT_CONFIG.stage2.splitPercent;
-        const stage3SplitPercent = DEPLOYMENT_CONFIG.stage3.splitPercent;
-        const stage1PriceIncreasePercent = DEPLOYMENT_CONFIG.stage1.priceIncreasePercent;
-        const stage2PriceIncreasePercent = DEPLOYMENT_CONFIG.stage2.priceIncreasePercent;
-        const stage3PriceIncreasePercent = DEPLOYMENT_CONFIG.stage3.priceIncreasePercent;
-        const stage1PriceIncreaseFrequency = DEPLOYMENT_CONFIG.stage1.priceIncreaseFrequency;
-        const stage2PriceIncreaseFrequency = DEPLOYMENT_CONFIG.stage2.priceIncreaseFrequency;
-        const stage3PriceIncreaseFrequency = DEPLOYMENT_CONFIG.stage3.priceIncreaseFrequency;
-        const stage1CashOutTaxRate = DEPLOYMENT_CONFIG.stage1.cashOutTaxRate;
-        const stage2CashOutTaxRate = DEPLOYMENT_CONFIG.stage2.cashOutTaxRate;
-        const stage3CashOutTaxRate = DEPLOYMENT_CONFIG.stage3.cashOutTaxRate;
-        const stage2StartsAtOrAfter = 0; // No stage 2
-        const stage3StartsAtOrAfter = 0; // No stage 3
-        
+        const deployment = {
+          name: forkFormNewJbCollectionNameInput.value,
+          symbol: forkFormNewJbCollectionTickerInput.value,
+          owner: forkFormNewJbProjectOwnerInput.value,
+          // Category 0: the revenue manager's own posts, any price and count. Category 1: everyone else, if enabled.
+          postingRules: [
+            { category: 0, minimumPrice: 0n, minimumTotalSupply: 1n, maximumTotalSupply: 0n, maximumSplitPercent: SPLITS_TOTAL_PERCENT, allowedAddresses: [forkFormNewJbProjectOwnerInput.value] },
+            ...(forkFormNewJbOthersInput.checked ? [{
+              category: 1,
+              minimumPrice: fixedPointNumber(forkFormNewJbOthersMinimumPriceInput.value || "0", 18),
+              minimumTotalSupply: BigInt(forkFormNewJbOthersMinimumTotalSupplyInput.value || 1),
+              maximumTotalSupply: BigInt(forkFormNewJbOthersMaximumTotalSupplyInput.value || 0),
+              maximumSplitPercent: Math.round(Number(forkFormNewJbOthersMaximumSplitInput.value || 0) / 100 * SPLITS_TOTAL_PERCENT),
+              allowedAddresses: forkFormNewJbAddressesInput.value.split('\n').map(a => a.trim()).filter(Boolean),
+            }] : []),
+          ],
+          stages: REVNET_STAGES,
+          chainIds: selectedChains,
+          salt: generateSalt(),
+        };
+
         try {
-          // Generate a salt for this deploy
-          const salt = generateSalt();
-
-          // Always create a revnet (no dropdown anymore)
-          const isRevnet = true;
-
           // If multiple chains are selected, use Relayr
           if (selectedChains.length > 1) {
             let quote;
             let retryCount = 0;
             const maxRetries = 2;
-            
+
             while (retryCount <= maxRetries) {
               try {
-                if (isRevnet) {
-                  quote = await tx_deploy_revnet(
-                    name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply,
-                    allowedAddresses, stage1AutomintTokenAmount, stage2AutomintTokenAmount, stage3AutomintTokenAmount,
-                    stage1InitialIssuanceAmount, stage2InitialIssuanceAmount, stage3InitialIssuanceAmount,
-                    stage1SplitPercent, stage2SplitPercent, stage3SplitPercent,
-                    stage1PriceIncreasePercent, stage2PriceIncreasePercent, stage3PriceIncreasePercent,
-                    stage1PriceIncreaseFrequency, stage2PriceIncreaseFrequency, stage3PriceIncreaseFrequency,
-                    stage1CashOutTaxRate, stage2CashOutTaxRate, stage3CashOutTaxRate,
-                    stage2StartsAtOrAfter, stage3StartsAtOrAfter, selectedChains, salt, retryCount > 0
-                  );
-                } else {
-                  quote = await tx_deploy_project(
-                    name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply, 
-                    allowedAddresses, selectedChains, salt, retryCount > 0
-                  );
-                }
+                quote = await tx_deploy_revnet({ ...deployment, useCache: retryCount > 0 });
                 break; // Success, exit retry loop
               } catch (error) {
                 retryCount++;
@@ -655,7 +623,7 @@
                 await new Promise(resolve => setTimeout(resolve, 1000));
               }
             }
-            
+
             if (!quote || !quote.payment_info) {
               throw new Error('Failed to get valid Relayr quote');
             }
@@ -666,29 +634,12 @@
           }
 
           // Single chain deployment
-          let collectionAddress;
-          if (isRevnet) {
-            collectionAddress = await tx_deploy_revnet(
-              name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply,
-              allowedAddresses, stage1AutomintTokenAmount, stage2AutomintTokenAmount, stage3AutomintTokenAmount,
-              stage1InitialIssuanceAmount, stage2InitialIssuanceAmount, stage3InitialIssuanceAmount,
-              stage1SplitPercent, stage2SplitPercent, stage3SplitPercent,
-              stage1PriceIncreasePercent, stage2PriceIncreasePercent, stage3PriceIncreasePercent,
-              stage1PriceIncreaseFrequency, stage2PriceIncreaseFrequency, stage3PriceIncreaseFrequency,
-              stage1CashOutTaxRate, stage2CashOutTaxRate, stage3CashOutTaxRate,
-              stage2StartsAtOrAfter, stage3StartsAtOrAfter, selectedChains, salt
-            );
-          } else {
-            collectionAddress = await tx_deploy_project(
-              name, symbol, owner, minimumPrice, minimumTotalSupply, maximumTotalSupply,
-              allowedAddresses, selectedChains, salt
-            );
-          }
+          const collectionAddress = await tx_deploy_revnet(deployment);
 
           if (!collectionAddress) {
             showError("The connected network isn't supported.");
           } else {
-            showSuccess(`Success! ${collectionAddress} is your collection's address on chain ID ${selectedChains[0]}.`);
+            showSuccess(`Success! ${collectionAddress} is your collection's address on ${resolveChainLabel(selectedChains[0])}.`);
           }
 
         } catch (e) {
@@ -1010,27 +961,10 @@
             continue;
           }
           
-          // Try to find HookDeployed event in the logs
-          for (let logIndex = 0; logIndex < receipt.logs.length; logIndex++) {
-            const log = receipt.logs[logIndex];
-            try {
-              
-              // HookDeployed event signature: HookDeployed(uint256,address,address)
-              const hookDeployedTopic = '0xd76d022c77a474d529a79581eb88a726ad929fd23efbcb6a1f852d2d936299a5';
-              
-              if (log.topics && log.topics[0] === hookDeployedTopic) {
-                // Decode the event data - hook address is the second parameter (after projectId)
-                if (log.data && log.data.length >= 66) {
-                  const hookAddress = '0x' + log.data.slice(26, 66); // Extract hook address from data
-                  
-                  // Update the UI with the hook address
-                  updateHookAddressDisplay(hookAddress);
-                  return; // Found the address, we're done
-                }
-              }
-            } catch (e) {
-              continue;
-            }
+          const hookAddress = hookAddressFromReceipt(receipt);
+          if (hookAddress) {
+            updateHookAddressDisplay(hookAddress);
+            return; // Found the address, we're done
           }
           
         } catch (e) {

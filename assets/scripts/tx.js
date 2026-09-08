@@ -1,416 +1,11 @@
+// Read-only provider for a known chain; the browser wallet when no chain is given.
 const getProvider = (chainId) => {
-  switch (chainId) {
-    case 1: return new ethers.JsonRpcProvider(env.ethereumMainnetRPC || "https://eth.llamarpc.com");
-    case 8453: return new ethers.JsonRpcProvider(env.baseMainnetRPC || "https://mainnet.base.org");
-    case 42161: return new ethers.JsonRpcProvider(env.arbitrumMainnetRPC || "https://arb1.arbitrum.io/rpc");
-    case 10: return new ethers.JsonRpcProvider(env.optimismMainnetRPC || "https://mainnet.optimism.io");
-    case 11155111: return new ethers.JsonRpcProvider(env.ethereumSepoliaRPC || "https://rpc.ankr.com/eth_sepolia");
-    case 11155420: return new ethers.JsonRpcProvider(env.optimismSepoliaRPC || "https://sepolia.optimism.io");
-    case 84532: return new ethers.JsonRpcProvider(env.baseSepoliaRPC || "https://sepolia.base.org");
-    case 421614: return new ethers.JsonRpcProvider(env.arbitrumSepoliaRPC || "https://ethereum-sepolia-rpc.publicnode.com");
-    default: return new ethers.BrowserProvider(window.ethereum);
-  }
+  const chain = chainById(chainId);
+  return chain ? new ethers.JsonRpcProvider(chainRpc(chain)) : new ethers.BrowserProvider(window.ethereum);
 }
 
-const erc2771ForwarderContract = (chainId) => {
-  switch (chainId) {
-    case 1: // Ethereum Mainnet
-      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
-    case 10: // Optimism
-      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
-    case 42161: // Arbitrum
-      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
-    case 8453: // Base
-      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
-    case 11155111: // Arbitrum Sepolia	
-      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
-    case 11155420: // Optimism Sepolia
-      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
-    case 84532: // Base Sepolia
-      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
-    case 421614: // Arbitrum Sepolia
-      return "0xc29d6995ab3b0df4650ad643adeac55e7acbb566";
-  }
-}
-const trustedForwarderContractABI = [
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [],
-		"name": "eip712Domain",
-		"outputs": [
-			{
-				"internalType": "bytes1",
-				"name": "fields",
-				"type": "bytes1"
-			},
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "version",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "chainId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "verifyingContract",
-				"type": "address"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "salt",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "extensions",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "value",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "gas",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint48",
-						"name": "deadline",
-						"type": "uint48"
-					},
-					{
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
-					},
-					{
-						"internalType": "bytes",
-						"name": "signature",
-						"type": "bytes"
-					}
-				],
-				"internalType": "struct ERC2771Forwarder.ForwardRequestData",
-				"name": "request",
-				"type": "tuple"
-			}
-		],
-		"name": "execute",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "value",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "gas",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint48",
-						"name": "deadline",
-						"type": "uint48"
-					},
-					{
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
-					},
-					{
-						"internalType": "bytes",
-						"name": "signature",
-						"type": "bytes"
-					}
-				],
-				"internalType": "struct ERC2771Forwarder.ForwardRequestData[]",
-				"name": "requests",
-				"type": "tuple[]"
-			},
-			{
-				"internalType": "address payable",
-				"name": "refundReceiver",
-				"type": "address"
-			}
-		],
-		"name": "executeBatch",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			}
-		],
-		"name": "nonces",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "from",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "to",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "value",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "gas",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint48",
-						"name": "deadline",
-						"type": "uint48"
-					},
-					{
-						"internalType": "bytes",
-						"name": "data",
-						"type": "bytes"
-					},
-					{
-						"internalType": "bytes",
-						"name": "signature",
-						"type": "bytes"
-					}
-				],
-				"internalType": "struct ERC2771Forwarder.ForwardRequestData",
-				"name": "request",
-				"type": "tuple"
-			}
-		],
-		"name": "verify",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [],
-		"name": "EIP712DomainChanged",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "signer",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "nonce",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "success",
-				"type": "bool"
-			}
-		],
-		"name": "ExecutedForwardRequest",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint48",
-				"name": "deadline",
-				"type": "uint48"
-			}
-		],
-		"name": "ERC2771ForwarderExpiredRequest",
-		"type": "error"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "signer",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "from",
-				"type": "address"
-			}
-		],
-		"name": "ERC2771ForwarderInvalidSigner",
-		"type": "error"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "requestedValue",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "msgValue",
-				"type": "uint256"
-			}
-		],
-		"name": "ERC2771ForwarderMismatchedValue",
-		"type": "error"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "target",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "forwarder",
-				"type": "address"
-			}
-		],
-		"name": "ERC2771UntrustfulTarget",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "FailedCall",
-		"type": "error"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "balance",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "needed",
-				"type": "uint256"
-			}
-		],
-		"name": "InsufficientBalance",
-		"type": "error"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "currentNonce",
-				"type": "uint256"
-			}
-		],
-		"name": "InvalidAccountNonce",
-		"type": "error"
-	},
-	{
-		"inputs": [],
-		"name": "InvalidShortString",
-		"type": "error"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "str",
-				"type": "string"
-			}
-		],
-		"name": "StringTooLong",
-		"type": "error"
-	}
-];
+// Juicebox's ERC-2771 trusted forwarder. Same address on every supported chain.
+const erc2771ForwarderContract = () => "0x3ba60b60933916a7c87d0860dcee62a0ce34e3e2";
 
 const getSigner = async (chainId) => {
   const provider = getProvider(chainId); 
@@ -423,14 +18,6 @@ const getChainId = async (chainId) => {
   return parseInt(network.chainId);
 }
 
-const switchNetwork = async (id, chainId) => {
-  const provider = getProvider(chainId); 
-  return await provider.request({
-    method: 'wallet_switchEthereumChain',
-    params: [{ chainId: `0x${id.toString(16)}`}],
-  });
-}
-
 const view = async (chainId, contractAddress, contractAbi, fn, params) => {
     const contract = new ethers.Contract(contractAddress, contractAbi, getProvider(chainId));
     return await contract[fn](...params);
@@ -438,10 +25,8 @@ const view = async (chainId, contractAddress, contractAbi, fn, params) => {
 
 const sign = async (contractAddress, contractAbi, fn, params, value) => {
     const contract = new ethers.Contract(contractAddress, contractAbi, await getSigner());
-    const tx = await contract[fn](...params, { 
-      value: value,
-      gasLimit: 8000000,
- 	});
+    // Let the wallet estimate gas; a fixed gasLimit made every buy display an inflated max fee.
+    const tx = await contract[fn](...params, { value });
     if (!tx) return false;
     return await tx.wait();
 }
@@ -485,7 +70,7 @@ const signErc2771ForwardRequest = async (forwardRequestData, chainId) => {
   const deadline = Math.floor((Date.now() + 3600 * 48 * 1000) / 1000);
   // Get nonce from forwarder contract
   const forwarderAddress = erc2771ForwarderContract(chainId);
-  const forwarder = new ethers.Contract(forwarderAddress, trustedForwarderContractABI, signer);
+  const forwarder = new ethers.Contract(forwarderAddress, ERC2771_FORWARDER_ABI, signer);
   const nonce = await forwarder.nonces(address);
   // Prepare the typed data for EIP-712 signing
   const domain = {
@@ -513,54 +98,29 @@ const signErc2771ForwardRequest = async (forwardRequestData, chainId) => {
   // Sign the typed data
   const signature = await signer.signTypedData(domain, types, message);
   // Encode the execute function call
-  const iface = new ethers.Interface(trustedForwarderContractABI);
+  const iface = new ethers.Interface(ERC2771_FORWARDER_ABI);
   const encoded = iface.encodeFunctionData("execute", [{ ...message, signature }]);
   return encoded;
 }
 
+// Params for wallet_addEthereumChain, built from the chain table.
 function getAddChainParams(chainId) {
-  switch (chainId) {
-    case 1:
-      return {
-        chainId: '0x1',
-        chainName: 'Ethereum Mainnet',
-        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-        rpcUrls: ['https://rpc.ankr.com/eth'],
-        blockExplorerUrls: ['https://etherscan.io'],
-      };
-    case 10:
-      return {
-        chainId: '0xa',
-        chainName: 'Optimism',
-        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-        rpcUrls: ['https://mainnet.optimism.io'],
-        blockExplorerUrls: ['https://optimistic.etherscan.io'],
-      };
-    case 42161:
-      return {
-        chainId: '0xa4b1',
-        chainName: 'Arbitrum One',
-        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-        rpcUrls: ['https://arb1.arbitrum.io/rpc'],
-        blockExplorerUrls: ['https://arbiscan.io'],
-      };
-    case 8453:
-      return {
-        chainId: '0x2105',
-        chainName: 'Base',
-        nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-        rpcUrls: ['https://mainnet.base.org'],
-        blockExplorerUrls: ['https://basescan.org'],
-      };
-    // Add more as needed
-    default:
-      throw new Error('Unknown chainId: ' + chainId);
-  }
+  const chain = chainById(chainId);
+  if (!chain) throw new Error('Unknown chainId: ' + chainId);
+  return {
+    chainId: '0x' + chain.id.toString(16),
+    chainName: chain.label,
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    rpcUrls: [chain.rpc],
+    blockExplorerUrls: [chain.explorer],
+  };
 }
 
 // Helper function to handle both single and multi-chain deployments
+// `value` is a bigint/number, or an async (chainId) => bigint when it differs per chain.
 const handleTransact = async (chainIds, buildDeploymentData, contractAddress, contractABI, functionName, value, useCache = false) => {
   if (!Array.isArray(chainIds)) chainIds = [chainIds];
+  const valueOn = async (chainId) => BigInt(typeof value === "function" ? await value(chainId) : (value || 0));
   if (chainIds.length === 1) {
     // Single chain deployment
     const chainId = chainIds[0];
@@ -569,7 +129,7 @@ const handleTransact = async (chainIds, buildDeploymentData, contractAddress, co
     const contract = contractAddress(chainId);
     if (!contract) return false;
     const deploymentData = await buildDeploymentData(chainId);
-    const receipt = await sign(contract, contractABI, functionName, deploymentData, value);
+    const receipt = await sign(contract, contractABI, functionName, deploymentData, await valueOn(chainId));
     return receipt;
   }
   // Multi-chain deployment with Relayr
@@ -586,11 +146,12 @@ const handleTransact = async (chainIds, buildDeploymentData, contractAddress, co
       const deploymentData = await buildDeploymentData(chainId);
       const iface = new ethers.Interface(contractABI);
       const encodedData = iface.encodeFunctionData(functionName, deploymentData);
+      const txValue = await valueOn(chainId);
       const forwardRequest = {
         from: userAddress,
         to: contract,
-        value: "0x0",
-        gas: "0x" + (8000000 * chainIds.length).toString(16),
+        value: "0x" + txValue.toString(16),
+        gas: "0x" + (8000000).toString(16), // ponytail: flat 8M; the old 8M x chains exceeded L1's block gas at 4 chains
         data: encodedData,
       };
       const encoded = await signErc2771ForwardRequest(forwardRequest, chainId);
@@ -598,7 +159,7 @@ const handleTransact = async (chainIds, buildDeploymentData, contractAddress, co
         chain: chainId,
         data: encoded,
         target: erc2771ForwarderContract(chainId),
-        value: "0"
+        value: txValue.toString()
       });
     }
   }

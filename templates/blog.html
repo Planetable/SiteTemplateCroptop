@@ -2,22 +2,12 @@
 {% block head %}
 {% include 'modules/post_seo.html' %}
 <script>
+  // Inside the Planet app the post is shown without the site chrome.
   document.addEventListener('DOMContentLoaded', () => {
-    if (!window.PLANET.visitedFromPlanetClient) {
-      if(document.getElementById('audio-container')){
-        document.querySelector('.audio-container').style.display = 'block';
-      }
-      if(document.getElementById('footer')){
-        document.querySelector('#footer').style.display = 'block';
-      }
-    } else {
-      const topDom = document.getElementById('top-dom');
-      topDom.style.display = "none";
-      const bodyDom = document.getElementById('body-dom');
-      bodyDom.style.paddingTop = "0px";
-      const bodyResetButton = document.getElementById('body-reset-button');
-      bodyResetButton.style.display = "none";
-    }
+    if (!window.PLANET.visitedFromPlanetClient) return;
+    document.getElementById('top-dom').style.display = "none";
+    document.getElementById('body-dom').style.paddingTop = "0px";
+    document.getElementById('body-reset-button').style.display = "none";
   });
 </script>
 {% include 'modules/head.html' %}
