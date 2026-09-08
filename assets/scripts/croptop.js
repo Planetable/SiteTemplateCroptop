@@ -63,6 +63,23 @@ window.croptop = (() => {
       /** Build the ipfs:// URI encoding the contracts use, from utils.js. */
       encodeUri: (cid) => encodeIPFSUri(cid),
     },
+    /**
+     * Scripts inserted with innerHTML never run. The template calls this after
+     * it renders a post's content: each <script> is recreated so it executes,
+     * and relative src values are pointed at the post's own folder so the
+     * same post works on its page, in the feed's modal, and on any gateway.
+     */
+    activate(container, id) {
+      if (id) { api.postId = id; postCache = null; }
+      for (const old of Array.from(container.querySelectorAll("script"))) {
+        const s = document.createElement("script");
+        for (const a of old.attributes) s.setAttribute(a.name, a.value);
+        const src = s.getAttribute("src");
+        if (src && !/^([a-z]+:|\/|\.\.?\/)/i.test(src) && api.postId) s.setAttribute("src", `${prefix}${api.postId}/${src}`);
+        s.textContent = old.textContent;
+        old.replaceWith(s);
+      }
+    },
     /** Run fn once the site (and post, on post pages) are loaded. */
     ready(fn) {
       const run = async () => { const site = await api.site(); const post = await api.post(); await loadEnv(); fn({ site, post, env }); };

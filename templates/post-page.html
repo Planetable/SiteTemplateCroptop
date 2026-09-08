@@ -344,6 +344,7 @@
     if (content) {
       PostDOM.postContent.style.display = "block";
       PostDOM.postContent.innerHTML = content;
+      if (window.croptop) croptop.activate(PostDOM.postContent, postId);
       let imgs = PostDOM.postContent.getElementsByTagName("img");
       for (let img of imgs) {
         let src = img.getAttribute("src");
