@@ -272,6 +272,11 @@ window.onpopstate = function(event) {
       frameImage.src = coverImageSrc;
       frameImage.loading = "lazy";
       postFrame.appendChild(frameImage);
+    } else if (window.croptop && post.attachments && post.attachments.includes("preview.js")) {
+      const frameWidget = document.createElement("div");
+      frameWidget.classList.add("post-frame-widget");
+      postFrame.appendChild(frameWidget);
+      croptop.preview(frameWidget, postId, post, "frame");
     } else {
       const frameText = document.createElement("div");
       frameText.classList.add("post-frame-text");
@@ -407,6 +412,11 @@ window.onpopstate = function(event) {
       thumbnailImage.src = thumbnailImageSrc;
       thumbnailImage.loading = "lazy";
       thumbnail.appendChild(thumbnailImage);
+    } else if (window.croptop && post.attachments && post.attachments.includes("preview.js")) {
+      const thumbnailWidget = document.createElement("div");
+      thumbnailWidget.classList.add("post-row-thumbnail-widget");
+      thumbnail.appendChild(thumbnailWidget);
+      croptop.preview(thumbnailWidget, postId, post, "row");
     } else {
       const thumbnailTextContainer = document.createElement("div");
       const thumbnailText = document.createElement("div");
@@ -638,11 +648,17 @@ window.onpopstate = function(event) {
     await decorateAggregation(post);
   }
 
+  // A random attachment used to stand in for a cover; scripts and data files are not pictures.
+  const pickImageAttachment = (attachments) => {
+    const images = (attachments || []).filter((a) => /\.(png|jpe?g|gif|webp|svg|avif)$/i.test(a));
+    return images.length ? images[Math.floor(Math.random() * images.length)] : null;
+  };
+
   const showPostFrames = async (newPosts) => {
     const newPostFrames = newPosts.map((post) => {
       // if post.hasVideo, use _videoThumbnail.png
       // else use a random attachment
-      const coverImageName = post.hasVideo ? '_videoThumbnail.png' : post.hasAudio ? '_audioThumbnail.png' : post.heroImageFilename ? post.heroImageFilename : post.attachments.length && post.attachments[Math.floor(Math.random() * post.attachments.length)];
+      const coverImageName = post.hasVideo ? '_videoThumbnail.png' : post.hasAudio ? '_audioThumbnail.png' : post.heroImageFilename ? post.heroImageFilename : pickImageAttachment(post.attachments);
       const coverImageSrc = coverImageName && './' + post.id + '/' + coverImageName;
       const coverVideoSrc = post.hasVideo ? './' + post.id + '/' + post.videoFilename : null;
       const coverAudioSrc = post.hasAudio ? './' + post.id + '/' + post.audioFilename : null;
@@ -660,7 +676,7 @@ window.onpopstate = function(event) {
     const newPostRows = newPosts.map((post) => {
       // if post.hasVideo, use _videoThumbnail.png
       // else use a random attachment
-      const thumbnailImageName = post.hasVideo ? '_videoThumbnail.png' : post.attachments.length && post.attachments[Math.floor(Math.random() * post.attachments.length)];
+      const thumbnailImageName = post.hasVideo ? '_videoThumbnail.png' : pickImageAttachment(post.attachments);
       const thumbnailImageSrc = thumbnailImageName && './' + post.id + '/' + thumbnailImageName;
       const thumbnailVideoSrc = post.hasVideo ? './' + post.id + '/' + post.videoFilename : null;
       const thumbnailAudioSrc = post.hasAudio ? './' + post.id + '/' + post.audioFilename : null;

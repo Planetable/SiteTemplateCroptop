@@ -1110,6 +1110,16 @@ h6:hover .header-anchor {
   line-break: anywhere;
 }
 
+.post-frame-widget {
+  position: relative;
+  width: var(--max-width);
+  height: 300px;
+  overflow: hidden;
+  background: var(--background-color);
+  color: var(--foreground-color);
+  pointer-events: none;
+}
+
 .post-frame-info-container {
   position: absolute;
   bottom: 0;
@@ -1219,6 +1229,17 @@ h6:hover .header-anchor {
   height: calc(var(--max-height) - 2*var(--spacing-1) - 2*var(--border-width));
   padding: var(--spacing-1);
   border: var(--border-width) solid var(--background-secondary-color);
+}
+
+.post-row-thumbnail-widget {
+  position: relative;
+  width: calc(var(--max-width) - 2*var(--border-width));
+  height: calc(var(--max-height) - 2*var(--border-width));
+  overflow: hidden;
+  border: var(--border-width) solid var(--background-secondary-color);
+  background: var(--background-color);
+  color: var(--foreground-color);
+  pointer-events: none;
 }
 
 .post-row-thumbnail-text {
@@ -1528,7 +1549,7 @@ h6:hover .header-anchor {
     top: 30px;
   }
 
-  .post-frame-image, .post-frame-video, .post-frame-audio-container, .post-frame-text {
+  .post-frame-image, .post-frame-video, .post-frame-audio-container, .post-frame-text, .post-frame-widget {
     border-top: var(--border-width) solid var(--background-secondary-color);
   }
 

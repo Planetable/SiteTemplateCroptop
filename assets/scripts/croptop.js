@@ -80,6 +80,25 @@ window.croptop = (() => {
         old.replaceWith(s);
       }
     },
+    /**
+     * A post can ship its own feed preview: attach preview.js exporting
+     *   export default function (el, { post, site, env, size, base }) {}
+     * The feed calls it inside the post's frame ("frame") or list row ("row")
+     * instead of showing the first lines of text. Keep it light: it runs for
+     * every such post on the page at once. Clicks on it open the post.
+     */
+    async preview(el, id, post, size) {
+      try {
+        const base = `${prefix}${id}/`;
+        const m = await import(`${base}preview.js`);
+        const site = await api.site();
+        await loadEnv();
+        (m.default || m.preview)(el, { post, site, env, size, base, postId: id });
+      } catch (e) {
+        console.warn("preview for " + id + " failed", e);
+        el.textContent = (post && post.content || "").slice(0, 200);
+      }
+    },
     /** Run fn once the site (and post, on post pages) are loaded. */
     ready(fn) {
       const run = async () => { const site = await api.site(); const post = await api.post(); await loadEnv(); fn({ site, post, env }); };
