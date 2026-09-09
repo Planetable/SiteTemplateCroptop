@@ -90,13 +90,14 @@ window.croptop = (() => {
     async preview(el, id, post, size) {
       try {
         const base = `${prefix}${id}/`;
-        const m = await import(`${base}preview.js`);
+        // import() in a classic script resolves against this file, not the page
+        const m = await import(new URL(`${base}preview.js`, document.baseURI).href);
         const site = await api.site();
         await loadEnv();
         (m.default || m.preview)(el, { post, site, env, size, base, postId: id });
       } catch (e) {
         console.warn("preview for " + id + " failed", e);
-        el.textContent = (post && post.content || "").slice(0, 200);
+        el.textContent = (post && post.content || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
       }
     },
     /** Run fn once the site (and post, on post pages) are loaded. */
