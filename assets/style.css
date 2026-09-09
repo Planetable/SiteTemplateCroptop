@@ -1117,7 +1117,7 @@ h6:hover .header-anchor {
   overflow: hidden;
   background: var(--background-color);
   color: var(--foreground-color);
-  pointer-events: none;
+  /* previews receive hover and clicks; a click still bubbles to the frame and opens the post */
 }
 
 .post-frame-info-container {
@@ -1239,7 +1239,6 @@ h6:hover .header-anchor {
   border: var(--border-width) solid var(--background-secondary-color);
   background: var(--background-color);
   color: var(--foreground-color);
-  pointer-events: none;
 }
 
 .post-row-thumbnail-text {

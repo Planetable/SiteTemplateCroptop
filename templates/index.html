@@ -1061,6 +1061,8 @@ window.onpopstate = function(event) {
       const post = site.articles.find((a) => a.id === previewId);
       if (post) croptop.preview(el, previewId, post, "frame"); else el.textContent = "no such post";
     });
+    // Embedders cannot see clicks inside the frame; tell them so they can open the post.
+    el.addEventListener("click", () => { if (window.parent !== window) window.parent.postMessage({ type: "croptop-preview-click", post: previewId }, "*"); });
   } else if (id) {
     const anchor = window.location.hash.substring(1);
     if (anchor) {
