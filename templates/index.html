@@ -272,7 +272,7 @@ window.onpopstate = function(event) {
       frameImage.src = coverImageSrc;
       frameImage.loading = "lazy";
       postFrame.appendChild(frameImage);
-    } else if (window.croptop && post.attachments && post.attachments.includes("preview.js")) {
+    } else if (window.croptop && croptop.hasPreview(post)) {
       const frameWidget = document.createElement("div");
       frameWidget.classList.add("post-frame-widget");
       postFrame.appendChild(frameWidget);
@@ -412,7 +412,7 @@ window.onpopstate = function(event) {
       thumbnailImage.src = thumbnailImageSrc;
       thumbnailImage.loading = "lazy";
       thumbnail.appendChild(thumbnailImage);
-    } else if (window.croptop && post.attachments && post.attachments.includes("preview.js")) {
+    } else if (window.croptop && croptop.hasPreview(post)) {
       const thumbnailWidget = document.createElement("div");
       thumbnailWidget.classList.add("post-row-thumbnail-widget");
       thumbnail.appendChild(thumbnailWidget);
@@ -1047,7 +1047,21 @@ window.onpopstate = function(event) {
   // if there is ?id= in the url, open the object page.
   const urlParams = new URLSearchParams(window.location.search);
   const id = urlParams.get('id');
-  if (id) {
+  const previewId = urlParams.get('preview');
+  if (previewId && window.croptop) {
+    // ?preview=<post id>: only that post's feed preview, filling the viewport.
+    // The console embeds this in its post tiles; anyone can embed it.
+    document.body.innerHTML = "";
+    document.body.style.cssText = "margin:0;overflow:hidden;background:var(--background-color);color:var(--foreground-color)";
+    const el = document.createElement("div");
+    el.className = "post-frame-widget";
+    el.style.cssText = "position:fixed;inset:0;width:auto;height:auto";
+    document.body.appendChild(el);
+    croptop.site().then((site) => {
+      const post = site.articles.find((a) => a.id === previewId);
+      if (post) croptop.preview(el, previewId, post, "frame"); else el.textContent = "no such post";
+    });
+  } else if (id) {
     const anchor = window.location.hash.substring(1);
     if (anchor) {
       window.location.href = './' + id + '/#' + anchor;

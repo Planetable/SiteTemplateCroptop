@@ -87,11 +87,23 @@ window.croptop = (() => {
      * instead of showing the first lines of text. Keep it light: it runs for
      * every such post on the page at once. Clicks on it open the post.
      */
+    /** True when a post carries a preview: an attached preview.js or an inline
+     *  <script type="croptop/preview"> in its content. */
+    hasPreview(post) {
+      return !!post && ((post.attachments || []).includes("preview.js") || /<script[^>]+type=["']croptop\/preview["']/i.test(post.content || ""));
+    },
     async preview(el, id, post, size) {
       try {
         const base = `${prefix}${id}/`;
-        // import() in a classic script resolves against this file, not the page
-        const m = await import(new URL(`${base}preview.js`, document.baseURI).href);
+        let m;
+        const inline = (post && post.content || "").match(/<script[^>]+type=["']croptop\/preview["'][^>]*>([\s\S]*?)<\/script>/i);
+        if (inline) {
+          // the code travels with planet.json, so no extra fetch
+          m = await import(URL.createObjectURL(new Blob([inline[1]], { type: "text/javascript" })));
+        } else {
+          // import() in a classic script resolves against this file, not the page
+          m = await import(new URL(`${base}preview.js`, document.baseURI).href);
+        }
         const site = await api.site();
         await loadEnv();
         (m.default || m.preview)(el, { post, site, env, size, base, postId: id });
