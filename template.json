@@ -138,6 +138,13 @@
       "defaultValue": "",
       "description": "Text and button borders as a hex color, such as #24211D. Muted text and surfaces follow your colors."
     },
+    "postViewMode": {
+      "name": "Post View",
+      "type": "string",
+      "defaultValue": "frames",
+      "description": "How posts open on the site: single, frames, more, or list. The app sets this when you change views.",
+      "advanced": true
+    },
     "highlightColor": {
       "name": "Highlight Color",
       "type": "string",

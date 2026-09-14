@@ -97,7 +97,8 @@ window.onpopstate = function(event) {
   let activeTags = [];
   let projectTags =  {};
   let postsGeneration = 0;
-  let postMode = "frames";
+  // The owner picks the opening view in the app; anything unknown is tiles.
+  let postMode = ["single", "frames", "more", "list"].includes("{{ user_settings['postViewMode'] }}") ? "{{ user_settings['postViewMode'] }}" : "frames";
 
   // Note: showNav and hideNav functions are defined in top-dom.html
 
