@@ -31,7 +31,7 @@
         </div>
       <div id="record-post-form" class="form negative-space">
         <span id="record-post-form-header" class="form-header"></span>
-        <button id="record-post-form-load-address-button" class="form-load-address-button"><span class="form-load-address-button-text">connect wallet</span></button>
+        <button id="record-post-form-load-address-button" class="square-button form-load-address-button"><span class="form-load-address-button-text">connect wallet</span></button>
         <div class="form-body">
           <div class="form-section">
             <div class="form-item">
@@ -65,7 +65,7 @@
       </div>
       <div id="post-form-loading-animation" class="loading-animation"></div>
       <div id="post-form-error-message" class="form-error-message"></div>
-      <button id="post-form-button" class="form-button form-main-button"><span id="post-form-button-text" class="form-button-text">buy</span><span id="post-form-button-loading-animation" class="loading-animation button-loading-animation"></span></button>
+      <button id="post-form-button" class="square-button form-button form-main-button"><span id="post-form-button-text" class="form-button-text">buy</span><span id="post-form-button-loading-animation" class="loading-animation button-loading-animation"></span></button>
     </div>
   </details>
 </div>
@@ -617,31 +617,25 @@
   }
 
   const decorateAggregation = async (post) => {
-    PostDOM.postAggregation.innerHTML = '';
-    const originalSiteDomain = post.originalSiteDomain;
-    const originalSiteName = post.originalSiteName;
-    const originalPostID = post.originalPostID;
-    if (originalSiteDomain && originalSiteName && originalPostID) {
-      let url = "https://"
-      if (originalSiteDomain.startsWith("k51")) {
-        url = url + originalSiteDomain + ".eth.sucks";
-      }
-      else if (originalSiteDomain.endsWith(".eth")) {
-        url = url + originalSiteDomain + ".sucks";
-      }
-      else {
-        url = url + originalSiteDomain;
-      }
-      url = url + "/" + originalPostID + "/";
-      const link = document.createElement("a");
-      link.href = url;
-      link.target = "_blank";
-      link.innerHTML = "Posted by " + originalSiteDomain;
-      link.className = "aggregation-link";
-      PostDOM.postAggregation.appendChild(link);
-      PostDOM.postAggregation.style.paddingTop = "1em";
-    }
+    PostDOM.postAggregation.replaceChildren();
+    const domain = post.originalSiteDomain;
+    const id = post.originalPostID;
+    if (!domain || !id || !/^[a-f0-9-]{36}$/i.test(id)) return;
+    let host;
+    if (/^k51[a-z0-9]{20,100}$/.test(domain)) host = domain + ".crop.top";
+    else if (/^[a-z0-9.-]+\.eth$/i.test(domain)) host = domain.slice(0, -4) + ".crop.top";
+    else if (/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) host = domain;
+    else return;
+    const link = document.createElement("a");
+    link.href = "https://" + host + "/" + encodeURIComponent(id) + "/";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = "Posted by " + (post.originalSiteName || domain);
+    link.className = "aggregation-link";
+    PostDOM.postAggregation.appendChild(link);
+    PostDOM.postAggregation.style.paddingTop = "1em";
   }
+
 </script>
 {% if article_type == 1 %}
 <script>

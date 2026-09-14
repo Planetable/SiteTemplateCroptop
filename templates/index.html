@@ -24,7 +24,11 @@ window.onpopstate = function(event) {
         {% endfor %}
       </div>
     </div>
-    <div id="post-mode-button" class="post-mode-button"><span id="grid-post-mode-button" class="post-mode-button-icon post-mode-button-active"> </span>|<span id="list-post-mode-button" class="post-mode-button-icon"> ☰</span></div>
+    <div id="post-mode-button" class="post-mode-button" role="group" aria-label="Post view">
+      <button type="button" id="grid-post-mode-button" class="post-mode-button-icon post-mode-button-active" aria-label="Tiles" aria-pressed="true" title="Tiles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></button>
+      <button type="button" id="more-post-mode-button" class="post-mode-button-icon" aria-label="More" aria-pressed="false" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="5" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg></button>
+      <button type="button" id="list-post-mode-button" class="post-mode-button-icon" aria-label="List" aria-pressed="false" title="List"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 5h18M3 12h18M3 19h18"/></svg></button>
+    </div>
   </div>
   <div class="body-content">
     <div id="post-frames-container"></div>
@@ -35,7 +39,7 @@ window.onpopstate = function(event) {
 {% include './fork-modal.html' %}
 <div id="post-modal" class="modal negative-space">
   <div class="modal-content body-content centered-content content-top-offset negative-space">
-    <div class="exit-button mobile-padding negative-space"><span class="exit-button-text negative-space">×</span></div>
+    <button type="button" aria-label="Close" class="square-button exit-button mobile-padding negative-space"><span class="exit-button-text negative-space">×</span></button>
     {% include './post-page.html' %}
   </div>
 </div>
@@ -64,6 +68,7 @@ window.onpopstate = function(event) {
     postFormStateCollectionAddressInput: document.getElementById("post-form-state-collection-address-input"),
     postModeButton: document.getElementById("post-mode-button"),
     gridPostModeButton: document.getElementById("grid-post-mode-button"),
+    morePostModeButton: document.getElementById("more-post-mode-button"),
     listPostModeButton: document.getElementById("list-post-mode-button"),
     tagsContainer: document.getElementById("tags-container"),
     defaultTag: document.getElementById("default-tag"),
@@ -89,6 +94,7 @@ window.onpopstate = function(event) {
   let hasDecoratedTags = false;
   let activeTags = [];
   let projectTags =  {};
+  let postsGeneration = 0;
   let postMode = "frames";
 
   // Note: showNav and hideNav functions are defined in top-dom.html
@@ -150,7 +156,8 @@ window.onpopstate = function(event) {
 
     if (post.pinned && post.pinned > 0) {
       const icon = document.createElement("div");
-      icon.innerHTML = "";
+      icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 3 6 0-1 6 4 4v2h-5v7h-2v-7H6v-2l4-4z"/></svg>';
+      icon.setAttribute('aria-label', 'Pinned post');
       icon.classList.add("post-frame-pinned-icon");
       postFrame.appendChild(icon);
     }
@@ -160,6 +167,13 @@ window.onpopstate = function(event) {
     // Set the content.
     title.innerHTML = name;
     subtitle.innerHTML = `${date}${ (post.pinned && post.pinned > 0 ) ? '<span class="space">•</span>pinned' : "" }<span class="space">•</span><span class="post-frame-state">click to ${verb}</span>${ Object.keys(tags).length ? '<span class="space">•</span>' : "" }${Object.values(tags).map(tag => `<div class="tag">${tag}</div>`).join(" ")}`;
+
+    if (post.originalSiteName) {
+      const author = document.createElement("span");
+      author.className = "post-author";
+      author.textContent = post.originalSiteName + " · ";
+      subtitle.prepend(author);
+    }
 
     if (name == "✃") title.classList.add("bigger-font");
 
@@ -284,7 +298,9 @@ window.onpopstate = function(event) {
       postFrame.appendChild(frameText);
     }
 
-    const encodedIPFSUri = await encodeIPFSUriFrom("{{ assets_prefix }}", postId);
+    const encodedIPFSUriPromise = encodeIPFSUriFrom("{{ assets_prefix }}", postId);
+    let encodedIPFSUri = "0x" + "0".repeat(64);
+    encodedIPFSUriPromise.then(uri => { encodedIPFSUri = uri; });
 
     // Summon a modal when the frame is clicked.
     postFrame.addEventListener("click", async (e) => {
@@ -296,7 +312,7 @@ window.onpopstate = function(event) {
       toggleNavVisibility();
 
       // Make the modal look right.
-      await decoratePostModal(post, postId, encodedIPFSUri, name, date, link, renderMarkdown(content), coverImageSrc, coverVideoSrc, coverAudioSrc, coverAutogenerated);
+      await decoratePostModal(post, postId, await encodedIPFSUriPromise, name, date, link, renderMarkdown(content), coverImageSrc, coverVideoSrc, coverAudioSrc, coverAutogenerated);
 
       // Make the body not scrollable.
       document.body.style.overflow = "hidden";
@@ -324,6 +340,13 @@ window.onpopstate = function(event) {
     // Set the content.
     title.innerHTML = name;
     subtitle.innerHTML = `${date} • <span class="post-row-state">click to ${verb}</span> ${ Object.keys(tags).length ? "•" : "" }${Object.values(tags).map(tag => `<div class="tag">${tag}</div>`).join(" ")}`;
+
+    if (post.originalSiteName) {
+      const author = document.createElement("span");
+      author.className = "post-author";
+      author.textContent = post.originalSiteName + " · ";
+      subtitle.prepend(author);
+    }
 
     if (name == "✃") title.classList.add("bigger-font");
 
@@ -427,7 +450,9 @@ window.onpopstate = function(event) {
       thumbnail.appendChild(thumbnailTextContainer);
     }
 
-    const encodedIPFSUri = await encodeIPFSUriFrom("{{ assets_prefix }}", postId);
+    const encodedIPFSUriPromise = encodeIPFSUriFrom("{{ assets_prefix }}", postId);
+    let encodedIPFSUri = "0x" + "0".repeat(64);
+    encodedIPFSUriPromise.then(uri => { encodedIPFSUri = uri; });
 
     // Summon a modal when the frame is clicked.
     postRow.addEventListener("click", async (e) => {
@@ -439,7 +464,7 @@ window.onpopstate = function(event) {
       toggleNavVisibility();
 
       // Make the modal look right.
-      await decoratePostModal(post, postId, encodedIPFSUri, name, date, link, renderMarkdown(content), thumbnailImageSrc, thumbnailVideoSrc, thumbnailAudioSrc, thumbnailAutogenerated);
+      await decoratePostModal(post, postId, await encodedIPFSUriPromise, name, date, link, renderMarkdown(content), thumbnailImageSrc, thumbnailVideoSrc, thumbnailAudioSrc, thumbnailAutogenerated);
 
       // Make the body not scrollable.
       document.body.style.overflow = "hidden";
@@ -557,7 +582,17 @@ window.onpopstate = function(event) {
   }
 
   const positionAndShowPostFrame = async (postFrame) => {
-    await loadMedia(postFrame);
+    if (postMode !== "frames") {
+      postFrame.style.marginTop = "";
+      postFrame.classList.add("post-frame-fade-in");
+      return;
+    }
+    if (!IndexDOM.postFramesContainer.classList.contains("post-frames-relayout")) await loadMedia(postFrame);
+    if (postMode !== "frames") {
+      postFrame.style.marginTop = "";
+      postFrame.classList.add("post-frame-fade-in");
+      return;
+    }
 
     const rect = postFrame.getBoundingClientRect();
     if (rect.left < greatestRightInRow) currentRow++;
@@ -573,6 +608,10 @@ window.onpopstate = function(event) {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const marginTop = window.getComputedStyle(postFrame).display == "block" ? 0 : heightDiff + scrollTop - IndexCONFIG.verticalMargin;
     postFrame.classList.add("post-frame-fade-in");
+    if (IndexDOM.postFramesContainer.classList.contains("post-frames-relayout")) {
+      postFrame.style.marginTop = marginTop ? -marginTop + "px" : "";
+      return;
+    }
 
     return new Promise((resolve) => {
       if (marginTop) {
@@ -584,6 +623,10 @@ window.onpopstate = function(event) {
         };
         postFrame.addEventListener("transitionend", handleEvent);
         postFrame.style.marginTop = -marginTop + "px";
+        setTimeout(() => {
+          postFrame.removeEventListener("transitionend", handleEvent);
+          resolve();
+        }, 300);
       } else resolve();
     });
   }
@@ -654,7 +697,7 @@ window.onpopstate = function(event) {
     return images.length ? images[Math.floor(Math.random() * images.length)] : null;
   };
 
-  const showPostFrames = async (newPosts) => {
+  const showPostFrames = async (newPosts, position = true) => {
     const newPostFrames = newPosts.map((post) => {
       // if post.hasVideo, use _videoThumbnail.png
       // else use a random attachment
@@ -668,8 +711,9 @@ window.onpopstate = function(event) {
       return frame;
     });
 
-    for (const postFrame of newPostFrames)
-      await positionAndShowPostFrame(postFrame);
+    if (position) {
+      for (const postFrame of newPostFrames) await positionAndShowPostFrame(postFrame);
+    }
   }
 
   const showPostList = async (newPosts) => {
@@ -688,7 +732,7 @@ window.onpopstate = function(event) {
   }
 
   const showPosts = async (posts) => {
-    postMode == "frames" ? await showPostFrames(posts) : await showPostList(posts);
+    postMode === "list" ? await showPostList(posts) : await showPostFrames(posts);
     videoMobileScroll();
   }
 
@@ -742,58 +786,75 @@ window.onpopstate = function(event) {
 
   const loadPosts = async (pageSize) => {
     if (!canLoadNewPosts) return;
-
     canLoadNewPosts = false;
-
+    const generation = postsGeneration;
+    let more = true;
     startLoadingAnimation('posts-loading-animation');
-
-    const now = Math.floor(Date.now() / 1000);
-    const t = now - (now % 10);
-
-    const response = await fetch(
-      `{{ assets_prefix }}planet.json?t=${t}`
-    );
-    const data = await response.json();
-
-    // Decorate the tags the first time around.
-    if (!hasDecoratedTags) {
-      projectTags = data.tags;
-      decorateTags();
-      // Setup body padding again after decorating tags.
-      setupBodyPadding();
-      hasDecoratedTags = true;
-    }
-
-    {% if tag_key %}
-      const articles = data['articles'].filter(article => article.tags && '{{ tag_key }}' in article.tags);
-    {% else %}
-      const articles = data['articles'];
-    {% endif %}
-
-    // Filter articles by tags.
-    const filteredPosts = !activeTags.length ? articles : articles.filter(article => activeTags.every(tag => article.tags[tag]));
-
-    // Get the current page.
-    const newPosts = filteredPosts.slice(nextPageOffset, nextPageOffset + pageSize);
-
-    posts = posts.concat(newPosts);
-
-    if (!newPosts.length) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    try {
+      const now = Math.floor(Date.now() / 1000), t = now - (now % 10);
+      const response = await fetch(`{{ assets_prefix }}planet.json?t=${t}`, { signal: controller.signal });
+      if (!response.ok) throw new Error(`Posts unavailable (${response.status})`);
+      const data = await response.json();
+      if (generation !== postsGeneration) return;
+      if (!hasDecoratedTags) {
+        projectTags = data.tags || {};
+        decorateTags();
+        setupBodyPadding();
+        hasDecoratedTags = true;
+      }
+      {% if tag_key %}
+        const articles = (data.articles || []).filter(article => article.tags && '{{ tag_key }}' in article.tags);
+      {% else %}
+        const articles = data.articles || [];
+      {% endif %}
+      const filteredPosts = !activeTags.length ? articles : articles.filter(article => activeTags.every(tag => article.tags?.[tag]));
+      const newPosts = filteredPosts.slice(nextPageOffset, nextPageOffset + pageSize);
+      more = nextPageOffset + newPosts.length < filteredPosts.length;
+      if (!newPosts.length) return;
+      posts = posts.concat(newPosts);
+      nextPageOffset += newPosts.length;
+      // The feed is ready independently of optional collection/RPC data.
       stopLoadingAnimation('posts-loading-animation');
-      return;
+      await showPosts(newPosts);
+      const chain = IndexDOM.postFormStateChainInput.value;
+      const collection = IndexDOM.postFormStateCollectionAddressInput.value;
+      if (collection && !/^0x0{40}$/i.test(collection)) {
+        (async () => {
+          const uris = await Promise.all(newPosts.map(post => encodeIPFSUriFrom("{{ assets_prefix }}", post.id)));
+          if (generation !== postsGeneration) return;
+          let stateTimeout;
+          try {
+            await Promise.race([loadPostsState(uris), new Promise((_, reject) => { stateTimeout = setTimeout(() => reject(new Error('Collection lookup timed out')), 12000); })]);
+          } finally { clearTimeout(stateTimeout); }
+          if (generation !== postsGeneration || chain !== IndexDOM.postFormStateChainInput.value || collection !== IndexDOM.postFormStateCollectionAddressInput.value) return;
+          newPosts.forEach((post, i) => {
+            const frame = document.getElementById('frame-' + post.id), row = document.getElementById('row-' + post.id);
+            if (frame) decoratePostState(frame, '.post-frame-state', collection, uris[i]);
+            if (row) decoratePostState(row, '.post-row-state', collection, uris[i]);
+          });
+        })().catch(error => console.warn('Collection information unavailable:', error.message));
+      }
+    } catch (error) {
+      if (generation !== postsGeneration) return;
+      console.warn('Unable to load posts:', error.message);
+      // Retry is explicit so a failing gateway cannot restart the spinner on every scroll.
+      more = false;
+      let retry = document.getElementById('posts-retry');
+      if (!retry) {
+        retry = document.createElement('button'); retry.type = 'button'; retry.id = 'posts-retry'; retry.className = 'square-button'; retry.textContent = 'Retry loading posts';
+        retry.style.cssText = 'width:auto;padding:10px 16px;margin:20px';
+        retry.onclick = () => { retry.remove(); canLoadNewPosts = true; loadPosts(pageSize); };
+        IndexDOM.postsLoadingAnimation.after(retry);
+      }
+    } finally {
+      clearTimeout(timeout);
+      if (generation === postsGeneration) {
+        stopLoadingAnimation('posts-loading-animation');
+        canLoadNewPosts = more;
+      }
     }
-
-    nextPageOffset += newPosts.length;
-
-    const encodedIPFSUris = await Promise.all(newPosts.map(async (post) => await encodeIPFSUriFrom("{{ assets_prefix }}", post.id)));
-
-    await loadPostsState(encodedIPFSUris);
-
-    stopLoadingAnimation('posts-loading-animation');
-
-    await showPosts(newPosts);
-
-    canLoadNewPosts = true;
   }
 
   const toggleNavVisibility = () => {
@@ -834,39 +895,62 @@ window.onpopstate = function(event) {
   }
 
   const setupPostMode = () => {
+    const controls = [
+      ["frames", IndexDOM.gridPostModeButton],
+      ["more", IndexDOM.morePostModeButton],
+      ["list", IndexDOM.listPostModeButton],
+    ];
     const toggleView = () => {
-      if (postMode == "frames") {
-        IndexDOM.postFramesContainer.style.display = "block";
-        IndexDOM.postListContainer.style.display = "none";
-      } else {
-        IndexDOM.postFramesContainer.style.display = "none";
-        IndexDOM.postListContainer.style.display = "block";
+      IndexDOM.postFramesContainer.classList.toggle("post-frames-more", postMode === "more");
+      IndexDOM.postFramesContainer.style.display = postMode === "list" ? "none" : postMode === "more" ? "grid" : "block";
+      IndexDOM.postListContainer.style.display = postMode === "list" ? "block" : "none";
+      for (const [mode, button] of controls) {
+        button.classList.toggle("post-mode-button-active", postMode === mode);
+        button.setAttribute("aria-pressed", String(postMode === mode));
       }
+    };
+    const layoutFrames = async () => {
+      currentRow = 1;
+      greatestRightInRow = 0;
+      rows = [];
+      const frames = Array.from(IndexDOM.postFramesContainer.children);
+      IndexDOM.postFramesContainer.classList.add("post-frames-relayout");
+      try {
+        for (const frame of frames) frame.style.marginTop = "";
+        for (const frame of frames) await positionAndShowPostFrame(frame);
+      } finally {
+        IndexDOM.postFramesContainer.classList.remove("post-frames-relayout");
+      }
+    };
+    for (const [mode, button] of controls) {
+      button.addEventListener("click", async () => {
+        if (postMode === mode) return;
+        for (const [, control] of controls) control.disabled = true;
+        try {
+          postMode = mode;
+          toggleView();
+          if (mode === "list") {
+            await showPostList(posts.slice(IndexDOM.postListContainer.children.length));
+          } else {
+            await showPostFrames(posts.slice(IndexDOM.postFramesContainer.children.length), false);
+            await layoutFrames();
+          }
+        } finally {
+          for (const [, control] of controls) control.disabled = false;
+        }
+      });
     }
-
-    IndexDOM.postModeButton.addEventListener('click', async () => {
-      const numberOfPostFrames = IndexDOM.postFramesContainer.children.length;
-      const numberOfPostRows = IndexDOM.postListContainer.children.length;
-      if (postMode == "frames") {
-        postMode = "list";
-        IndexDOM.listPostModeButton.classList.add("post-mode-button-active");
-        IndexDOM.gridPostModeButton.classList.remove("post-mode-button-active");
-        // Load any necessary frames.
-        if (numberOfPostRows < numberOfPostFrames) await showPostList(posts.slice(numberOfPostRows));
-      } else {
-        postMode = "frames";
-        IndexDOM.gridPostModeButton.classList.add("post-mode-button-active");
-        IndexDOM.listPostModeButton.classList.remove("post-mode-button-active");
-        // Load any necessary frames.
-        if (numberOfPostFrames < numberOfPostRows) await showPostFrames(posts.slice(numberOfPostFrames));
-      }
-      toggleView();
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => { if (postMode === "frames") layoutFrames(); }, 150);
     });
-
     toggleView();
-  }
+  };
 
   const resetPage = async () => {
+    postsGeneration++;
+    document.getElementById('posts-retry')?.remove();
     IndexDOM.postFramesContainer.innerHTML = "";
     IndexDOM.postListContainer.innerHTML = "";
 
@@ -993,7 +1077,9 @@ window.onpopstate = function(event) {
       if (activeTags.includes(tagValue)) tag.classList.add("active");
 
       // Set the tag text.
-      tag.querySelector('.tag-text').innerHTML = projectTags[tagValue];
+      const label = projectTags[tagValue];
+      if (typeof label !== 'string' || !label.trim()) { tag.remove(); continue; }
+      tag.querySelector('.tag-text').textContent = label;
 
       // Add/remove tag on click.
       tag.addEventListener('click', (e) => {
@@ -1052,14 +1138,14 @@ window.onpopstate = function(event) {
     // ?preview=<post id>: only that post's feed preview, filling the viewport.
     // The console embeds this in its post tiles; anyone can embed it.
     document.body.innerHTML = "";
-    document.body.style.cssText = "margin:0;overflow:hidden;background:var(--background-color);color:var(--foreground-color)";
+    document.body.style.cssText = "margin:0;overflow:hidden;background:var(--surface-background-color);color:var(--foreground-color)";
     const el = document.createElement("div");
     el.className = "post-frame-widget";
     el.style.cssText = "position:fixed;inset:0;width:auto;height:auto";
     document.body.appendChild(el);
     croptop.site().then((site) => {
       const post = site.articles.find((a) => a.id === previewId);
-      if (post) croptop.preview(el, previewId, post, "frame"); else el.textContent = "no such post";
+      if (post) croptop.preview(el, previewId, post, urlParams.get("preview-size") === "row" ? "row" : "frame"); else el.textContent = "no such post";
     });
     // Embedders cannot see clicks inside the frame; tell them so they can open the post.
     el.addEventListener("click", () => { if (window.parent !== window) window.parent.postMessage({ type: "croptop-preview-click", post: previewId }, "*"); });

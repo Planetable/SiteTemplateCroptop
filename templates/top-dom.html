@@ -12,10 +12,8 @@
         <div id="header-top">
           <div id="header-title"><span id="header-title-button">{{ planet.name }}</span></div>
           <div id="header-aux">
-            <div id="fork-button">$</div>
-            <a href="{{ assets_prefix }}rss.xml" target="_blank">
-              <div id="rss-button"></div>
-            </a>
+            <button id="fork-button" type="button" class="square-button" aria-label="Make a collection" title="Make a collection"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="1"/><path d="M16 8V4H4v12h4"/></svg></button>
+            <a id="rss-button" class="square-button" href="{{ assets_prefix }}rss.xml" target="_blank" aria-label="RSS feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="5" cy="19" r="1" fill="currentColor"/><path d="M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16"/></svg></a>
           </div>
         </div>
       </div>
@@ -118,6 +116,8 @@
   const setupForking = () => {
     const forkModal = document.getElementById("fork-modal");
     const forkButton = document.getElementById("fork-button");
+
+    if (!forkButton || !forkModal) return;
 
     // Summon a modal when the fork button is clicked.
     forkButton.addEventListener("click", async (e) => {

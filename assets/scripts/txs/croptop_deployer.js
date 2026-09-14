@@ -1,3 +1,13 @@
+// Shared shop economics used by the website form and the node wallet flow.
+const croptopRevnetStages = () => [{
+  automintTokenAmount: 0,
+  initialIssuanceAmount: ethers.parseUnits("10000", 18),
+  splitPercent: 3800,
+  priceIncreasePercent: 10_000_000,
+  priceIncreaseFrequency: 7 * 86400,
+  cashOutTaxRate: 1000,
+}];
+
 // Juicebox v6 deployment addresses. Same on every supported chain unless keyed by chain id.
 const revnetDeployerContract = () => "0xb552eb94284f94b833837d4b2cbb237128415d4e";
 const JB_PROJECTS_ADDRESS = "0x6017d1fba9dc279bfa0b03fd931c22e242ab3691";

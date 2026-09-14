@@ -6,7 +6,7 @@
   "version": "1.2.2",
   "idealItemsPerPage": 10,
   "generateIndexPagination": false,
-  "buildNumber": 598,
+  "buildNumber": 599,
   "generateNFTMetadata": true,
   "generateTagPages": true,
   "settings": {
@@ -125,6 +125,18 @@
       "defaultValue": "https://arbitrum-sepolia.gateway.tenderly.co",
       "description": "",
       "advanced": true
+    },
+    "backgroundColor": {
+      "name": "Background Color",
+      "type": "string",
+      "defaultValue": "",
+      "description": "Page background as a hex color, such as #FFF8ED. Leave both background and foreground blank for automatic light and dark colors."
+    },
+    "foregroundColor": {
+      "name": "Foreground Color",
+      "type": "string",
+      "defaultValue": "",
+      "description": "Text and button borders as a hex color, such as #24211D. Muted text and surfaces follow your colors."
     },
     "highlightColor": {
       "name": "Highlight Color",

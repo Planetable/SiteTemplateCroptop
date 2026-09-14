@@ -1,5 +1,7 @@
 :root {
   --background-color: #fff;
+  --control-border-color: color-mix(in srgb, var(--foreground-color) 18%, transparent);
+  --surface-background-color: color-mix(in srgb, var(--background-color) 94%, white);
   --background-secondary-color: #e2e2e2;
   --background-color-opacity: rgba(255, 255, 255, 0.98);
   --background-secondary-color-opacity: rgba(226, 226, 226, 0.7);
@@ -64,18 +66,6 @@
   font-weight: 300;
 }
 
-@font-face{
-  font-family: "Capsules";
-  src: url(./CapsulesVF.woff2) format("woff2");
-  font-weight: 300 600;
-}
-
-@font-face{
-  font-family: "Capsules";
-  src: url(./CapsulesVF.woff2) format("woff2") tech("variations");
-  font-weight: 300 600;
-}
-
 /* GLOBAL STYLES */
 
 html {
@@ -99,7 +89,7 @@ body::-webkit-scrollbar {
 }
 
 body, button, input, select, textarea {
-  font-family: "Simplon Norm", "Capsules", "Inconsolata", monospace;
+  font-family: "Simplon Norm", system-ui, sans-serif;
   letter-spacing: 0.5px;
   font-size: var(--font-size-1);
 }
@@ -434,6 +424,44 @@ h6:hover .header-anchor {
 }
 
 
+/* Simple outlined controls, shared by header, modal and form actions. */
+.square-button {
+  appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  min-height: 36px;
+  padding: var(--spacing-2) var(--spacing-3);
+  border: var(--border-width) solid currentColor;
+  border-radius: 0;
+  background: var(--surface-background-color);
+  color: var(--foreground-secondary-color);
+  font-weight: var(--font-weight-1);
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+}
+.square-button:hover:not(:disabled) {
+  background: var(--background-secondary-color);
+  text-decoration: none;
+}
+.square-button:focus-visible {
+  outline: 2px solid var(--link-color);
+  outline-offset: 3px;
+}
+.square-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.square-button svg, .post-frame-pinned-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
 /* COMMON MODAL STYLES */
 
 .modal {
@@ -460,18 +488,16 @@ h6:hover .header-anchor {
 }
 
 .exit-button {
-  display: inline;
+  border: none;
   float: right;
-  cursor: pointer;
-  text-align: right;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   color: var(--foreground-secondary-color);
-  font-family: "Capsules", "Inconsolata", monospace;
+  font-family: inherit;
   font-size: var(--font-size-2);
 }
 
-.exit-button:hover .exit-button-text {
-  text-decoration: underline;
-}
 
 /* HEADER STYLES */
 
@@ -510,7 +536,8 @@ h6:hover .header-anchor {
 #header-aux {
   text-align: right;
   display: flex;
-  font-family: "Capsules", "Inconsolata", monospace;
+  gap: var(--spacing-2);
+  font-family: inherit;
 }
 
 #header-aux.small {
@@ -648,28 +675,16 @@ h6:hover .header-anchor {
   margin-bottom: var(--spacing-4);
   font-weight: var(--font-weight-2);
   font-size: var(--font-size-2);
-}#fork-button, #rss-button {
-  cursor: pointer;
-  display: inline-block;
+}
+#fork-button, #rss-button {
+  border: var(--border-width) solid var(--control-border-color);
+  width: 36px;
+  height: 36px;
+  padding: 0;
   color: var(--foreground-secondary-color);
-  font-size: var(--font-size-2);
-}
-
-/* hot fix */
-#fork-button {
-  margin-right: var(--spacing-3);
   font-size: 22px;
-  margin-top: 3px;
 }
 
-/* hot fix */
-#header-container.small #fork-button {
-  margin-top: 0;
-}
-
-#fork-button:hover, #rss-button:hover {
-  color: var(--link-color);
-}
 #fork-form {
   width: var(--reduced-width1);
 }#fork-form details .form-item {
@@ -755,6 +770,11 @@ h6:hover .header-anchor {
 }
 
 .post-mode-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  border: var(--border-width) solid var(--control-border-color);
+  padding: var(--spacing-1);
   align-self: center;
   text-align: right;
   margin-right: var(--spacing-4);
@@ -765,8 +785,20 @@ h6:hover .header-anchor {
 }
 
 .post-mode-button-icon {
-  font-family: "Capsules", "Inconsolata", monospace;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: var(--spacing-1);
+  border: none;
+  background: var(--surface-background-color);
+  color: var(--foreground-secondary-color);
+  cursor: pointer;
 }
+.post-mode-button-icon svg { width: 16px; height: 16px; }
+.post-mode-button-icon:focus-visible { outline: 2px solid var(--link-color); outline-offset: 2px; }
 
 .post-mode-button-active {
   color: var(--foreground-color);
@@ -816,6 +848,19 @@ h6:hover .header-anchor {
 #post-form-collect-toggle {
   margin: var(--spacing-2) 0;
 }
+#post-form-collect-toggle::before {
+  content: "";
+  width: .38em;
+  height: .38em;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  vertical-align: .12em;
+  margin-right: .65em;
+  transform: rotate(-45deg);
+}
+#post-form-collect-reveal[open] > #post-form-collect-toggle::before {
+  transform: rotate(45deg);
+}
 #post-cover-image, #post-cover-video, #post-content img {
   border: var(--border-width) solid var(--background-secondary-color);
   max-width: var(--max-width);
@@ -860,7 +905,7 @@ h6:hover .header-anchor {
   color: var(--foreground-secondary-color);
   cursor: pointer;
 }.form-section-description {
-  margin-top: var(--spacing-3);
+  margin-top: var(--spacing-1);
   margin-bottom: var(--spacing-2);
   color: var(--foreground-secondary-color);
   width: var(--max-width);
@@ -917,20 +962,29 @@ h6:hover .header-anchor {
 }
 
 .form-select-value::after {
-  content: '▼';
-  color: var(--foreground-color);
+  content: '';
   position: relative;
   right: var(--spacing-4);
-  width: 0;
+  width: 6px;
+  height: 6px;
+  margin-right: -8px;
+  flex: 0 0 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  pointer-events: none;
 }
 
 .form-load-address-button {
   float: right;
-  background: none;
-  border: none;
-  color: var(--foreground-secondary-color);
-  cursor: pointer;
-}.form-error-message {
+}
+.form-load-address-button.form-field-action {
+  float: none;
+  align-self: flex-start;
+  display: block;
+  margin-top: var(--spacing-2);
+}
+.form-error-message {
   margin-top: var(--spacing-3);
   line-break: anywhere;
 }
@@ -946,21 +1000,14 @@ h6:hover .header-anchor {
   color: var(--foreground-primary-color);
 }
 .form-button {
-  background: none;
   margin-top: var(--spacing-3);
   color: var(--link-color);
   font-weight: var(--font-weight-2);
-  border: none;
-  padding: var(--spacing-1) 0px;
-  cursor: pointer;
-  font-family: "Capsules", "Inconsolata", monospace;
-}
-.form-button:hover .form-button-text {
-  text-decoration: underline;
+  font-family: inherit;
 }
 .form-button:disabled {
   color: var(--foreground-secondary-color);
-  cursor: crosshair;
+  cursor: not-allowed;
   text-decoration: none;
 }
 .form-button:disabled .form-button-text {
@@ -1065,6 +1112,7 @@ h6:hover .header-anchor {
 }
 
 .post-frame {
+  background: var(--surface-background-color);
   display: inline-block;
   margin-left: var(--spacing-4);
   margin-bottom: var(--spacing-4);
@@ -1102,7 +1150,7 @@ h6:hover .header-anchor {
 .post-frame-text {
   min-height: 300px;
   max-height: 500px;
-  background: var(--background-color);
+  background: transparent;
   padding: var(--spacing-3);
   color: var(--foreground-color);
   font-size: var(--font-size-2);
@@ -1115,7 +1163,7 @@ h6:hover .header-anchor {
   width: var(--max-width);
   height: 300px;
   overflow: hidden;
-  background: var(--background-color);
+  background: transparent;
   color: var(--foreground-color);
   /* previews receive hover and clicks; a click still bubbles to the frame and opens the post */
 }
@@ -1144,7 +1192,7 @@ h6:hover .header-anchor {
   position: absolute;
   top: -14px;
   right: 5px;
-  font-family: "Capsules";
+  font-family: inherit;
   font-size: var(--font-size-2);
   color: var(--foreground-secondary-color);
   transition: color var(--transition-duration) var(--transition-timing-function);
@@ -1194,6 +1242,61 @@ h6:hover .header-anchor {
   width: 36%;
 }
 
+#post-frames-container.post-frames-relayout .post-frame { transition: none; }
+
+/* More keeps the same posts and interactions in a denser square grid. */
+#post-frames-container.post-frames-more {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--spacing-3);
+  margin: var(--spacing-4);
+}
+#post-frames-container.post-frames-more .post-frame {
+  display: block;
+  box-sizing: border-box;
+  width: auto;
+  min-width: 0;
+  aspect-ratio: 1;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: var(--border-width) solid var(--background-secondary-color);
+}
+#post-frames-container.post-frames-more .post-frame-image,
+#post-frames-container.post-frames-more .post-frame-video,
+#post-frames-container.post-frames-more .post-frame-widget,
+#post-frames-container.post-frames-more .post-frame-text,
+#post-frames-container.post-frames-more .post-frame-audio-container {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  object-fit: cover;
+  overflow: hidden;
+  font-size: var(--font-size-1);
+}
+#post-frames-container.post-frames-more .post-frame-info-container { position: absolute; }
+#post-frames-container.post-frames-more .post-frame-info {
+  opacity: 1;
+  background: var(--background-secondary-color-opacity);
+}
+#post-frames-container.post-frames-more .post-frame-pinned-icon { top: 6px; }
+@media (max-width: 1000px) {
+  #post-frames-container.post-frames-more { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 800px) {
+  #post-frames-container.post-frames-more { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  #post-frames-container.post-frames-more {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-inline: var(--spacing-2);
+  }
+}
+@media (max-width: 350px) {
+  #post-frames-container.post-frames-more { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* LIST STYLES */
 
 #post-list-container {
@@ -1205,6 +1308,7 @@ h6:hover .header-anchor {
 }
 
 .post-row {
+  background: var(--surface-background-color);
   cursor: pointer;
   display: flex;
   gap: var(--spacing-5);
@@ -1237,7 +1341,7 @@ h6:hover .header-anchor {
   height: calc(var(--max-height) - 2*var(--border-width));
   overflow: hidden;
   border: var(--border-width) solid var(--background-secondary-color);
-  background: var(--background-color);
+  background: transparent;
   color: var(--foreground-color);
 }
 
@@ -1246,7 +1350,7 @@ h6:hover .header-anchor {
   overflow: hidden;
   width: var(--max-width);
   height: var(--max-height);
-  background: var(--background-color);
+  background: transparent;
   color: var(--foreground-color);
   font-size: var(--font-size-2);
   font-weight: var(--font-weight-2);
@@ -1294,10 +1398,10 @@ h6:hover .header-anchor {
 }
 
 .attachment-link:link::before, .attachment-link:visited::before {
-  content: '';
+  content: '↓';
   display: inline-block;
   margin-right: var(--spacing-1);
-  font: "Capsules", "Inconsolata", monospace;
+  font-family: inherit;
 }
 
 .aggregation-link:link, .aggregation-link:visited {
@@ -1312,7 +1416,7 @@ h6:hover .header-anchor {
   content: '▰';
   display: inline-block;
   margin-right: var(--spacing-1);
-  font: "Capsules", "Inconsolata", monospace;
+  font-family: inherit;
 }
 
 /* Custom Croptop checkbox styling */
@@ -1579,3 +1683,22 @@ h6:hover .header-anchor {
     background: var(--background-secondary-color);
   }
 }
+
+/* Dropdown triggers share the square-button treatment. */
+.form-select-value { color: var(--foreground-secondary-color); }
+.form-select-value select {
+  box-sizing: border-box;
+  min-height: 36px;
+  padding: var(--spacing-2) var(--spacing-6) var(--spacing-2) var(--spacing-3);
+  border: var(--border-width) solid var(--control-border-color, currentColor);
+  border-radius: 0;
+  background: var(--surface-background-color);
+  color: var(--foreground-secondary-color);
+  font-weight: var(--font-weight-1);
+  line-height: 1.2;
+  cursor: pointer;
+}
+.form-select-value select:hover:not(:disabled) { background: var(--background-secondary-color); }
+.form-select-value select:focus-visible { outline: 2px solid var(--link-color); outline-offset: 3px; }
+.form-select-value select:disabled { opacity: .5; cursor: not-allowed; }
+.form-select-value select option { background: var(--background-color); color: var(--foreground-color); }

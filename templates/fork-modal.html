@@ -1,11 +1,11 @@
 <div id="fork-modal" class="modal negative-space">
     <div class="modal-content body-content centered-content content-top-offset negative-space">
-      <div class="exit-button mobile-padding negative-space"><span class="exit-button-text negative-space">×</span></div>
+      <button type="button" aria-label="Close" class="square-button exit-button mobile-padding negative-space"><span class="exit-button-text negative-space">×</span></button>
       <div id="fork-header" class="body-header mobile-padding negative-space">
-        <div class="fork-title">Sell from your own site</div>
+        <div class="fork-title">Make your own site</div>
           Get your own site like this one and learn how to start posting at <a href="https://croptop.eth.sucks" target="_blank">https://croptop.eth.sucks</a>.
         <div class="fork-info">
-          Let people buy your posts by making a shop below.
+          Then let people buy your posts by making a shop below.
         </div>
         <div class="fork-info">
           Croptop websites connect to blockchains for easy sales while giving creators pro tools to grow their money with their community.
@@ -32,61 +32,30 @@
             </div>
           </div>
           <div class="form-section">
-            <div class="form-section-description">Set the address that manages your store's revenues.</div>
             <div class="form-item form-item-large">
-              <div class="form-label">Revenue manager
-                <button id="fork-form-new-jb-load-address-button" class="form-load-address-button"><span class="form-load-address-button-text">connect wallet</span></button>
-              </div>
+              <label class="form-label" for="fork-form-new-jb-project-owner-input">Revenue manager</label>
+              <div id="fork-form-new-jb-project-owner-input-help" class="form-section-description">Set the address that manages your store's revenues.</div>
               <div class="form-value">
-                <input type="text" placeholder="Defaults to your address" id="fork-form-new-jb-project-owner-input">
+                <input type="text" placeholder="Defaults to your address" id="fork-form-new-jb-project-owner-input" aria-describedby="fork-form-new-jb-project-owner-input-help">
               </div>
+              <button type="button" id="fork-form-new-jb-load-address-button" class="square-button form-load-address-button form-field-action"><span class="form-load-address-button-text">connect wallet</span></button>
             </div>
           </div>
           <div class="form-section">
-            <div class="form-section-description"><input type="checkbox" id="fork-form-new-jb-others-input"> <label for="fork-form-new-jb-others-input">Let others add posts to your shop.</label></div>
-            <div id="fork-form-new-jb-others-rules" style="display: none;">
-              <div class="form-section-description">The account adding a post to your shop must buy the first copy. They can route up to the max cut of each sale of their post to an address they choose.</div>
-              <div class="form-section">
-              <div class="form-item">
-                <div class="form-label">Minimum price</div>
-                <div class="form-value">
-                  <span class="ether form-input-prefix">Ξ</span><input type="number" placeholder="free" value="0.001" id="fork-form-new-jb-others-minimum-price-input" min="0" step="any">
-                </div>
-              </div>
-              <div class="form-item">
-                <div class="form-label">Min copies</div>
-                <div class="form-value">
-                  <input type="number" value="1" id="fork-form-new-jb-others-minimum-total-supply-input" min="1">
-                </div>
-              </div>
-              <div class="form-item">
-                <div class="form-label">Max copies</div>
-                <div class="form-value">
-                  <input type="number" placeholder="no limit" id="fork-form-new-jb-others-maximum-total-supply-input" min="0">
-                </div>
-              </div>
-              <div class="form-item">
-                <div class="form-label">Max cut</div>
-                <div class="form-value">
-                  <input type="number" value="10" id="fork-form-new-jb-others-maximum-split-input" min="0" max="100" step="any"><span class="form-input-prefix">%</span>
-                </div>
-              </div>
-              </div>
-              <div class="form-section">
-              <div class="form-item form-item-large">
-                <div class="form-label">Who can add posts</div>
-                <div class="form-value">
-                  <textarea rows="3" id="fork-form-new-jb-addresses-input" placeholder="Anyone. Paste addresses, one per line, to limit it."></textarea>
-                </div>
-              </div>
+            <div class="form-item">
+              <label class="form-label" for="fork-form-new-jb-others-minimum-price-input">Price</label>
+              <div id="fork-form-new-jb-others-minimum-price-input-help" class="form-section-description">Anyone can buy posts, all posts on your site are priced the same.</div>
+              <div class="form-value">
+                <span class="ether form-input-prefix">Ξ</span><input type="number" placeholder="free" value="0.001" id="fork-form-new-jb-others-minimum-price-input" aria-describedby="fork-form-new-jb-others-minimum-price-input-help" min="0" step="any">
               </div>
             </div>
           </div>
           <div id="fork-form-new-jb-chain" class="form-section">
-            <div class="form-section-description">Choose where you want your shop.</div>
             <div class="form-item">
+              <label class="form-label" for="fork-form-new-jb-state-chain-env">Networks</label>
+              <div id="fork-form-new-jb-chain-help" class="form-section-description">Choose where you want your shop.</div>
               <div class="form-value form-select-value">
-                <select id="fork-form-new-jb-state-chain-env" name="chain-env">
+                <select id="fork-form-new-jb-state-chain-env" name="chain-env" aria-describedby="fork-form-new-jb-chain-help">
                   <option value="production">Production</option>
                   <option value="testnet">Testnet</option>
                 </select>
@@ -211,7 +180,7 @@
             </div>
           </div>
           <div id="fork-form-new-jb-error-message" class="form-error-message mobile-padding"></div>
-          <button id="fork-form-new-jb-submit-button" class="form-button"><span id="fork-form-new-jb-submit-button-text" class="form-button-text">deploy collection</span><span id="fork-form-new-jb-button-loading-animation" class="loading-animation button-loading-animation"></span></button> 
+          <button id="fork-form-new-jb-submit-button" class="square-button form-button"><span id="fork-form-new-jb-submit-button-text" class="form-button-text">deploy collection</span><span id="fork-form-new-jb-button-loading-animation" class="loading-animation button-loading-animation"></span></button>
           <div id="fork-form-new-jb-success-message" class="form-success-message mobile-padding"></div>
         </div>
       </div>
@@ -245,14 +214,7 @@
     };
 
     // Revnet stages for new collections. One stage; add more with startsAtOrAfter set.
-    const REVNET_STAGES = [{
-      automintTokenAmount: 0,
-      initialIssuanceAmount: fixedPointNumber("10000", 18), // 10000 tokens per ETH, 18 decimals
-      splitPercent: 10000 - Math.round(62 * 100), // 62% to the operator
-      priceIncreasePercent: 10_000_000, // 1% issuance cut
-      priceIncreaseFrequency: 7 * 86400, // every 7 days
-      cashOutTaxRate: 1000 // 10%
-    }];
+    const REVNET_STAGES = croptopRevnetStages();
 
     // Helper functions
     const hasCollectionAddress = () => !!collectionAddress;
@@ -262,13 +224,7 @@
       const forkFormNewJbCollectionNameInput = document.getElementById("fork-form-new-jb-collection-name-input");
       const forkFormNewJbCollectionTickerInput = document.getElementById("fork-form-new-jb-collection-symbol-input");
       const forkFormNewJbProjectOwnerInput = document.getElementById("fork-form-new-jb-project-owner-input");
-      const forkFormNewJbOthersInput = document.getElementById("fork-form-new-jb-others-input");
-      const forkFormNewJbOthersRules = document.getElementById("fork-form-new-jb-others-rules");
       const forkFormNewJbOthersMinimumPriceInput = document.getElementById("fork-form-new-jb-others-minimum-price-input");
-      const forkFormNewJbOthersMinimumTotalSupplyInput = document.getElementById("fork-form-new-jb-others-minimum-total-supply-input");
-      const forkFormNewJbOthersMaximumTotalSupplyInput = document.getElementById("fork-form-new-jb-others-maximum-total-supply-input");
-      const forkFormNewJbOthersMaximumSplitInput = document.getElementById("fork-form-new-jb-others-maximum-split-input");
-      const forkFormNewJbAddressesInput = document.getElementById("fork-form-new-jb-addresses-input");
       const forkFormNewJbErrorMessage = document.getElementById("fork-form-new-jb-error-message");
       const forkFormNewJbSuccessMessage = document.getElementById("fork-form-new-jb-success-message");
       const forkFormNewJbSubmitButton = document.getElementById("fork-form-new-jb-submit-button");
@@ -289,7 +245,6 @@
         forkFormNewJbProjectOwnerInput.value = signer;
       };
   
-      forkFormNewJbOthersInput.onchange = () => { forkFormNewJbOthersRules.style.display = forkFormNewJbOthersInput.checked ? "block" : "none"; };
 
       forkFormNewJbChainEnvSelect.addEventListener('change', function() {
         if (this.value === 'production') {
@@ -585,17 +540,17 @@
           name: forkFormNewJbCollectionNameInput.value,
           symbol: forkFormNewJbCollectionTickerInput.value,
           owner: forkFormNewJbProjectOwnerInput.value,
-          // Category 0: the revenue manager's own posts, any price and count. Category 1: everyone else, if enabled.
+          // Category 0: the revenue manager's own posts, any price and count. Category 1: open posting is always enabled.
           postingRules: [
             { category: 0, minimumPrice: 0n, minimumTotalSupply: 1n, maximumTotalSupply: 0n, maximumSplitPercent: SPLITS_TOTAL_PERCENT, allowedAddresses: [forkFormNewJbProjectOwnerInput.value] },
-            ...(forkFormNewJbOthersInput.checked ? [{
+            {
               category: 1,
               minimumPrice: fixedPointNumber(forkFormNewJbOthersMinimumPriceInput.value || "0", 18),
-              minimumTotalSupply: BigInt(forkFormNewJbOthersMinimumTotalSupplyInput.value || 1),
-              maximumTotalSupply: BigInt(forkFormNewJbOthersMaximumTotalSupplyInput.value || 0),
-              maximumSplitPercent: Math.round(Number(forkFormNewJbOthersMaximumSplitInput.value || 0) / 100 * SPLITS_TOTAL_PERCENT),
-              allowedAddresses: forkFormNewJbAddressesInput.value.split('\n').map(a => a.trim()).filter(Boolean),
-            }] : []),
+              minimumTotalSupply: 1n,
+              maximumTotalSupply: 0n,
+              maximumSplitPercent: Math.round(0.1 * SPLITS_TOTAL_PERCENT),
+              allowedAddresses: [],
+            },
           ],
           stages: REVNET_STAGES,
           chainIds: selectedChains,

@@ -12,11 +12,24 @@ const encodeIPFSUri = (cid) => {
   }
 }
 
-const encodeIPFSUriFrom = async (prefix, itemId) => {
-  // Create the content's encoded IPFS URL.
+const encodedIPFSUriRequests = new Map();
+const encodeIPFSUriFrom = (prefix, itemId) => {
   const cidUrl = `${prefix}${itemId}/nft.json.cid.txt`;
-  const cid = await (await fetch(cidUrl)).text();
-  return cid ? encodeIPFSUri(cid) : "0x0000000000000000000000000000000000000000000000000000000000000000";
+  if (encodedIPFSUriRequests.has(cidUrl)) return encodedIPFSUriRequests.get(cidUrl);
+  const request = (async () => {
+    const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const response = await fetch(cidUrl, {signal: controller.signal});
+      if (!response.ok) throw new Error('Metadata unavailable');
+      const cid = (await response.text()).trim();
+      return cid ? encodeIPFSUri(cid) : '0x' + '0'.repeat(64);
+    } catch {
+      encodedIPFSUriRequests.delete(cidUrl);
+      return '0x' + '0'.repeat(64);
+    } finally { clearTimeout(timeout); }
+  })();
+  encodedIPFSUriRequests.set(cidUrl, request);
+  return request;
 }
 
 const formatDate = (date) => {
