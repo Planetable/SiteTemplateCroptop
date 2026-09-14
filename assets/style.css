@@ -1297,6 +1297,25 @@ h6:hover .header-anchor {
   #post-frames-container.post-frames-more { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* Single shows one post at a time: full width, up to screen height. */
+#post-frames-container.post-frames-single .post-frame {
+  display: block;
+  width: auto;
+  margin: 0 0 var(--spacing-4) var(--spacing-4);
+}
+#post-frames-container.post-frames-single .post-frame-image,
+#post-frames-container.post-frames-single .post-frame-video {
+  width: 100%;
+  max-height: calc(100vh - 160px);
+  object-fit: cover;
+}
+#post-frames-container.post-frames-single .post-frame-text,
+#post-frames-container.post-frames-single .post-frame-audio-container,
+#post-frames-container.post-frames-single .post-frame-widget {
+  min-height: 60vh;
+  max-height: calc(100vh - 160px);
+}
+
 /* LIST STYLES */
 
 #post-list-container {
@@ -1603,6 +1622,8 @@ h6:hover .header-anchor {
   .post-mode-button {
     margin-right: var(--spacing-2);
   }
+  /* Mobile is a feed either way: single and more collapse into tiles. */
+  #single-post-mode-button, #more-post-mode-button { display: none; }
 
   /* BODY STYLES */
 
@@ -1635,6 +1656,7 @@ h6:hover .header-anchor {
   }
   .post-frame {
     display: block;
+    width: auto;
     margin-left: 0;
     padding-top: var(--spacing-6);
     margin-bottom: var(--spacing-6);

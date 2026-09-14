@@ -25,6 +25,7 @@ window.onpopstate = function(event) {
       </div>
     </div>
     <div id="post-mode-button" class="post-mode-button" role="group" aria-label="Post view">
+      <button type="button" id="single-post-mode-button" class="post-mode-button-icon" aria-label="Single" aria-pressed="false" title="Single"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3h18v18H3z"/></svg></button>
       <button type="button" id="grid-post-mode-button" class="post-mode-button-icon post-mode-button-active" aria-label="Tiles" aria-pressed="true" title="Tiles"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z"/></svg></button>
       <button type="button" id="more-post-mode-button" class="post-mode-button-icon" aria-label="More" aria-pressed="false" title="More"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="5" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="5" r="1.5" fill="currentColor" stroke="none"/><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="19" r="1.5" fill="currentColor" stroke="none"/></svg></button>
       <button type="button" id="list-post-mode-button" class="post-mode-button-icon" aria-label="List" aria-pressed="false" title="List"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 5h18M3 12h18M3 19h18"/></svg></button>
@@ -67,6 +68,7 @@ window.onpopstate = function(event) {
     postFormStateChainInput: document.getElementById("post-form-state-chain-input"),
     postFormStateCollectionAddressInput: document.getElementById("post-form-state-collection-address-input"),
     postModeButton: document.getElementById("post-mode-button"),
+    singlePostModeButton: document.getElementById("single-post-mode-button"),
     gridPostModeButton: document.getElementById("grid-post-mode-button"),
     morePostModeButton: document.getElementById("more-post-mode-button"),
     listPostModeButton: document.getElementById("list-post-mode-button"),
@@ -896,17 +898,23 @@ window.onpopstate = function(event) {
 
   const setupPostMode = () => {
     const controls = [
+      ["single", IndexDOM.singlePostModeButton],
       ["frames", IndexDOM.gridPostModeButton],
       ["more", IndexDOM.morePostModeButton],
       ["list", IndexDOM.listPostModeButton],
     ];
+    // Mobile is a feed regardless: single and more collapse into frames.
+    const mobile = window.matchMedia("(max-width: 600px)");
+    const effectiveMode = () => (mobile.matches && postMode !== "list") ? "frames" : postMode;
     const toggleView = () => {
-      IndexDOM.postFramesContainer.classList.toggle("post-frames-more", postMode === "more");
-      IndexDOM.postFramesContainer.style.display = postMode === "list" ? "none" : postMode === "more" ? "grid" : "block";
-      IndexDOM.postListContainer.style.display = postMode === "list" ? "block" : "none";
-      for (const [mode, button] of controls) {
-        button.classList.toggle("post-mode-button-active", postMode === mode);
-        button.setAttribute("aria-pressed", String(postMode === mode));
+      const mode = effectiveMode();
+      IndexDOM.postFramesContainer.classList.toggle("post-frames-more", mode === "more");
+      IndexDOM.postFramesContainer.classList.toggle("post-frames-single", mode === "single");
+      IndexDOM.postFramesContainer.style.display = mode === "list" ? "none" : mode === "more" ? "grid" : "block";
+      IndexDOM.postListContainer.style.display = mode === "list" ? "block" : "none";
+      for (const [m, button] of controls) {
+        button.classList.toggle("post-mode-button-active", mode === m);
+        button.setAttribute("aria-pressed", String(mode === m));
       }
     };
     const layoutFrames = async () => {
@@ -943,7 +951,7 @@ window.onpopstate = function(event) {
     let resizeTimer;
     window.addEventListener("resize", () => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => { if (postMode === "frames") layoutFrames(); }, 150);
+      resizeTimer = setTimeout(() => { toggleView(); if (effectiveMode() === "frames") layoutFrames(); }, 150);
     });
     toggleView();
   };
