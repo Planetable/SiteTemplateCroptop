@@ -1,7 +1,8 @@
 // Read-only provider for a known chain; the browser wallet when no chain is given.
 const getProvider = (chainId) => {
   const chain = chainById(chainId);
-  return chain ? new ethers.JsonRpcProvider(chainRpc(chain)) : new ethers.BrowserProvider(window.ethereum);
+  // staticNetwork skips the chainId probe; batchMaxCount 1 because juicebox.center rejects JSON-RPC batches.
+  return chain ? new ethers.JsonRpcProvider(chainRpc(chain), chain.id, { staticNetwork: true, batchMaxCount: 1 }) : new ethers.BrowserProvider(window.ethereum);
 }
 
 // Juicebox's ERC-2771 trusted forwarder. Same address on every supported chain.
