@@ -73,56 +73,56 @@
     "ethereumMainnetRPC": {
       "name": "Ethereum RPC",
       "type": "string",
-      "defaultValue": "https://ethereum-rpc.publicnode.com",
+      "defaultValue": "https://juicebox.center/v1/rpc/1",
       "description": "",
       "advanced": true
     },
     "ethereumSepoliaRPC": {
       "name": "Ethereum Sepolia RPC",
       "type": "string",
-      "defaultValue": "https://ethereum-sepolia-rpc.publicnode.com",
+      "defaultValue": "https://juicebox.center/v1/rpc/11155111",
       "description": "",
       "advanced": true
     },
     "optimismMainnetRPC": {
       "name": "Optimism RPC",
       "type": "string",
-      "defaultValue": "https://optimism-rpc.publicnode.com",
+      "defaultValue": "https://juicebox.center/v1/rpc/10",
       "description": "",
       "advanced": true
     },
     "optimismSepoliaRPC": {
       "name": "Optimism Sepolia RPC",
       "type": "string",
-      "defaultValue": "https://sepolia.optimism.io",
+      "defaultValue": "https://juicebox.center/v1/rpc/11155420",
       "description": "",
       "advanced": true
     },
     "baseMainnetRPC": {
       "name": "Base RPC",
       "type": "string",
-      "defaultValue": "https://base-rpc.publicnode.com",
+      "defaultValue": "https://juicebox.center/v1/rpc/8453",
       "description": "",
       "advanced": true
     },
     "baseSepoliaRPC": {
       "name": "Base Sepolia RPC",
       "type": "string",
-      "defaultValue": "https://sepolia.base.org",
+      "defaultValue": "https://juicebox.center/v1/rpc/84532",
       "description": "",
       "advanced": true
     },
     "arbitrumMainnetRPC": {
       "name": "Arbitrum RPC",
       "type": "string",
-      "defaultValue": "https://arbitrum-one-rpc.publicnode.com",
+      "defaultValue": "https://juicebox.center/v1/rpc/42161",
       "description": "",
       "advanced": true
     },
     "arbitrumSepoliaRPC": {
       "name": "Arbitrum Sepolia RPC",
       "type": "string",
-      "defaultValue": "https://arbitrum-sepolia.gateway.tenderly.co",
+      "defaultValue": "https://juicebox.center/v1/rpc/421614",
       "description": "",
       "advanced": true
     },

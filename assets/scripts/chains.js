@@ -3,14 +3,14 @@
 // (e.g. "baseMainnet" -> baseMainnetCollectionAddress, baseMainnetRPC).
 // `prefix` is the chain slug used by app.revnet.eth.sucks URLs.
 const CHAINS = [
-  { id: 1,        key: "ethereum mainnet", label: "Ethereum",         setting: "ethereumMainnet", prefix: "eth",  testnet: false, rpc: "https://ethereum-rpc.publicnode.com",                    explorer: "https://etherscan.io" },
-  { id: 10,       key: "optimism mainnet", label: "Optimism",         setting: "optimismMainnet", prefix: "op",   testnet: false, rpc: "https://optimism-rpc.publicnode.com",               explorer: "https://optimistic.etherscan.io" },
-  { id: 42161,    key: "arbitrum mainnet", label: "Arbitrum",         setting: "arbitrumMainnet", prefix: "arb",  testnet: false, rpc: "https://arbitrum-one-rpc.publicnode.com",               explorer: "https://arbiscan.io" },
-  { id: 8453,     key: "base mainnet",     label: "Base",             setting: "baseMainnet",     prefix: "base", testnet: false, rpc: "https://base-rpc.publicnode.com",                   explorer: "https://basescan.org" },
-  { id: 11155111, key: "ethereum sepolia", label: "Ethereum Sepolia", setting: "ethereumSepolia", prefix: "eth",  testnet: true,  rpc: "https://ethereum-sepolia-rpc.publicnode.com", explorer: "https://sepolia.etherscan.io" },
-  { id: 11155420, key: "optimism sepolia", label: "Optimism Sepolia", setting: "optimismSepolia", prefix: "op",   testnet: true,  rpc: "https://sepolia.optimism.io",                 explorer: "https://sepolia-optimism.etherscan.io" },
-  { id: 421614,   key: "arbitrum sepolia", label: "Arbitrum Sepolia", setting: "arbitrumSepolia", prefix: "arb",  testnet: true,  rpc: "https://arbitrum-sepolia.gateway.tenderly.co", explorer: "https://sepolia.arbiscan.io" },
-  { id: 84532,    key: "base sepolia",     label: "Base Sepolia",     setting: "baseSepolia",     prefix: "base", testnet: true,  rpc: "https://sepolia.base.org",                    explorer: "https://sepolia.basescan.org" },
+  { id: 1,        key: "ethereum mainnet", label: "Ethereum",         setting: "ethereumMainnet", prefix: "eth",  testnet: false, rpc: "https://juicebox.center/v1/rpc/1",                    explorer: "https://etherscan.io" },
+  { id: 10,       key: "optimism mainnet", label: "Optimism",         setting: "optimismMainnet", prefix: "op",   testnet: false, rpc: "https://juicebox.center/v1/rpc/10",               explorer: "https://optimistic.etherscan.io" },
+  { id: 42161,    key: "arbitrum mainnet", label: "Arbitrum",         setting: "arbitrumMainnet", prefix: "arb",  testnet: false, rpc: "https://juicebox.center/v1/rpc/42161",               explorer: "https://arbiscan.io" },
+  { id: 8453,     key: "base mainnet",     label: "Base",             setting: "baseMainnet",     prefix: "base", testnet: false, rpc: "https://juicebox.center/v1/rpc/8453",                   explorer: "https://basescan.org" },
+  { id: 11155111, key: "ethereum sepolia", label: "Ethereum Sepolia", setting: "ethereumSepolia", prefix: "eth",  testnet: true,  rpc: "https://juicebox.center/v1/rpc/11155111", explorer: "https://sepolia.etherscan.io" },
+  { id: 11155420, key: "optimism sepolia", label: "Optimism Sepolia", setting: "optimismSepolia", prefix: "op",   testnet: true,  rpc: "https://juicebox.center/v1/rpc/11155420",                 explorer: "https://sepolia-optimism.etherscan.io" },
+  { id: 421614,   key: "arbitrum sepolia", label: "Arbitrum Sepolia", setting: "arbitrumSepolia", prefix: "arb",  testnet: true,  rpc: "https://juicebox.center/v1/rpc/421614", explorer: "https://sepolia.arbiscan.io" },
+  { id: 84532,    key: "base sepolia",     label: "Base Sepolia",     setting: "baseSepolia",     prefix: "base", testnet: true,  rpc: "https://juicebox.center/v1/rpc/84532",                    explorer: "https://sepolia.basescan.org" },
 ];
 
 // Juicebox's native-token sentinel and its accounting currency id (uint32 of the address).
