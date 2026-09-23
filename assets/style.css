@@ -701,6 +701,7 @@ h6:hover .header-anchor {
   display: flex;
   flex-direction: row;
   gap: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
 }
 
 #tags-container {
@@ -708,6 +709,8 @@ h6:hover .header-anchor {
 }
 
 #tags-container {
+  /* Marks where the scrolling tag row ends instead of cutting tags off mid-word. */
+  border-right: var(--border-width) solid var(--control-border-color);
   overflow: scroll;
   color: var(--foreground-secondary-color);
   user-select: none;
